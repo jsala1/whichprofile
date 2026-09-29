@@ -3,7 +3,7 @@
 (() => {
   'use strict';
 
-  document.addEventListener('lequel:notif', () => {
+  document.addEventListener('whichprofile:notif', () => {
     try {
       chrome.runtime.sendMessage({ type: 'ping', source: 'notification' }).catch(() => {});
     } catch (_) {

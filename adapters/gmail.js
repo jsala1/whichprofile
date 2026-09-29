@@ -10,7 +10,7 @@
 (function () {
   'use strict';
 
-  const PARSE = typeof module !== 'undefined' && module.exports ? require('../lib/parse.js') : globalThis.LEQUEL_PARSE;
+  const PARSE = typeof module !== 'undefined' && module.exports ? require('../lib/parse.js') : globalThis.WHICHPROFILE_PARSE;
 
   // ====================================================================================================
   // SELECTORS — tout ce qui dépend du DOM de Gmail est ici. Jamais de classes obfusquées.
@@ -23,7 +23,7 @@
     // Frame principale : conteneurs dans lesquels on cherche (nav gauche, rail Mail / Chat / Meet).
     topFrameRoots: '[role="navigation"], [role="complementary"]',
 
-    // Frames chat : conteneur dans lequel on cherche.
+    // Frames chat : conteneur dans whichprofile on cherche.
     chatFrameRoots: 'body',
 
     // Éléments dont on lit l'aria-label.
@@ -85,7 +85,7 @@
   let alive = true;
 
   const log = (...args) => {
-    if (debug) console.info('%c[Lequel DEBUG gmail]', 'color:#d9822b', `frame=${frameName}`, ...args);
+    if (debug) console.info('%c[WhichProfile DEBUG gmail]', 'color:#d9822b', `frame=${frameName}`, ...args);
   };
 
   function ping(source) {

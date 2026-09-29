@@ -2,10 +2,10 @@
 // Aucun état en mémoire qui ne soit reconstruisible depuis chrome.storage (le SW peut s'endormir à tout moment).
 importScripts('lib/sites.js', 'lib/parse.js', 'lib/config.js', 'lib/i18n.js');
 
-const { isKnownHost, siteLabel } = globalThis.LEQUEL_SITES;
-const { createDebouncer } = globalThis.LEQUEL_PARSE;
-const { reconcile, isSourceEnabled, shouldAnnounce, pickVoice, announcementText } = globalThis.LEQUEL_CONFIG;
-const { t, localeDefaults } = globalThis.LEQUEL_I18N;
+const { isKnownHost, siteLabel } = globalThis.WHICHPROFILE_SITES;
+const { createDebouncer } = globalThis.WHICHPROFILE_PARSE;
+const { reconcile, isSourceEnabled, shouldAnnounce, pickVoice, announcementText } = globalThis.WHICHPROFILE_CONFIG;
+const { t, localeDefaults } = globalThis.WHICHPROFILE_I18N;
 
 const DEBOUNCE_MS = 3000;
 const OFFSCREEN_URL = 'offscreen.html';
@@ -46,8 +46,8 @@ async function speak(config, siteText) {
     // enqueue:true : le moteur TTS est partagé entre profils, false couperait l'annonce d'un autre profil.
     enqueue: true,
     onEvent: (event) => {
-      if (event.type === 'error') console.warn('[Lequel] tts error', event.errorMessage);
-      if (config.debug) console.info('[Lequel] tts', event.type);
+      if (event.type === 'error') console.warn('[WhichProfile] tts error', event.errorMessage);
+      if (config.debug) console.info('[WhichProfile] tts', event.type);
     },
   };
   if (chosen) options.voiceName = chosen;
@@ -111,12 +111,12 @@ async function handlePing(message, sender) {
   const config = await loadConfig();
   const source = resolveSource(message.source, host, sender);
   if (!isSourceEnabled(config, source)) {
-    if (config.debug) console.info('[Lequel] ping ignoré (source désactivée)', { site: host, source });
+    if (config.debug) console.info('[WhichProfile] ping ignoré (source désactivée)', { site: host, source });
     return { ok: true, announced: false, reason: 'source-disabled' };
   }
 
   if (!(await debouncer.hit(host))) {
-    if (config.debug) console.info('[Lequel] ping absorbé (debounce)', { site: host, source });
+    if (config.debug) console.info('[WhichProfile] ping absorbé (debounce)', { site: host, source });
     return { ok: true, announced: false, reason: 'debounced' };
   }
 
@@ -124,7 +124,7 @@ async function handlePing(message, sender) {
   const announced = shouldAnnounce(config, now);
   // Dernier ping : site, source, heure. Jamais de contenu.
   await chrome.storage.session.set({ lastPing: { site: host, siteLabel: siteLabel(host), source, at: now, announced } });
-  console.info('[Lequel] ping', { site: host, source, announced });
+  console.info('[WhichProfile] ping', { site: host, source, announced });
 
   if (announced) await announce(config, siteLabel(host));
   return { ok: true, announced, reason: announced ? 'announced' : 'muted' };
@@ -133,7 +133,7 @@ async function handlePing(message, sender) {
 // Bouton « Tester » : même chemin d'annonce, sans mute ni debounce.
 async function handleTest() {
   const config = await loadConfig();
-  console.info('[Lequel] test', { mode: config.identity.mode, label: config.identity.label });
+  console.info('[WhichProfile] test', { mode: config.identity.mode, label: config.identity.label });
   const testLabel = t('testSiteLabel');
   await announce(config, testLabel);
   return { ok: true, mode: config.identity.mode, text: announcementText(testLabel, config.identity.label) };
@@ -151,12 +151,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (!task) return false;
 
   task.then(sendResponse, (error) => {
-    console.error('[Lequel]', error);
+    console.error('[WhichProfile]', error);
     sendResponse({ ok: false, reason: String(error && error.message) });
   });
   return true;
 });
 
 chrome.runtime.onInstalled.addListener(() => {
-  loadConfig().then((config) => console.info('[Lequel] prêt', { id: config.identity.id, label: config.identity.label }));
+  loadConfig().then((config) => console.info('[WhichProfile] prêt', { id: config.identity.id, label: config.identity.label }));
 });

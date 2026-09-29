@@ -1,4 +1,4 @@
-# Lequel — Justification des permissions (review Chrome Web Store)
+# WhichProfile — Justification des permissions (review Chrome Web Store)
 
 ## Objectif unique (single purpose)
 

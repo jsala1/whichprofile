@@ -4,16 +4,16 @@
     "description": "Locale folder name; used to pick the default TTS language. Do not translate."
   },
   "extName": {
-    "message": "Lequel"
+    "message": "WhichProfile"
   },
   "extDescription": {
-    "message": "Annonce quel profil Chrome vient de recevoir une notification, à voix haute ou par un son propre à chaque identité."
+    "message": "Vous dit quel profil Chrome vient de recevoir une notification — par la voix ou par un son."
   },
   "actionTitle": {
-    "message": "Lequel — quel profil ?"
+    "message": "WhichProfile — quel profil ?"
   },
   "optionsTitle": {
-    "message": "Lequel — réglages"
+    "message": "WhichProfile — réglages"
   },
   "optionsIntro": {
     "message": "Réglages de ce profil Chrome. Chaque profil a les siens."

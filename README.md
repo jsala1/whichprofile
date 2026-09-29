@@ -1,8 +1,8 @@
-# Lequel
+# WhichProfile
 
 Extension Chrome qui **annonce quel profil Chrome vient de recevoir une notification**.
 
-macOS vous dit « Gmail » ou « WhatsApp », jamais *quel compte*. Lequel, installée dans chacun de vos profils, dit par exemple « Gmail, Serendyme » à voix haute, ou joue un motif sonore propre à ce profil.
+macOS vous dit « Gmail » ou « WhatsApp », jamais *quel compte*. WhichProfile, installée dans chacun de vos profils, dit par exemple « Gmail, Serendyme » à voix haute, ou joue un motif sonore propre à ce profil.
 
 - Aucune donnée ne quitte l'appareil. Aucune requête réseau. Aucun contenu de message lu, transmis ou stocké.
 - Manifest V3, JavaScript sans dépendance, sans build.
@@ -12,13 +12,13 @@ macOS vous dit « Gmail » ou « WhatsApp », jamais *quel compte*. Lequel, inst
 
 1. Ouvrir `chrome://extensions` dans le profil.
 2. Activer le **Mode développeur** (en haut à droite).
-3. **Charger l'extension non empaquetée** → choisir le dossier `lequel/`.
-4. Épingler l'icône Lequel si vous voulez le popup à portée de main.
+3. **Charger l'extension non empaquetée** → choisir le dossier `whichprofile/`.
+4. Épingler l'icône WhichProfile si vous voulez le popup à portée de main.
 5. Ouvrir les **Réglages** (popup → Réglages, ou clic droit sur l'icône → Options), vérifier le compte détecté, choisir le libellé, puis **Tester**.
 
 Chaque profil a sa propre configuration : donnez un libellé (et en mode son, un motif) différent à chacun.
 
-Après une mise à jour du code : `chrome://extensions` → bouton ↻ de Lequel, dans chaque profil, puis recharger les onglets surveillés.
+Après une mise à jour du code : `chrome://extensions` → bouton ↻ de WhichProfile, dans chaque profil, puis recharger les onglets surveillés.
 
 ## Configuration
 
@@ -40,12 +40,12 @@ Après une mise à jour du code : `chrome://extensions` → bouton ↻ de Lequel
 | Google Chat, WhatsApp, Messenger, Facebook, LinkedIn, Slack, Discord, X, Outlook (`outlook.office.com`, `outlook.live.com`) | Hook notifications + compteur « (N) » en tête du titre de l'onglet |
 | Instagram | Hook + titre **non garantis**, adaptateur prévu en v1.1 |
 
-Plusieurs signaux pour un même événement (hook + titre + adaptateur) donnent **une seule** annonce : Lequel ignore les nouveaux signaux d'un site pendant 3 s après une annonce.
+Plusieurs signaux pour un même événement (hook + titre + adaptateur) donnent **une seule** annonce : WhichProfile ignore les nouveaux signaux d'un site pendant 3 s après une annonce.
 
 ## Limites connues
 
 - **Onglet fermé** : les notifications push reçues par le service worker d'un site quand son onglet est fermé sont invisibles pour l'extension. Gardez les onglets ouverts (épinglés).
-- **Sélecteurs Gmail fragiles** : le chat Gmail ne change pas le titre de l'onglet. Lequel lit les `aria-label` de la nav. Gmail peut changer son DOM à tout moment → bloc `SELECTORS` en tête de `adapters/gmail.js` et mode DEBUG.
+- **Sélecteurs Gmail fragiles** : le chat Gmail ne change pas le titre de l'onglet. WhichProfile lit les `aria-label` de la nav. Gmail peut changer son DOM à tout moment → bloc `SELECTORS` en tête de `adapters/gmail.js` et mode DEBUG.
 - **Auto-détection du compte** : nécessite un compte Google connecté *à Chrome* (profil). Sinon le libellé est « profil sans compte », modifiable dans les réglages.
 - **Deux messages en moins de 3 s sur le même site** : une seule annonce.
 - **Gmail : e-mail ou chat ?** Une notification Gmail qui ne vient pas d'une frame de chat est comptée comme « e-mail » : si les e-mails sont désactivés, elle est ignorée et c'est l'adaptateur chat qui prend le relais.
@@ -58,7 +58,7 @@ Plusieurs signaux pour un même événement (hook + titre + adaptateur) donnent 
 4. Chaque changement d'aria-label candidat s'affiche dans un tableau : libellé, contribution au compte, chemin par rôles. Se faire envoyer un message chat et repérer la ligne qui change.
 5. Modifier le bloc `SELECTORS` en tête de `adapters/gmail.js`, recharger l'extension, recommencer.
 
-Les décisions du service worker (ping ignoré / absorbé / annoncé) sont visibles dans `chrome://extensions` → Lequel → « service worker ».
+Les décisions du service worker (ping ignoré / absorbé / annoncé) sont visibles dans `chrome://extensions` → WhichProfile → « service worker ».
 
 ## Développement
 

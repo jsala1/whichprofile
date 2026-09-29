@@ -1,9 +1,10 @@
-# Lequel — source de vérité du projet
+# WhichProfile — source de vérité du projet
 
-Extension Chrome (MV3) chargée dans **chaque** profil Chrome. Quand une notification arrive sur un onglet d'un site connu, elle **annonce l'identité du profil** (voix : « Gmail, Serendyme », ou motif sonore propre à l'identité). macOS dit *quel service*, Lequel dit *quel profil*.
+Extension Chrome (MV3) chargée dans **chaque** profil Chrome. Quand une notification arrive sur un onglet d'un site connu, elle **annonce l'identité du profil** (voix : « Gmail, Serendyme », ou motif sonore propre à l'identité). macOS dit *quel service*, WhichProfile dit *quel profil*.
 
 - Cible : moi (designer produit multi-profils), puis freelances multi-clients et slashers.
 - V1 : usage perso, publiée gratuite sur le Chrome Web Store. Pas de monétisation, pas de backend, pas de collecte.
+- Code : `~/Projects/whichprofile/` (dépôt git ; s'appelait `~/Projects/lequel/` jusqu'au 2026-09-29).
 - Mémoire de travail (pas de code) : `~/Library/Mobile Documents/com~apple~CloudDocs/01_Work/2026_Lequel/` — copies datées de ce fichier dans `00_Cadrage/`, verdicts dans `03_Verdicts/`, textes Store dans `01_Store/`.
 - Notion / Linear : tenus par Julian. Claude Code écrit les verdicts, Julian les remonte.
 
@@ -27,7 +28,7 @@ options.html/.js/.css    libellé, mode, motif, langue, voix, sources Gmail, mut
 popup.html/.js           identité, mute, dernier ping
 core/notification-hook.js  MAIN world, document_start, all_frames : Proxy sur window.Notification
                            + wrap de ServiceWorkerRegistration.prototype.showNotification
-core/bridge.js             ISOLATED, document_start, all_frames : lequel:notif → runtime ping
+core/bridge.js             ISOLATED, document_start, all_frames : whichprofile:notif → runtime ping
 core/title-watcher.js      ISOLATED, frame principale, tous les sites sauf Gmail : compteur "(N)" en tête du titre
 adapters/gmail.js          ISOLATED, mail.google.com, all_frames : chat (aria-label, bloc SELECTORS) + mail (titre)
 lib/sites.js               hostname → libellé parlé (liste fermée, recoupée avec le manifest par un test)
@@ -42,7 +43,7 @@ store/                     textes Chrome Web Store
 
 ## Décisions (datées)
 
-- **2026-09-29 — Partage du code sans build.** Chaque fichier de `lib/` est un IIFE qui fait `module.exports` sous Node et pose `globalThis.LEQUEL_*` dans le navigateur. Content scripts : `lib/parse.js` listé avant le script qui l'utilise dans le même bloc `js`. SW : `importScripts`. Options/popup : `<script src>`. Le test `sites.test.js` garantit que `manifest.json` et `lib/sites.js` listent les mêmes hosts.
+- **2026-09-29 — Partage du code sans build.** Chaque fichier de `lib/` est un IIFE qui fait `module.exports` sous Node et pose `globalThis.WHICHPROFILE_*` dans le navigateur. Content scripts : `lib/parse.js` listé avant le script qui l'utilise dans le même bloc `js`. SW : `importScripts`. Options/popup : `<script src>`. Le test `sites.test.js` garantit que `manifest.json` et `lib/sites.js` listent les mêmes hosts.
 - **2026-09-29 — Règle d'augmentation du compteur (écart A).** Avant la référence : la première valeur numérique, ou la fin d'une chauffe de 10 s, fixe la référence sans ping. Après la référence : `null` (titre sans compteur) vaut `0`. Ping uniquement si la valeur augmente.
 - **2026-09-29 — Debounce en front montant (écart B).** Premier ping annoncé, puis silence 3 s par site. Horodatage dans `chrome.storage.session`, file d'attente sérialisée dans le SW pour éviter la course entre pings simultanés.
 - **2026-09-29 — Minimisation (écart C).** Aucun contenu transmis ni stocké. Définitif, argument Store.
@@ -62,6 +63,8 @@ store/                     textes Chrome Web Store
 - **2026-09-29 — Détection multilingue : le nombre est le compteur, le mot confirme.** `findUnread` repère un mot « non lu » (bornes Unicode, espaces / insécables / tirets) puis prend le nombre le plus proche (≤ 15 caractères). aria-label sans nombre proche = 1. Titre d'onglet : `(N)` en tête d'abord, sinon nombre + mot « non lu » ; le mot seul ne compte pas. `SELECTORS` (gmail.js) : mots « Espaces / conversation » et libellés de boîte de réception dans les 8 langues.
 - **2026-09-29 — Voix par défaut selon la locale** (`DEFAULT_TTS_LANG`, en→en-US … nl→nl-NL ; `fr-CA` → fr-FR, inconnue → en-US). Appliquée à la création de la config uniquement : une langue enregistrée n'est jamais écrasée, et le select « Voix » prime toujours. Le libellé « profil sans compte » est traduit (message `localLabel`) ; hors navigateur, repli anglais.
 - **2026-09-29 — Store : descriptions EN et FR seulement.** Les autres locales héritent de l'anglais ; traductions ajoutées si le Store montre des installs dans ces pays. Le nom et la description courte du manifest sont, eux, traduits dans les 8 langues.
+
+- **2026-09-29 — Renommage « Lequel » → « WhichProfile ».** Nom (`extName`), description (`extDescription`, EN : « Tells you which Chrome profile just got a notification — by voice or sound. ») dans les 8 locales, README, store/, et identifiants internes (`WHICHPROFILE_*`, événement `whichprofile:notif`, logs `[WhichProfile]`). Dossier du code : `~/Projects/lequel` → **`~/Projects/whichprofile`**. Le dossier iCloud `2026_Lequel` garde son nom (tenu par Julian). Une extension non empaquetée a un ID dérivé de son chemin : après le déplacement, il faut la recharger depuis le nouveau dossier dans chaque profil, et ses réglages repartent de zéro.
 
 ## Limites connues
 
