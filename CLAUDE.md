@@ -38,7 +38,8 @@ lib/config.js              config par défaut, réconciliation, toggles de sourc
 lib/i18n.js                chrome.i18n : traduction des pages, valeurs par défaut de la locale (navigateur seulement)
 _locales/<code>/messages.json  en (défaut), fr, es, pt_BR, pt_PT, it, de, nl — mêmes clés partout
 scripts/make-icons.py      PNG 16/48/128 en Python stdlib (pas de PIL sur la machine)
-store/                     textes Chrome Web Store
+scripts/pack.sh            tests puis dist/whichprofile-<version>.zip (hors .git, test/, scripts/, store/, dist/, CLAUDE.md, README.md, icons/*.svg, fichiers cachés)
+store/                     textes Chrome Web Store + SUBMISSION.md (checklist dans l'ordre du formulaire)
 ```
 
 ## Décisions (datées)
@@ -69,6 +70,11 @@ store/                     textes Chrome Web Store
 - **2026-09-29 — Bug T4 : double annonce d'un message chat Gmail → fenêtre anti-doublon 3 s → 12 s.** Reproduit en réel par Julian : « Gmail, ops » deux fois à quelques secondes d'écart, notification native entre les deux. Cause probable : l'adaptateur DOM détecte le message, puis le hook voit la notification native plus de 3 s après. `DEBOUNCE_MS = 12000` dans lib/config.js. La fenêtre part de la dernière annonce, pas du dernier ping : une conversation continue donne au plus une annonce par 12 s et n'est jamais bloquée.
 - **2026-09-29 — Popup : 5 derniers pings** (`recentPings` dans `storage.session`, remplace `lastPing`). Chaque ping reçu par le SW est enregistré avec heure, site, source et statut (`announced`, `muted`, `debounced`, `source-disabled`), y compris ceux qui ne sont pas annoncés : c'est ce qui permet de diagnostiquer doublons et pertes sans DEBUG. Écritures sérialisées dans le SW.
 
+- **2026-09-29 — Clôture v1.** Tests réels de Julian sur 3 profils réels, après 82a1cbb : T1, T2, T3, T4, T6, T7 ✅. T8 vérifié seulement en profil jetable (Chrome for Testing). T5 (WhatsApp) et T9 (Gmail en langue étrangère) non vérifiés.
+- **2026-09-29 — Message dans une conversation déjà ouverte : pas d'annonce, voulu.** Le site le marque lu aussitôt (pas de compteur, souvent pas de notification) et l'utilisateur regarde déjà ce profil. Documenté dans README « Pourquoi ça n'a pas sonné ? ».
+- **2026-09-29 — Paquet Store** : `scripts/pack.sh` sans npm. Il lance les tests, zippe, puis vérifie que chaque fichier du manifest est présent et qu'aucun fichier de dev ne l'est. `store/` et `icons/icon.svg` sont exclus en plus de la liste demandée (inutiles à l'exécution). `dist/` ignoré par git.
+- **2026-09-29 — Soumission** : `store/SUBMISSION.md`. URL de confidentialité : https://github.com/jsala1/whichprofile/blob/main/store/privacy.md. Elle suppose le dépôt poussé en public, et le dépôt local n'a pas encore de remote. La petite tuile 440×280 est obligatoire et pas encore produite. La déclaration « données collectées » (e-mail) reste à trancher par Julian (recommandation : déclarer).
+
 ## Limites connues
 
 - Notifications push reçues onglet fermé (service worker du site) : invisibles. Celles déclenchées depuis la page via `registration.showNotification` sont vues.
@@ -87,3 +93,6 @@ Plages horaires par identité ; bouton « je partage mon écran » ; adaptateurs
 - [x] 3. Adaptateur Gmail + DEBUG
 - [x] 4. README + store + icônes
 - [x] 5. Vérification finale (T2 + T8 dans Chrome for Testing 154, profil jetable ; T1, T3–T7, T9 à faire par Julian)
+- [x] i18n 8 langues ; renommage WhichProfile ; correctif T4 (anti-doublon 12 s, 5 derniers pings)
+- [x] **v1 close** (2026-09-29) : T1–T4, T6, T7 ✅ en réel ; T5, T9 non vérifiés
+- [ ] Soumission Store : paquet prêt (`sh scripts/pack.sh`) ; dépôt GitHub public, captures 1280×800 et tuile 440×280 à fournir par Julian
