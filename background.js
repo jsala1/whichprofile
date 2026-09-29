@@ -1,14 +1,14 @@
 // Service worker : reçoit les pings, résout l'identité du profil, filtre, débounce, annonce.
 // Aucun état en mémoire qui ne soit reconstruisible depuis chrome.storage (le SW peut s'endormir à tout moment).
-importScripts('lib/sites.js', 'lib/parse.js', 'lib/config.js');
+importScripts('lib/sites.js', 'lib/parse.js', 'lib/config.js', 'lib/i18n.js');
 
 const { isKnownHost, siteLabel } = globalThis.LEQUEL_SITES;
 const { createDebouncer } = globalThis.LEQUEL_PARSE;
 const { reconcile, isSourceEnabled, shouldAnnounce, pickVoice, announcementText } = globalThis.LEQUEL_CONFIG;
+const { t, localeDefaults } = globalThis.LEQUEL_I18N;
 
 const DEBOUNCE_MS = 3000;
 const OFFSCREEN_URL = 'offscreen.html';
-const TEST_SITE_LABEL = 'Test';
 
 const debouncer = createDebouncer({
   windowMs: DEBOUNCE_MS,
@@ -29,7 +29,7 @@ async function profileEmail() {
 
 async function loadConfig() {
   const [{ config: stored }, email] = await Promise.all([chrome.storage.local.get('config'), profileEmail()]);
-  const config = reconcile(stored, email);
+  const config = reconcile(stored, email, localeDefaults());
   if (JSON.stringify(config) !== JSON.stringify(stored)) await chrome.storage.local.set({ config });
   return config;
 }
@@ -134,8 +134,9 @@ async function handlePing(message, sender) {
 async function handleTest() {
   const config = await loadConfig();
   console.info('[Lequel] test', { mode: config.identity.mode, label: config.identity.label });
-  await announce(config, TEST_SITE_LABEL);
-  return { ok: true, mode: config.identity.mode, text: announcementText(TEST_SITE_LABEL, config.identity.label) };
+  const testLabel = t('testSiteLabel');
+  await announce(config, testLabel);
+  return { ok: true, mode: config.identity.mode, text: announcementText(testLabel, config.identity.label) };
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

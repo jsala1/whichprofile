@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <title>Lequel</title>
@@ -16,16 +16,17 @@
       </header>
       <label class="switch">
         <input id="muted" type="checkbox" />
-        <span><strong>Muet</strong></span>
+        <span><strong data-i18n="muted"></strong></span>
       </label>
       <div class="row">
-        <span class="muted">Dernier ping</span>
-        <span id="last" class="value">aucun</span>
+        <span class="muted" data-i18n="lastPing"></span>
+        <span id="last" class="value"></span>
       </div>
-      <button id="options" type="button" class="link">Réglages</button>
+      <button id="options" type="button" class="link" data-i18n="settingsButton"></button>
     </main>
     <script src="lib/parse.js"></script>
     <script src="lib/config.js"></script>
+    <script src="lib/i18n.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>

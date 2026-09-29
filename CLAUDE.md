@@ -31,8 +31,11 @@ core/bridge.js             ISOLATED, document_start, all_frames : lequel:notif �
 core/title-watcher.js      ISOLATED, frame principale, tous les sites sauf Gmail : compteur "(N)" en tête du titre
 adapters/gmail.js          ISOLATED, mail.google.com, all_frames : chat (aria-label, bloc SELECTORS) + mail (titre)
 lib/sites.js               hostname → libellé parlé (liste fermée, recoupée avec le manifest par un test)
-lib/parse.js               fonctions pures : compteurs, tracker, debounce, email
-lib/config.js              config par défaut, réconciliation, toggles de source, shouldAnnounce, choix de voix
+lib/parse.js               fonctions pures : compteurs, tracker, debounce, email, UNREAD_WORDS (mots « non lu » par langue)
+lib/config.js              config par défaut, réconciliation, toggles de source, shouldAnnounce, choix de voix,
+                           DEFAULT_TTS_LANG (locale → voix par défaut)
+lib/i18n.js                chrome.i18n : traduction des pages, valeurs par défaut de la locale (navigateur seulement)
+_locales/<code>/messages.json  en (défaut), fr, es, pt_BR, pt_PT, it, de, nl — mêmes clés partout
 scripts/make-icons.py      PNG 16/48/128 en Python stdlib (pas de PIL sur la machine)
 store/                     textes Chrome Web Store
 ```
@@ -51,9 +54,14 @@ store/                     textes Chrome Web Store
 - **2026-09-29 — Voix.** Select « Voix » alimenté par `chrome.tts.getVoices` ; vide = première voix de la langue choisie (fr-FR par défaut). `rate 1.1`.
 - **2026-09-29 — `enqueue: true` au lieu de `false`.** Le moteur TTS est partagé par tous les profils du même Chrome : avec `enqueue:false`, l'annonce du profil B couperait celle du profil A (T4). Le debounce borne déjà la file.
 - **2026-09-29 — Le bouton Tester** passe par le vrai chemin (message au SW → `announce`) mais ignore mute et debounce, sinon il serait inutilisable pour régler un profil muet.
-- **2026-09-29 — Voix chargées en différé.** Sous macOS, `chrome.tts.getVoices()` renvoie `[]` pendant ≈ 2 s après le démarrage de Chrome (constaté dans Chrome for Testing 154). Les options réessaient toutes les 500 ms ; `pickVoice` garde la voix enregistrée quand la liste est vide. « Automatique » tombe sur la première voix fr-FR de la liste système, qui est « Eddy (French (France)) » : choisir Thomas dans le select si on la préfère.
+- **2026-09-29 — Voix chargées en différé.** Sous macOS, `chrome.tts.getVoices()` renvoie `[]` pendant ≈ 2 s après le démarrage de Chrome (constaté dans Chrome for Testing 154). Les options réessaient toutes les 500 ms ; `pickVoice` garde la voix enregistrée quand la liste est vide. « Automatique » prend la première voix de la langue dans la liste système, dont l'ordre dépend de la langue de macOS : Eddy avec macOS en anglais, Thomas avec macOS en français (observé dans Chrome for Testing 154).
 - **2026-09-29 — Tests : `node --test`** sans argument (Node 22 refuse un répertoire).
 - **2026-09-29 — bridge.js en document_start** (et non idle) pour ne pas rater une notification émise avant la fin du chargement.
+
+- **2026-09-29 — i18n, 8 langues** (en, fr, es, pt_BR, pt_PT, it, de, nl). `default_locale: en`. Chaque langue existe à trois endroits, verrouillés par `test/i18n.test.js` : `_locales/<code>/`, `UNREAD_WORDS` (lib/parse.js), `DEFAULT_TTS_LANG` (lib/config.js). Message `localeCode` = locale réellement résolue par chrome.i18n (plus fiable que `getUILanguage()`).
+- **2026-09-29 — Détection multilingue : le nombre est le compteur, le mot confirme.** `findUnread` repère un mot « non lu » (bornes Unicode, espaces / insécables / tirets) puis prend le nombre le plus proche (≤ 15 caractères). aria-label sans nombre proche = 1. Titre d'onglet : `(N)` en tête d'abord, sinon nombre + mot « non lu » ; le mot seul ne compte pas. `SELECTORS` (gmail.js) : mots « Espaces / conversation » et libellés de boîte de réception dans les 8 langues.
+- **2026-09-29 — Voix par défaut selon la locale** (`DEFAULT_TTS_LANG`, en→en-US … nl→nl-NL ; `fr-CA` → fr-FR, inconnue → en-US). Appliquée à la création de la config uniquement : une langue enregistrée n'est jamais écrasée, et le select « Voix » prime toujours. Le libellé « profil sans compte » est traduit (message `localLabel`) ; hors navigateur, repli anglais.
+- **2026-09-29 — Store : descriptions EN et FR seulement.** Les autres locales héritent de l'anglais ; traductions ajoutées si le Store montre des installs dans ces pays. Le nom et la description courte du manifest sont, eux, traduits dans les 8 langues.
 
 ## Limites connues
 

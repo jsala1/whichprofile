@@ -71,11 +71,7 @@ test('tracker : pendant la chauffe, la première valeur numérique sert de réf�
 });
 
 test('countUnreadInLabels : nombres, drapeaux et exclusions', () => {
-  const patterns = {
-    countPattern: /(\d+)\s+(?:\S+\s+)?(?:unread|non[\s-]lus?)/i,
-    flagPattern: /\b(?:unread|non[\s-]lus?)\b/i,
-    excludePattern: /inbox|boîte de réception/i,
-  };
+  const patterns = { excludePattern: /inbox|boîte de réception/i };
   assert.equal(
     countUnreadInLabels(
       ['Chat, 3 unread messages', 'Espace Design, non lu', 'Inbox 42 unread', 'Boîte de réception 7 non lus', null],

@@ -6,6 +6,7 @@ macOS vous dit « Gmail » ou « WhatsApp », jamais *quel compte*. Lequel, inst
 
 - Aucune donnée ne quitte l'appareil. Aucune requête réseau. Aucun contenu de message lu, transmis ou stocké.
 - Manifest V3, JavaScript sans dépendance, sans build.
+- Interface et détection en 8 langues : anglais, français, espagnol, portugais (Brésil et Portugal), italien, allemand, néerlandais. La langue de l'interface suit celle de Chrome ; la voix par défaut suit la langue de l'interface (le select « Voix » prime toujours).
 
 ## Installation (à répéter dans chaque profil)
 
@@ -67,6 +68,13 @@ python3 scripts/make-icons.py  # régénère icons/ (Python standard, sans PIL)
 ```
 
 Sous Node 22, `node --test test/` (avec un répertoire) ne fonctionne pas : utiliser `node --test` sans argument.
+
+## Ajouter une langue
+
+1. Copier `_locales/en/messages.json` dans `_locales/<code>/` (code Chrome : `ja`, `pt_BR`…), traduire les `message`, mettre `localeCode` à `<code>`.
+2. Ajouter la ligne `<code>: [...]` dans `UNREAD_WORDS` (`lib/parse.js`), avec les variantes de genre et de nombre du mot « non lu ».
+3. Ajouter la voix par défaut `<code>: '<lang-TTS>'` dans `DEFAULT_TTS_LANG` (`lib/config.js`), puis les mots « Espaces » et boîte de réception de la langue dans `SELECTORS` (`adapters/gmail.js`).
+4. Lancer `node --test` : `test/i18n.test.js` échoue tant que la langue manque quelque part ; ajouter sa ligne dans `test/languages.test.js`.
 
 Toute modification de la liste des sites se fait **dans `lib/sites.js` et `manifest.json`** ; `test/sites.test.js` échoue si les deux divergent.
 
