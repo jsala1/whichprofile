@@ -36,10 +36,11 @@ test('hook en MAIN world à document_start', () => {
   assert.equal(hook.run_at, 'document_start');
 });
 
-test('permissions : liste fermée, aucune host permission', () => {
+test('permissions : liste fermée, aucune host permission obligatoire ; Agent mode en optionnel seulement', () => {
   assert.deepEqual(sorted(manifest.permissions), sorted(['identity', 'identity.email', 'offscreen', 'storage', 'tts']));
   assert.equal(manifest.host_permissions, undefined);
-  assert.equal(manifest.optional_permissions, undefined);
+  assert.deepEqual(manifest.optional_permissions, ['scripting']);
+  assert.deepEqual(manifest.optional_host_permissions, ['<all_urls>']);
   assert.equal(manifest.manifest_version, 3);
   assert.equal(manifest.minimum_chrome_version, '116');
 });
@@ -60,6 +61,9 @@ test('tous les fichiers référencés par le manifest existent', () => {
     ...Object.values(manifest.icons),
     ...scripts.flatMap((entry) => entry.js),
     'offscreen.html',
+    // Agent mode : enregistrés dynamiquement par background.js, donc absents des content_scripts du manifest.
+    'lib/chip.js',
+    'agent/chip.js',
   ];
   for (const file of files) assert.ok(fs.existsSync(path.join(root, file)), file);
 });

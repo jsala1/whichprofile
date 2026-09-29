@@ -196,5 +196,17 @@
   },
   "statusSourceOff": {
     "message": "niet aangekondigd (bron uit)"
+  },
+  "sectionAgent": {
+    "message": "AI-agents"
+  },
+  "agentMode": {
+    "message": "Agentmodus"
+  },
+  "agentModeHint": {
+    "message": "Toont op elke pagina een klein label met de naam van dit profiel en voegt die toe aan de pagina (data-whichprofile), zodat AI-browseragents weten in welk profiel ze zitten. Websites kunnen deze naam lezen: kies er een die niet persoonlijk is. Vereist toegang tot alle sites; uitschakelen trekt die toegang in."
+  },
+  "agentModeDenied": {
+    "message": "Toestemming geweigerd: agentmodus blijft uit."
   }
 }

@@ -196,5 +196,17 @@
   },
   "statusSourceOff": {
     "message": "non annunciato (fonte disattivata)"
+  },
+  "sectionAgent": {
+    "message": "Agenti IA"
+  },
+  "agentMode": {
+    "message": "Modalità agente"
+  },
+  "agentModeHint": {
+    "message": "Mostra una piccola etichetta con il nome di questo profilo su ogni pagina e lo aggiunge alla pagina (data-whichprofile), così gli agenti IA sanno in quale profilo si trovano. I siti possono leggere questo nome: scegline uno non personale. Richiede l'accesso a tutti i siti; disattivandola l'accesso viene rimosso."
+  },
+  "agentModeDenied": {
+    "message": "Permesso negato: la modalità agente resta disattivata."
   }
 }

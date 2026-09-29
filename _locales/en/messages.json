@@ -196,5 +196,17 @@
   },
   "statusSourceOff": {
     "message": "not announced (source off)"
+  },
+  "sectionAgent": {
+    "message": "AI agents"
+  },
+  "agentMode": {
+    "message": "Agent mode"
+  },
+  "agentModeHint": {
+    "message": "Shows a small chip with this profile's label on every page and adds it to the page as data-whichprofile, so AI browsing agents know which profile they're in. Websites can read this label: pick one that isn't personal. Needs access to all sites; turning it off removes that access."
+  },
+  "agentModeDenied": {
+    "message": "Permission refused: Agent mode stays off."
   }
 }

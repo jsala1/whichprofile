@@ -53,7 +53,9 @@ Dans l'ordre du tableau de bord développeur (https://chrome.google.com/webstore
   - [ ] `offscreen`
   - [ ] `storage`
   - [ ] `tts`
-- [ ] **Justification des accès aux sites** : les `matches` des content scripts comptent comme accès aux hôtes. Coller le paragraphe de « ## Accès aux sites (content scripts) » de `store/permissions_justification.md`.
+  - [ ] `scripting` (optionnelle, Agent mode) : coller la ligne du tableau « Permissions optionnelles ».
+- [ ] **Justification des accès aux sites** : les `matches` des content scripts comptent comme accès aux hôtes. Coller le paragraphe de « ## Accès aux sites (content scripts) », **puis** la ligne `<all_urls>` (optionnelle, Agent mode) du tableau « Permissions optionnelles » de `store/permissions_justification.md`.
+  - `<all_urls>`, même optionnel, déclenche en général un examen approfondi : prévoir plusieurs jours de plus.
 - [ ] **Code distant** : « Non, je n'utilise pas de code distant ».
 - [ ] **Utilisation des données** (types de données collectées) :
   - Recommandation prudente : cocher **Informations personnelles identifiables** (l'e-mail du profil est lu via `identity.email`), même s'il reste sur l'appareil. Ne rien cocher d'autre : aucun contenu de message n'est lu ni stocké, et les compteurs de non-lus ne sont pas conservés.

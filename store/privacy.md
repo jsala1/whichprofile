@@ -1,6 +1,6 @@
 # WhichProfile — Politique de confidentialité / Privacy policy
 
-Dernière mise à jour : 29 septembre 2026
+Dernière mise à jour : 29 septembre 2026 (ajout du mode agent)
 
 ## Français
 
@@ -13,6 +13,8 @@ Ce que l'extension lit, localement :
 Ce que l'extension stocke :
 - Vos réglages (libellé, mode, motif, voix, sources, muet, DEBUG) dans `chrome.storage.local`, sur cet appareil, pour ce profil.
 - Pour les 5 derniers signaux : le site, le type de signal, l'heure et s'il a été annoncé ; et l'heure de la dernière annonce par site. Dans `chrome.storage.session`, effacé à la fermeture du navigateur.
+
+**Mode agent (facultatif, désactivé par défaut).** S'il est activé, le libellé du profil est écrit sur chaque page visitée (une pastille visible et un attribut `data-whichprofile`), pour que les agents IA de navigation sachent dans quel profil ils se trouvent. WhichProfile ne lit rien de ces pages et ne transmet rien, mais **les sites visités peuvent lire ce libellé**. Choisissez un libellé non personnel. La désactivation retire la pastille et l'accès aux sites.
 
 Les annonces vocales utilisent la synthèse vocale de Chrome (`chrome.tts`), qui s'appuie sur les voix installées sur votre système.
 
@@ -29,6 +31,8 @@ What the extension reads, locally:
 What the extension stores:
 - Your settings (label, mode, sound pattern, voice, sources, mute, debug) in `chrome.storage.local`, on this device, for this profile.
 - For the last 5 signals: the site, the signal type, the time and whether it was announced; and the time of the last announcement per site. In `chrome.storage.session`, cleared when the browser closes.
+
+**Agent mode (optional, off by default).** When turned on, the profile label is written on every page you visit (a visible chip and a `data-whichprofile` attribute) so AI browsing agents know which profile they are in. WhichProfile reads nothing from those pages and transmits nothing, but **the websites you visit can read this label**. Choose a label that isn't personal. Turning it off removes the chip and the site access.
 
 Voice announcements use Chrome's text-to-speech (`chrome.tts`), relying on the voices installed on your system.
 

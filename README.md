@@ -44,6 +44,20 @@ Plusieurs signaux pour un même événement (hook + titre + adaptateur) donnent 
 
 Le popup liste les **5 derniers pings** : heure, site, source (`notification`, `title`, `gmail-chat`, `gmail-mail`) et s'il a été annoncé ou pourquoi il ne l'a pas été (muet, doublon, source désactivée). C'est le premier endroit où regarder quand une annonce manque ou se répète, sans passer par DEBUG.
 
+## Agent mode — why
+
+Les agents IA qui naviguent pour vous (navigateurs agentiques, extensions d'assistant, automatisations) ont le même angle mort que macOS : ils voient une page, pas le **profil Chrome** dans lequel elle est ouverte. Un agent qui doit « répondre depuis le compte client » ou « ne rien toucher au compte perso » n'a aucun moyen fiable de savoir où il est.
+
+L'Agent mode, **désactivé par défaut**, rend le profil lisible sur chaque page :
+- un petit chip bas-droite avec le libellé du profil (Shadow DOM fermé, sans effet sur la mise en page ; clic = masqué pour cet onglet) ;
+- sur l'hôte du chip, `role="status"` et `aria-label="Chrome profile: <libellé>"`, lus par les agents qui passent par l'arbre d'accessibilité ou le HTML ;
+- `data-whichprofile="<libellé>"` sur `<html>`, pour les agents qui lisent le DOM ;
+- le texte du chip, pour les agents qui travaillent sur des captures d'écran.
+
+L'activation demande l'accès à **tous les sites** et la permission `scripting` (permissions optionnelles). En cas de refus, le mode reste désactivé. La désactivation retire le script et rend ces permissions. Le chip n'écrit que ces deux éléments et ne lit rien de la page.
+
+**À savoir :** le libellé devient lisible par **tous les sites visités**. Choisir un libellé non personnel (« Agence », « Client A ») plutôt qu'un prénom ou une partie d'e-mail.
+
 ## Limites connues
 
 - **Onglet fermé** : les notifications push reçues par le service worker d'un site quand son onglet est fermé sont invisibles pour l'extension. Gardez les onglets ouverts (épinglés).
@@ -114,6 +128,7 @@ Toute modification de la liste des sites se fait **dans `lib/sites.js` et `manif
 - [ ] **T7** — Muet → aucune annonce, le popup liste les pings avec « non annoncé (muet) ».
 - [ ] **T8** — Profil non connecté à Chrome → libellé « profil sans compte », modifiable.
 - [ ] **T9** — Gmail en DEBUG → les mutations candidates sont visibles en console, `SELECTORS` modifiable sans casser le reste.
+- [ ] **T10** — Agent mode activé (permission acceptée), libellé « Serendyme » : un agent IA à qui l'on demande « dans quel profil Chrome es-tu ? » lit la page et trouve « Chrome profile: Serendyme ». Refus de la permission → reste désactivé ; désactivation → chips retirés des onglets ouverts, permissions rendues (visible dans `chrome://extensions` → Détails).
 
 ## Confidentialité
 
