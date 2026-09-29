@@ -52,6 +52,21 @@ Le popup liste les **5 derniers pings** : heure, site, source (`notification`, `
 - **Plusieurs messages en moins de 12 s sur le même site** : une seule annonce.
 - **Gmail : e-mail ou chat ?** Une notification Gmail qui ne vient pas d'une frame de chat est comptée comme « e-mail » : si les e-mails sont désactivés, elle est ignorée et c'est l'adaptateur chat qui prend le relais.
 
+## Pourquoi ça n'a pas sonné ?
+
+Ouvrir le popup de l'extension **dans le profil concerné** : il liste les 5 derniers signaux reçus, avec leur sort. Puis :
+
+| Constat | Explication |
+|---|---|
+| **Le message est arrivé dans une conversation déjà ouverte et affichée** | Comportement attendu. Le site le marque lu aussitôt : pas de compteur qui augmente, souvent pas de notification. Rien à annoncer, puisque vous regardez déjà ce profil. |
+| Aucune ligne dans le popup | Aucun signal n'est arrivé. L'onglet du service était-il ouvert ? Une notification reçue onglet fermé est invisible pour une extension. Après une mise à jour ou un rechargement de l'extension, rechargez aussi les onglets surveillés. |
+| « non annoncé (doublon) » | Un autre signal du même site a été annoncé moins de 12 s avant. On annonce une identité, pas chaque message. |
+| « non annoncé (muet) » | Le mode Muet est activé (popup ou réglages). |
+| « non annoncé (source désactivée) » | Gmail : les nouveaux e-mails sont désactivés par défaut (Réglages → Sources Gmail). Une notification Gmail qui ne vient pas du chat est comptée comme e-mail. |
+| « ✓ annoncé » mais rien entendu | Volume du Mac, sortie audio, ou voix de synthèse absente : Réglages → Tester. |
+| Rien dans les 10 s après l'ouverture d'un onglet | Voulu : la première lecture du compteur sert de référence, pour ne pas annoncer les non-lus déjà présents au chargement. |
+| Chat Gmail jamais détecté | Voir « Ajuster la détection du chat Gmail » ci-dessous (Gmail dans une autre langue que le français ou l'anglais : non vérifié). |
+
 ## Ajuster la détection du chat Gmail
 
 1. Réglages → activer **Mode DEBUG**.
@@ -70,6 +85,14 @@ python3 scripts/make-icons.py  # régénère icons/ (Python standard, sans PIL)
 ```
 
 Sous Node 22, `node --test test/` (avec un répertoire) ne fonctionne pas : utiliser `node --test` sans argument.
+
+## Publier sur le Chrome Web Store
+
+```sh
+sh scripts/pack.sh   # tests, puis dist/whichprofile-<version>.zip (sans .git, test/, scripts/, store/, CLAUDE.md, README.md)
+```
+
+Puis suivre `store/SUBMISSION.md`, dans l'ordre du formulaire. Pour une nouvelle version : incrémenter `version` dans `manifest.json`, relancer le script.
 
 ## Ajouter une langue
 
