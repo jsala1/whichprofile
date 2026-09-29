@@ -115,3 +115,10 @@ Plages horaires par identité ; bouton « je partage mon écran » ; adaptateurs
 - [x] Dépôt public https://github.com/jsala1/whichprofile ; captures 1280×800 (`store/screenshots/`) et tuile 440×280 (`store/promo/`) produites dans Chrome for Testing
 - [x] **Soumis au Chrome Web Store le 2026-09-29 à 23h30** par Julian. ID de l'extension : `nkfkdanbfikhpkdhebfemmplgagjfllg`. Publication différée : à publier manuellement après validation.
 - [ ] Validation Store, puis publication manuelle ; ensuite, installer depuis le Store dans chaque profil (l'ID diffère de celui des versions non empaquetées)
+
+## Store
+
+- **v1.0.0 soumise** au Chrome Web Store le **29/09/2026 à 23h30 (heure de Paris)**. **Publication différée** : on publiera manuellement quand la review passe.
+- ID Store : `nkfkdanbfikhpkdhebfemmplgagjfllg` (≠ ID unpacked `kdbhhfpelpfkpmkbjmjpoceogehhdipm`).
+- Publisher ID : `b6dd2025-ae76-49dc-bd43-f8e2bd27c752`.
+- Package soumis : `dist/whichprofile-1.0.0.zip`, produit par `sh scripts/pack.sh` au commit `2fda89d`.
