@@ -67,7 +67,7 @@ Plages horaires par identité ; bouton « je partage mon écran » ; adaptateurs
 ## État des phases
 
 - [x] 1. Plan validé (GO 2026-09-29), git init, CLAUDE.md
-- [ ] 2. Cœur générique + offscreen + options + popup + tests
+- [x] 2. Cœur générique + offscreen + options + popup + tests
 - [ ] 3. Adaptateur Gmail + DEBUG
 - [ ] 4. README + store + icônes
 - [ ] 5. Vérification finale
