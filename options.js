@@ -1,7 +1,7 @@
 'use strict';
 
-const { reconcile, defaultLabel, pickVoice } = globalThis.LEQUEL_CONFIG;
-const { t, localeDefaults, translatePage } = globalThis.LEQUEL_I18N;
+const { reconcile, defaultLabel, pickVoice } = globalThis.WHICHPROFILE_CONFIG;
+const { t, localeDefaults, translatePage } = globalThis.WHICHPROFILE_I18N;
 const $ = (id) => document.getElementById(id);
 const locale = localeDefaults();
 

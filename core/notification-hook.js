@@ -4,8 +4,8 @@
 (() => {
   'use strict';
 
-  const EVENT = 'lequel:notif';
-  const MARK = Symbol.for('lequel.wrapped');
+  const EVENT = 'whichprofile:notif';
+  const MARK = Symbol.for('whichprofile.wrapped');
 
   const emit = () => {
     try {

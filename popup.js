@@ -1,7 +1,7 @@
 'use strict';
 
-const { reconcile } = globalThis.LEQUEL_CONFIG;
-const { t, uiLocale, localeDefaults, translatePage } = globalThis.LEQUEL_I18N;
+const { reconcile } = globalThis.WHICHPROFILE_CONFIG;
+const { t, uiLocale, localeDefaults, translatePage } = globalThis.WHICHPROFILE_I18N;
 const $ = (id) => document.getElementById(id);
 const locale = localeDefaults();
 

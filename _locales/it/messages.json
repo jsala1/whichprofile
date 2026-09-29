@@ -4,16 +4,16 @@
     "description": "Locale folder name; used to pick the default TTS language. Do not translate."
   },
   "extName": {
-    "message": "Lequel"
+    "message": "WhichProfile"
   },
   "extDescription": {
-    "message": "Annuncia quale profilo di Chrome ha appena ricevuto una notifica, a voce o con un suono diverso per ogni identità."
+    "message": "Ti dice quale profilo di Chrome ha appena ricevuto una notifica — a voce o con un suono."
   },
   "actionTitle": {
-    "message": "Lequel — quale profilo?"
+    "message": "WhichProfile — quale profilo?"
   },
   "optionsTitle": {
-    "message": "Lequel — impostazioni"
+    "message": "WhichProfile — impostazioni"
   },
   "optionsIntro": {
     "message": "Impostazioni di questo profilo di Chrome. Ogni profilo ha le sue."

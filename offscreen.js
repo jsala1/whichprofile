@@ -48,7 +48,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (!message || message.target !== 'offscreen' || message.type !== 'play') return false;
   play(message.pattern).then(
     (state) => {
-      console.info('[Lequel] son joué', message.pattern, state);
+      console.info('[WhichProfile] son joué', message.pattern, state);
       sendResponse({ ok: true, state });
     },
     (error) => sendResponse({ ok: false, reason: String(error && error.message) }),

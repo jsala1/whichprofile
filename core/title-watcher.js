@@ -3,7 +3,7 @@
 (() => {
   'use strict';
 
-  const { parseUnreadCount, createCounterTracker } = globalThis.LEQUEL_PARSE;
+  const { parseUnreadCount, createCounterTracker } = globalThis.WHICHPROFILE_PARSE;
   const POLL_MS = 2000;
   const tracker = createCounterTracker();
 
