@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Lequel</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body class="popup">
+    <main class="wrap">
+      <header class="head">
+        <img src="icons/48.png" alt="" width="28" height="28" />
+        <div>
+          <h1 id="label">…</h1>
+          <p id="email" class="muted"></p>
+        </div>
+      </header>
+      <label class="switch">
+        <input id="muted" type="checkbox" />
+        <span><strong>Muet</strong></span>
+      </label>
+      <div class="row">
+        <span class="muted">Dernier ping</span>
+        <span id="last" class="value">aucun</span>
+      </div>
+      <button id="options" type="button" class="link">Réglages</button>
+    </main>
+    <script src="lib/parse.js"></script>
+    <script src="lib/config.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

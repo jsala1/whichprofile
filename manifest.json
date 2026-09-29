@@ -1,0 +1,95 @@
+{
+  "manifest_version": 3,
+  "name": "Lequel",
+  "version": "1.0.0",
+  "description": "Annonce quel profil Chrome vient de recevoir une notification, à voix haute ou par un son propre à chaque identité.",
+  "minimum_chrome_version": "116",
+  "icons": {
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "permissions": ["identity", "identity.email", "offscreen", "storage", "tts"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Lequel",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "48": "icons/48.png",
+      "128": "icons/128.png"
+    }
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://mail.google.com/*",
+        "https://chat.google.com/*",
+        "https://web.whatsapp.com/*",
+        "https://www.messenger.com/*",
+        "https://www.facebook.com/*",
+        "https://www.instagram.com/*",
+        "https://www.linkedin.com/*",
+        "https://app.slack.com/*",
+        "https://discord.com/*",
+        "https://x.com/*",
+        "https://outlook.office.com/*",
+        "https://outlook.live.com/*"
+      ],
+      "js": ["core/notification-hook.js"],
+      "world": "MAIN",
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true
+    },
+    {
+      "matches": [
+        "https://mail.google.com/*",
+        "https://chat.google.com/*",
+        "https://web.whatsapp.com/*",
+        "https://www.messenger.com/*",
+        "https://www.facebook.com/*",
+        "https://www.instagram.com/*",
+        "https://www.linkedin.com/*",
+        "https://app.slack.com/*",
+        "https://discord.com/*",
+        "https://x.com/*",
+        "https://outlook.office.com/*",
+        "https://outlook.live.com/*"
+      ],
+      "js": ["core/bridge.js"],
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true
+    },
+    {
+      "matches": [
+        "https://chat.google.com/*",
+        "https://web.whatsapp.com/*",
+        "https://www.messenger.com/*",
+        "https://www.facebook.com/*",
+        "https://www.instagram.com/*",
+        "https://www.linkedin.com/*",
+        "https://app.slack.com/*",
+        "https://discord.com/*",
+        "https://x.com/*",
+        "https://outlook.office.com/*",
+        "https://outlook.live.com/*"
+      ],
+      "js": ["lib/parse.js", "core/title-watcher.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": ["lib/parse.js", "adapters/gmail.js"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ]
+}
