@@ -40,6 +40,7 @@ lib/chip.js                Agent mode : modèle pur du chip (texte, role, aria-l
 agent/chip.js              Agent mode : content script enregistré dynamiquement (<all_urls>, frame principale, document_idle)
 _locales/<code>/messages.json  en (défaut), fr, es, pt_BR, pt_PT, it, de, nl — mêmes clés partout
 scripts/make-icons.py      PNG 16/48/128 en Python stdlib (pas de PIL sur la machine)
+scripts/make-promo.py      tuile Store 440×280 en SVG (PNG rendu par Chrome)
 scripts/pack.sh            tests puis dist/whichprofile-<version>.zip (hors .git, test/, scripts/, store/, dist/, CLAUDE.md, README.md, icons/*.svg, fichiers cachés)
 store/                     textes Chrome Web Store + SUBMISSION.md (checklist dans l'ordre du formulaire)
 ```
@@ -81,6 +82,9 @@ store/                     textes Chrome Web Store + SUBMISSION.md (checklist da
 - **2026-09-29 — Conséquence confidentialité de l'Agent mode** : le libellé devient lisible par tous les sites visités. Dit dans l'aide des options, le README, privacy.md et la justification Store : choisir un libellé non personnel.
 - **2026-09-29 — Nom de client retiré de l'historique** avant le premier push public : le commit de clôture v1 (ex-`55b51e0`, désormais `859106a`) nommait un profil client ; remplacé par « 3 profils réels ».
 
+- **2026-09-29 — Dépôt GitHub** : https://github.com/jsala1/whichprofile, public, créé avec le compte `jsala1` (connecté mais inactif dans `gh`, le compte actif `ops36` n'a pas été changé). Pour pousser : `GH_TOKEN=$(gh auth token --user jsala1) git push`.
+- **2026-09-29 — Visuels Store** : captures 1280×800 et tuile 440×280 produites dans Chrome for Testing (profil jetable, interface EN, libellé « Agency »), dans une copie de test de l'extension où les permissions de l'Agent mode sont déjà accordées (la boîte de permission native ne s'automatise pas). `scripts/make-promo.py` écrit la tuile en SVG (Python stdlib, sans rastérisation de texte possible) et Chrome la rend en PNG. Capture Agent mode sur discord.com/register : la page /login affiche un QR code de connexion.
+
 ## Limites connues
 
 - Notifications push reçues onglet fermé (service worker du site) : invisibles. Celles déclenchées depuis la page via `registration.showNotification` sont vues.
@@ -101,4 +105,6 @@ Plages horaires par identité ; bouton « je partage mon écran » ; adaptateurs
 - [x] 5. Vérification finale (T2 + T8 dans Chrome for Testing 154, profil jetable ; T1, T3–T7, T9 à faire par Julian)
 - [x] i18n 8 langues ; renommage WhichProfile ; correctif T4 (anti-doublon 12 s, 5 derniers pings)
 - [x] **v1 close** (2026-09-29) : T1–T4, T6, T7 ✅ en réel ; T5, T9 non vérifiés
-- [ ] Soumission Store : paquet prêt (`sh scripts/pack.sh`) ; dépôt GitHub public, captures 1280×800 et tuile 440×280 à fournir par Julian
+- [x] Agent mode (opt-in) ajouté à la v1
+- [x] Dépôt public https://github.com/jsala1/whichprofile ; captures 1280×800 (`store/screenshots/`) et tuile 440×280 (`store/promo/`) produites dans Chrome for Testing
+- [ ] Soumission Store : paquet prêt (`sh scripts/pack.sh`) ; reste la déclaration « données collectées » et l'envoi (Julian)

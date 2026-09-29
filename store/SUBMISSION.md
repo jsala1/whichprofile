@@ -6,7 +6,7 @@ Dans l'ordre du tableau de bord développeur (https://chrome.google.com/webstore
 
 - [ ] Compte développeur Chrome Web Store actif (frais d'inscription uniques de 5 $ payés), e-mail de contact vérifié, validation en deux étapes activée sur le compte Google.
 - [ ] Statut « non-professionnel » (non-trader) déclaré : extension gratuite, perso, sans activité commerciale.
-- [ ] **Le dépôt `jsala1/whichprofile` est poussé sur GitHub, public, branche `main`**, et https://github.com/jsala1/whichprofile/blob/main/store/privacy.md s'ouvre sans être connecté. Aujourd'hui le dépôt local n'a **aucun remote** : l'URL de confidentialité ne répond pas tant que ce n'est pas fait.
+- [x] Dépôt public https://github.com/jsala1/whichprofile (branche `main`, Issues activées) ; https://github.com/jsala1/whichprofile/blob/main/store/privacy.md répond sans connexion (vérifié le 2026-09-29, HTTP 200).
 - [ ] `sh scripts/pack.sh` → `dist/whichprofile-1.0.0.zip` (tests verts, fichiers vérifiés).
 
 ## 1. Paquet (« Add new item »)
@@ -27,13 +27,12 @@ Dans l'ordre du tableau de bord développeur (https://chrome.google.com/webstore
 ### Ressources graphiques
 
 - [ ] **Icône du Store 128×128** : `icons/128.png`.
-- [ ] **Captures d'écran 1280×800** (PNG ou JPEG, 1 à 5), à fournir par Julian :
-  1. Réglages (options) : libellé, mode Voix, bouton Tester.
-  2. Popup avec **5 pings** visibles (annoncés, doublon, muet).
-  3. Notification en situation : notification macOS + popup ou réglages visibles, pour montrer « quel profil ».
-  - Attention : les réglages affichent l'**e-mail du profil** et le popup les sites utilisés. Prendre les captures dans un profil de démonstration, ou flouter.
-  - Les captures sont propres à chaque langue de fiche : les faire en anglais pour la fiche EN, et, si possible, en français pour la fiche FR (interface Chrome en français).
-- [ ] **Petite tuile promotionnelle 440×280** : **obligatoire** pour publier, à fournir par Julian. Non produite.
+- [ ] **Captures d'écran 1280×800**, dans cet ordre, depuis `store/screenshots/` (profil jetable, interface EN, libellé de démo « Agency », aucun e-mail ni donnée réelle) :
+  1. `1-options-voice-test-1280x800.png` : réglages, mode Voix, « Announced: “Test, Agency” ».
+  2. `2-popup-recent-pings-1280x800.png` : popup avec 5 pings (annoncé, doublon, muet). Il s'agit du vrai popup, agrandi 1,55× et centré pour la capture.
+  3. `3-agent-mode-chip-1280x800.png` : discord.com/register avec le chip « Agency » en bas à droite, à sa taille réelle.
+  - Fiche FR : les mêmes captures conviennent (interface anglaise). Captures FR facultatives.
+- [ ] **Petite tuile promotionnelle 440×280** : `store/promo/small-tile-440x280.png` (source : `small-tile-440x280.svg`, générée par `scripts/make-promo.py`).
 - [ ] Tuile marquee 1400×560, vidéo : facultatives, à laisser vides.
 
 ### Champs supplémentaires
