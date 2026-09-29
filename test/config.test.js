@@ -9,6 +9,7 @@ const {
   pickVoice,
   announcementText,
   ttsLangForLocale,
+  pushRecentPing,
   LOCAL_LABEL,
 } = require('../lib/config.js');
 
@@ -96,4 +97,15 @@ test('pickVoice : choix explicite, puis langue exacte, puis préfixe', () => {
 
 test('texte annoncé', () => {
   assert.equal(announcementText('Gmail', 'Serendyme'), 'Gmail, Serendyme');
+});
+
+test('historique du popup : 5 derniers pings, le plus récent en tête', () => {
+  let list;
+  for (let i = 1; i <= 7; i++) list = pushRecentPing(list, { at: i, site: 'x.com', source: 'title', announced: true, status: 'announced' });
+  assert.deepEqual(list.map((p) => p.at), [7, 6, 5, 4, 3]);
+});
+
+test('historique du popup : aucun champ de contenu', () => {
+  const [entry] = pushRecentPing(undefined, { at: 1, site: 'mail.google.com', siteLabel: 'Gmail', source: 'gmail-chat', announced: false, status: 'debounced' });
+  assert.deepEqual(Object.keys(entry).sort(), ['announced', 'at', 'site', 'siteLabel', 'source', 'status']);
 });

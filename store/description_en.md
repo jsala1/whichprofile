@@ -22,7 +22,7 @@ Privacy:
 Honest limits:
 • The site's tab must be open: notifications received while the tab is closed are not visible to extensions.
 • Gmail chat detection depends on Gmail's interface and may need an update if Google changes it.
-• Several events on the same site within 3 seconds produce a single announcement.
+• Several messages on the same site within 12 seconds produce a single announcement: WhichProfile announces the profile, not every message.
 
 Available in English, French, Spanish, Portuguese (Brazil and Portugal), Italian, German and Dutch.
 

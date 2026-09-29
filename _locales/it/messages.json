@@ -153,7 +153,7 @@
     "message": "Muto"
   },
   "mutedHint": {
-    "message": "Nessun annuncio. Il popup mostra comunque l'ultimo segnale."
+    "message": "Nessun annuncio. Il popup mostra comunque gli ultimi segnali."
   },
   "debug": {
     "message": "Modalità DEBUG"
@@ -179,13 +179,22 @@
   "settingsButton": {
     "message": "Impostazioni"
   },
-  "lastPing": {
-    "message": "Ultimo segnale"
+  "recentPings": {
+    "message": "Ultimi segnali"
   },
-  "lastPingNone": {
-    "message": "nessuno"
+  "recentPingsNone": {
+    "message": "nessuno per ora"
   },
-  "lastPingMuted": {
-    "message": "(muto)"
+  "statusAnnounced": {
+    "message": "annunciato"
+  },
+  "statusMuted": {
+    "message": "non annunciato (muto)"
+  },
+  "statusDebounced": {
+    "message": "non annunciato (duplicato)"
+  },
+  "statusSourceOff": {
+    "message": "non annunciato (fonte disattivata)"
   }
 }

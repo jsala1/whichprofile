@@ -153,7 +153,7 @@
     "message": "Mudo"
   },
   "mutedHint": {
-    "message": "Nenhum anúncio. O pop-up continua mostrando o último aviso."
+    "message": "Nenhum anúncio. O pop-up continua mostrando os últimos avisos."
   },
   "debug": {
     "message": "Modo DEBUG"
@@ -179,13 +179,22 @@
   "settingsButton": {
     "message": "Configurações"
   },
-  "lastPing": {
-    "message": "Último aviso"
+  "recentPings": {
+    "message": "Últimos avisos"
   },
-  "lastPingNone": {
-    "message": "nenhum"
+  "recentPingsNone": {
+    "message": "nenhum ainda"
   },
-  "lastPingMuted": {
-    "message": "(mudo)"
+  "statusAnnounced": {
+    "message": "anunciado"
+  },
+  "statusMuted": {
+    "message": "não anunciado (mudo)"
+  },
+  "statusDebounced": {
+    "message": "não anunciado (duplicado)"
+  },
+  "statusSourceOff": {
+    "message": "não anunciado (fonte desativada)"
   }
 }

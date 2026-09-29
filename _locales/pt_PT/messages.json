@@ -153,7 +153,7 @@
     "message": "Silêncio"
   },
   "mutedHint": {
-    "message": "Nenhum anúncio. A janela pop-up continua a mostrar o último aviso."
+    "message": "Nenhum anúncio. A janela pop-up continua a mostrar os últimos avisos."
   },
   "debug": {
     "message": "Modo DEBUG"
@@ -179,13 +179,22 @@
   "settingsButton": {
     "message": "Definições"
   },
-  "lastPing": {
-    "message": "Último aviso"
+  "recentPings": {
+    "message": "Últimos avisos"
   },
-  "lastPingNone": {
-    "message": "nenhum"
+  "recentPingsNone": {
+    "message": "nenhum ainda"
   },
-  "lastPingMuted": {
-    "message": "(silenciado)"
+  "statusAnnounced": {
+    "message": "anunciado"
+  },
+  "statusMuted": {
+    "message": "não anunciado (silêncio)"
+  },
+  "statusDebounced": {
+    "message": "não anunciado (duplicado)"
+  },
+  "statusSourceOff": {
+    "message": "não anunciado (fonte desativada)"
   }
 }

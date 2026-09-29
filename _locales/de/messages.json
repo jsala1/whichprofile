@@ -153,7 +153,7 @@
     "message": "Stumm"
   },
   "mutedHint": {
-    "message": "Keine Ansagen mehr. Das Pop-up zeigt weiterhin das letzte Signal."
+    "message": "Keine Ansagen mehr. Das Pop-up zeigt weiterhin die letzten Signale."
   },
   "debug": {
     "message": "DEBUG-Modus"
@@ -179,13 +179,22 @@
   "settingsButton": {
     "message": "Einstellungen"
   },
-  "lastPing": {
-    "message": "Letztes Signal"
+  "recentPings": {
+    "message": "Letzte Signale"
   },
-  "lastPingNone": {
-    "message": "keines"
+  "recentPingsNone": {
+    "message": "noch keine"
   },
-  "lastPingMuted": {
-    "message": "(stumm)"
+  "statusAnnounced": {
+    "message": "angesagt"
+  },
+  "statusMuted": {
+    "message": "nicht angesagt (stumm)"
+  },
+  "statusDebounced": {
+    "message": "nicht angesagt (Duplikat)"
+  },
+  "statusSourceOff": {
+    "message": "nicht angesagt (Quelle aus)"
   }
 }

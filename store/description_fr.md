@@ -22,7 +22,7 @@ Respect de la vie privée :
 Limites, en toute honnêteté :
 • L'onglet du service doit être ouvert : une notification reçue onglet fermé n'est pas visible par une extension.
 • La détection du chat Gmail dépend de l'interface de Gmail et peut nécessiter une mise à jour si Google la modifie.
-• Plusieurs événements sur le même site en moins de 3 secondes donnent une seule annonce.
+• Plusieurs messages sur le même site en moins de 12 secondes donnent une seule annonce : WhichProfile annonce le profil, pas chaque message.
 
 Disponible en français, anglais, espagnol, portugais (Brésil et Portugal), italien, allemand et néerlandais.
 
