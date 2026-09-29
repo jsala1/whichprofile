@@ -29,7 +29,7 @@ Après une mise à jour du code : `chrome://extensions` → bouton ↻ de WhichP
 | Motif sonore | ding, double, triple, grave, aigu. |
 | Langue / Voix | Liste des voix installées. « Automatique » = première voix de la langue (fr-FR par défaut). |
 | Sources Gmail | Messages chat : **activé** par défaut. Nouveaux e-mails : **désactivé** par défaut. |
-| Muet | Plus aucune annonce ; le popup montre quand même le dernier ping. |
+| Muet | Plus aucune annonce ; le popup liste quand même les derniers pings. |
 | Mode DEBUG | Journalise dans la console (voir « Ajuster la détection du chat Gmail »). |
 
 ## Sites surveillés
@@ -40,14 +40,16 @@ Après une mise à jour du code : `chrome://extensions` → bouton ↻ de WhichP
 | Google Chat, WhatsApp, Messenger, Facebook, LinkedIn, Slack, Discord, X, Outlook (`outlook.office.com`, `outlook.live.com`) | Hook notifications + compteur « (N) » en tête du titre de l'onglet |
 | Instagram | Hook + titre **non garantis**, adaptateur prévu en v1.1 |
 
-Plusieurs signaux pour un même événement (hook + titre + adaptateur) donnent **une seule** annonce : WhichProfile ignore les nouveaux signaux d'un site pendant 3 s après une annonce.
+Plusieurs signaux pour un même événement (hook + titre + adaptateur) donnent **une seule** annonce : WhichProfile ignore les nouveaux signaux d'un site pendant **12 s** après une annonce. On annonce une identité, pas chaque message.
+
+Le popup liste les **5 derniers pings** : heure, site, source (`notification`, `title`, `gmail-chat`, `gmail-mail`) et s'il a été annoncé ou pourquoi il ne l'a pas été (muet, doublon, source désactivée). C'est le premier endroit où regarder quand une annonce manque ou se répète, sans passer par DEBUG.
 
 ## Limites connues
 
 - **Onglet fermé** : les notifications push reçues par le service worker d'un site quand son onglet est fermé sont invisibles pour l'extension. Gardez les onglets ouverts (épinglés).
 - **Sélecteurs Gmail fragiles** : le chat Gmail ne change pas le titre de l'onglet. WhichProfile lit les `aria-label` de la nav. Gmail peut changer son DOM à tout moment → bloc `SELECTORS` en tête de `adapters/gmail.js` et mode DEBUG.
 - **Auto-détection du compte** : nécessite un compte Google connecté *à Chrome* (profil). Sinon le libellé est « profil sans compte », modifiable dans les réglages.
-- **Deux messages en moins de 3 s sur le même site** : une seule annonce.
+- **Plusieurs messages en moins de 12 s sur le même site** : une seule annonce.
 - **Gmail : e-mail ou chat ?** Une notification Gmail qui ne vient pas d'une frame de chat est comptée comme « e-mail » : si les e-mails sont désactivés, elle est ignorée et c'est l'adaptateur chat qui prend le relais.
 
 ## Ajuster la détection du chat Gmail
@@ -83,10 +85,10 @@ Toute modification de la liste des sites se fait **dans `lib/sites.js` et `manif
 - [ ] **T1** — Chargement non empaqueté dans le profil A → les réglages affichent l'email du profil A.
 - [ ] **T2** — Bouton « Tester » → la voix dit « Test, {libellé} » ; en mode son, le motif choisi joue.
 - [ ] **T3** — Le profil B envoie un message chat Gmail au profil A → annonce en moins de 3 s avec le libellé de A, **une seule fois**.
-- [ ] **T4** — Deux profils, deux messages → deux annonces distinctes.
+- [ ] **T4** — Deux profils, deux messages → deux annonces distinctes, **une seule par message** (le popup de chaque profil montre les doublons absorbés).
 - [ ] **T5** — WhatsApp Web, message entrant → « WhatsApp, {libellé} ».
 - [ ] **T6** — Rechargement de l'onglet Gmail avec des non-lus déjà présents → **aucune** annonce.
-- [ ] **T7** — Muet → aucune annonce, le popup montre le dernier ping.
+- [ ] **T7** — Muet → aucune annonce, le popup liste les pings avec « non annoncé (muet) ».
 - [ ] **T8** — Profil non connecté à Chrome → libellé « profil sans compte », modifiable.
 - [ ] **T9** — Gmail en DEBUG → les mutations candidates sont visibles en console, `SELECTORS` modifiable sans casser le reste.
 

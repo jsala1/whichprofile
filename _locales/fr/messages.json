@@ -153,7 +153,7 @@
     "message": "Muet"
   },
   "mutedHint": {
-    "message": "Plus aucune annonce. Le dernier ping reste visible dans le popup."
+    "message": "Plus aucune annonce. Le popup liste toujours les derniers pings."
   },
   "debug": {
     "message": "Mode DEBUG"
@@ -179,13 +179,22 @@
   "settingsButton": {
     "message": "Réglages"
   },
-  "lastPing": {
-    "message": "Dernier ping"
+  "recentPings": {
+    "message": "Derniers pings"
   },
-  "lastPingNone": {
-    "message": "aucun"
+  "recentPingsNone": {
+    "message": "aucun pour l'instant"
   },
-  "lastPingMuted": {
-    "message": "(muet)"
+  "statusAnnounced": {
+    "message": "annoncé"
+  },
+  "statusMuted": {
+    "message": "non annoncé (muet)"
+  },
+  "statusDebounced": {
+    "message": "non annoncé (doublon)"
+  },
+  "statusSourceOff": {
+    "message": "non annoncé (source désactivée)"
   }
 }

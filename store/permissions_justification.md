@@ -12,7 +12,7 @@ Announce, by voice or by a distinct sound, which Chrome profile (Google account)
 | `identity.email` | The whole point of the extension is to tell users *which profile* was notified. `getProfileUserInfo` returns the email of the Google account signed in to the Chrome profile; the part before "@" is proposed as the default spoken label (e.g. "Gmail, julian") and the address is shown read-only in the settings so the user can check which profile they are configuring. The email is stored only in `chrome.storage.local` of that profile, never transmitted, never logged. Without it, every profile would start as "profile without account" and the user would have to identify it by hand. |
 | `tts` | Speaks the announcement ("Gmail, <label>") with the system voices. Voice mode is the default mode. |
 | `offscreen` | Service workers cannot play audio. In sound mode, an offscreen document (reason `AUDIO_PLAYBACK`) synthesises a short tone pattern with WebAudio (≤ 600 ms, no audio file). |
-| `storage` | Stores the user's settings for this profile (`storage.local`) and the time of the last announcement per site for the 3-second de-duplication (`storage.session`). No message content is stored. |
+| `storage` | Stores the user's settings for this profile (`storage.local`) the time of the last announcement per site for the 12-second de-duplication, and the last 5 signals (site, signal type, time, announced or not) shown in the popup for troubleshooting (`storage.session`, cleared when the browser closes). No message content is stored. |
 
 ## Accès aux sites (content scripts)
 

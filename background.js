@@ -4,10 +4,10 @@ importScripts('lib/sites.js', 'lib/parse.js', 'lib/config.js', 'lib/i18n.js');
 
 const { isKnownHost, siteLabel } = globalThis.WHICHPROFILE_SITES;
 const { createDebouncer } = globalThis.WHICHPROFILE_PARSE;
-const { reconcile, isSourceEnabled, shouldAnnounce, pickVoice, announcementText } = globalThis.WHICHPROFILE_CONFIG;
+const { DEBOUNCE_MS, reconcile, isSourceEnabled, shouldAnnounce, pickVoice, announcementText, pushRecentPing } =
+  globalThis.WHICHPROFILE_CONFIG;
 const { t, localeDefaults } = globalThis.WHICHPROFILE_I18N;
 
-const DEBOUNCE_MS = 3000;
 const OFFSCREEN_URL = 'offscreen.html';
 
 const debouncer = createDebouncer({
@@ -104,30 +104,38 @@ function resolveSource(source, host, sender) {
   return path.startsWith('/chat') ? 'gmail-chat' : 'gmail-mail';
 }
 
+// Derniers pings pour le popup : heure, site, source, annoncé ou non et pourquoi. Jamais de contenu.
+// Écritures sérialisées : deux pings simultanés ne doivent pas s'écraser.
+let recentQueue = Promise.resolve();
+function recordPing(entry) {
+  recentQueue = recentQueue
+    .then(async () => {
+      const { recentPings } = await chrome.storage.session.get('recentPings');
+      await chrome.storage.session.set({ recentPings: pushRecentPing(recentPings, entry) });
+    })
+    .catch((error) => console.warn('[WhichProfile] recentPings', error));
+  return recentQueue;
+}
+
 async function handlePing(message, sender) {
   const host = senderHost(sender);
   if (!isKnownHost(host)) return { ok: false, reason: 'unknown-site' };
 
+  const now = Date.now();
   const config = await loadConfig();
   const source = resolveSource(message.source, host, sender);
-  if (!isSourceEnabled(config, source)) {
-    if (config.debug) console.info('[WhichProfile] ping ignoré (source désactivée)', { site: host, source });
-    return { ok: true, announced: false, reason: 'source-disabled' };
-  }
 
-  if (!(await debouncer.hit(host))) {
-    if (config.debug) console.info('[WhichProfile] ping absorbé (debounce)', { site: host, source });
-    return { ok: true, announced: false, reason: 'debounced' };
-  }
+  let status;
+  if (!isSourceEnabled(config, source)) status = 'source-disabled';
+  else if (!(await debouncer.hit(host, now))) status = 'debounced';
+  else status = shouldAnnounce(config, now) ? 'announced' : 'muted';
 
-  const now = Date.now();
-  const announced = shouldAnnounce(config, now);
-  // Dernier ping : site, source, heure. Jamais de contenu.
-  await chrome.storage.session.set({ lastPing: { site: host, siteLabel: siteLabel(host), source, at: now, announced } });
-  console.info('[WhichProfile] ping', { site: host, source, announced });
+  const announced = status === 'announced';
+  await recordPing({ at: now, site: host, siteLabel: siteLabel(host), source, announced, status });
+  if (announced || status === 'muted' || config.debug) console.info('[WhichProfile] ping', { site: host, source, status });
 
   if (announced) await announce(config, siteLabel(host));
-  return { ok: true, announced, reason: announced ? 'announced' : 'muted' };
+  return { ok: true, announced, reason: status };
 }
 
 // Bouton « Tester » : même chemin d'annonce, sans mute ni debounce.

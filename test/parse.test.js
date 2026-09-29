@@ -116,3 +116,35 @@ test('debounce : par site, et fenêtre expirée → nouvelle action', async () =
   assert.equal(await debouncer.hit('mail.google.com', 2999), false);
   assert.equal(await debouncer.hit('mail.google.com', 3000), true);
 });
+
+const { DEBOUNCE_MS } = require('../lib/config.js');
+
+test('fenêtre anti-doublon réelle : 12 s par site', () => {
+  assert.equal(DEBOUNCE_MS, 12000);
+});
+
+test('debounce 12 s : 2 pings du même site à 5 s d’écart → 1 annonce', async () => {
+  const debouncer = createDebouncer({ windowMs: DEBOUNCE_MS, ...memoryStore() });
+  assert.deepEqual([await debouncer.hit('mail.google.com', 0), await debouncer.hit('mail.google.com', 5000)], [true, false]);
+});
+
+test('debounce 12 s : 2 pings du même site à 15 s d’écart → 2 annonces', async () => {
+  const debouncer = createDebouncer({ windowMs: DEBOUNCE_MS, ...memoryStore() });
+  assert.deepEqual([await debouncer.hit('mail.google.com', 0), await debouncer.hit('mail.google.com', 15000)], [true, true]);
+});
+
+test('bug T4 : DOM chat Gmail puis notification native quelques secondes après → 1 annonce', async () => {
+  const debouncer = createDebouncer({ windowMs: DEBOUNCE_MS, ...memoryStore() });
+  const domChat = await debouncer.hit('mail.google.com', 0);
+  const nativeNotification = await debouncer.hit('mail.google.com', 4500);
+  const titleCounter = await debouncer.hit('mail.google.com', 6000);
+  assert.deepEqual([domChat, nativeNotification, titleCounter], [true, false, false]);
+});
+
+test('debounce 12 s : conversation soutenue → au plus une annonce par 12 s, jamais bloquée', async () => {
+  const debouncer = createDebouncer({ windowMs: DEBOUNCE_MS, ...memoryStore() });
+  const results = [];
+  for (const at of [0, 10000, 20000, 25000, 33000]) results.push(await debouncer.hit('web.whatsapp.com', at));
+  // La fenêtre part de la dernière annonce, pas du dernier ping : 20 s passe (20 - 0 ≥ 12), 33 s aussi (33 - 20 ≥ 12).
+  assert.deepEqual(results, [true, false, true, false, true]);
+});

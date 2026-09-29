@@ -236,6 +236,34 @@ button.primary {
   overflow-wrap: anywhere;
 }
 
+.popup .pings-title {
+  margin: 14px 0 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.popup .pings {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+}
+
+.popup .ping {
+  display: flex;
+  flex-direction: column;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.popup .ping .status {
+  color: var(--muted);
+}
+
+.popup .ping.announced .status {
+  color: var(--accent);
+}
+
 .popup .link {
   display: block;
   margin-top: 12px;

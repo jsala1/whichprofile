@@ -50,6 +50,8 @@ test('toutes les clés utilisées existent', () => {
   for (const file of ['options.js', 'popup.js', 'background.js', 'lib/i18n.js']) {
     for (const m of read(file).matchAll(/\bt\('([A-Za-z0-9_]+)'/g)) used.add(m[1]);
   }
+  // Clés de statut du popup, référencées par une table (STATUS_KEYS) et non par t('…').
+  for (const m of read('popup.js').matchAll(/'(status[A-Za-z]+)'/g)) used.add(m[1]);
   for (const m of read('manifest.json').matchAll(/__MSG_([A-Za-z0-9_]+)__/g)) used.add(m[1]);
   assert.ok(used.size > 40, `seulement ${used.size} clés trouvées`);
   for (const key of used) assert.ok(reference[key], `clé manquante : ${key}`);

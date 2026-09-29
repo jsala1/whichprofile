@@ -153,7 +153,7 @@
     "message": "Silencio"
   },
   "mutedHint": {
-    "message": "Ningún anuncio más. La ventana emergente sigue mostrando el último aviso."
+    "message": "Ningún anuncio más. La ventana emergente sigue mostrando los últimos avisos."
   },
   "debug": {
     "message": "Modo DEBUG"
@@ -179,13 +179,22 @@
   "settingsButton": {
     "message": "Ajustes"
   },
-  "lastPing": {
-    "message": "Último aviso"
+  "recentPings": {
+    "message": "Últimos avisos"
   },
-  "lastPingNone": {
-    "message": "ninguno"
+  "recentPingsNone": {
+    "message": "ninguno todavía"
   },
-  "lastPingMuted": {
-    "message": "(silenciado)"
+  "statusAnnounced": {
+    "message": "anunciado"
+  },
+  "statusMuted": {
+    "message": "no anunciado (silencio)"
+  },
+  "statusDebounced": {
+    "message": "no anunciado (duplicado)"
+  },
+  "statusSourceOff": {
+    "message": "no anunciado (fuente desactivada)"
   }
 }

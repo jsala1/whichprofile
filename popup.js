@@ -11,13 +11,36 @@ function formatTime(at) {
   return new Date(at).toLocaleTimeString(uiLocale().replace('_', '-'), { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
 
-function renderLastPing(lastPing) {
-  if (!lastPing) {
-    $('last').textContent = t('lastPingNone');
+const STATUS_KEYS = {
+  announced: 'statusAnnounced',
+  muted: 'statusMuted',
+  debounced: 'statusDebounced',
+  'source-disabled': 'statusSourceOff',
+};
+
+// 5 derniers pings : heure, site, source, annoncé ou non (et pourquoi).
+function renderPings(pings) {
+  const list = $('pings');
+  if (!Array.isArray(pings) || pings.length === 0) {
+    const empty = document.createElement('li');
+    empty.className = 'muted';
+    empty.textContent = t('recentPingsNone');
+    list.replaceChildren(empty);
     return;
   }
-  const state = lastPing.announced ? '' : ` ${t('lastPingMuted')}`;
-  $('last').textContent = `${lastPing.siteLabel} · ${formatTime(lastPing.at)}${state}`;
+  list.replaceChildren(
+    ...pings.map((ping) => {
+      const item = document.createElement('li');
+      item.className = ping.announced ? 'ping announced' : 'ping';
+      const head = document.createElement('span');
+      head.textContent = `${formatTime(ping.at)} · ${ping.siteLabel} · ${ping.source}`;
+      const status = document.createElement('span');
+      status.className = 'status';
+      status.textContent = `${ping.announced ? '✓' : '✗'} ${t(STATUS_KEYS[ping.status] || 'statusMuted')}`;
+      item.append(head, status);
+      return item;
+    }),
+  );
 }
 
 function render() {
@@ -31,7 +54,7 @@ async function init() {
   const response = await chrome.runtime.sendMessage({ type: 'get-config' });
   config = response.config;
   render();
-  renderLastPing((await chrome.storage.session.get('lastPing')).lastPing);
+  renderPings((await chrome.storage.session.get('recentPings')).recentPings);
 
   $('muted').addEventListener('change', async () => {
     const { config: stored } = await chrome.storage.local.get('config');
@@ -44,7 +67,7 @@ async function init() {
   $('options').addEventListener('click', () => chrome.runtime.openOptionsPage());
 
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'session' && changes.lastPing) renderLastPing(changes.lastPing.newValue);
+    if (area === 'session' && changes.recentPings) renderPings(changes.recentPings.newValue);
     if (area === 'local' && changes.config && changes.config.newValue) {
       config = reconcile(changes.config.newValue, config.identity.email, locale);
       render();
