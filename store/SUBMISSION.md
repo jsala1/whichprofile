@@ -19,7 +19,7 @@ Dans l'ordre du tableau de bord développeur (https://chrome.google.com/webstore
 ### Détails du produit
 
 - [ ] **Langue par défaut** : English (vient de `default_locale: "en"`).
-- [ ] **Description — English** : coller le bloc sous « ## Description » de `store/description_en.md`.
+- [ ] **Description — English** : coller le bloc sous « ## Description » de `store/description_en.md`. Texte brut, aucun markdown.
 - [ ] **Description — Français** : dans le sélecteur de langue en haut de la fiche, passer à « French », coller le bloc sous « ## Description » de `store/description_fr.md`.
 - [ ] Les 6 autres langues (es, pt-BR, pt-PT, it, de, nl) : **rien à saisir**, elles héritent de la fiche anglaise (nom et résumé déjà traduits par le manifest). On ajoutera des descriptions traduites si le Store montre des installations dans ces pays.
 - [ ] **Catégorie** : Productivity → Communication.
@@ -45,7 +45,7 @@ Dans l'ordre du tableau de bord développeur (https://chrome.google.com/webstore
 ## 3. Confidentialité (« Privacy »)
 
 - [ ] **Objectif unique (single purpose)** : coller la phrase sous « ## Objectif unique (single purpose) » de `store/permissions_justification.md` :
-  « Announce, by voice or by a distinct sound, which Chrome profile (Google account) just received a notification on an open tab of a supported messaging site. »
+  « Make the identity of the current Chrome profile perceivable — by voice or a distinct sound when a supported site receives a notification on an open tab, and, optionally (Agent mode, off by default), as a small on-page label readable by screen readers and browser-automation agents. »
 - [ ] **Justification des permissions** : un champ par permission. Coller la cellule correspondante du tableau de `store/permissions_justification.md` :
   - [ ] `identity`
   - [ ] `identity.email`, la plus scrutée : coller le texte complet, sans le raccourcir.

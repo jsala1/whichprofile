@@ -7,6 +7,7 @@ const {
   isSourceEnabled,
   shouldAnnounce,
   pickVoice,
+  localVoices,
   announcementText,
   ttsLangForLocale,
   pushRecentPing,
@@ -92,7 +93,7 @@ test('pickVoice : choix explicite, puis langue exacte, puis préfixe', () => {
   assert.equal(pickVoice(voices, 'fr-BE', ''), 'Amélie');
   assert.equal(pickVoice(voices, 'de-DE', ''), '');
   assert.equal(pickVoice([], 'fr-FR', ''), '');
-  assert.equal(pickVoice([], 'fr-FR', 'Thomas'), 'Thomas'); // voix pas encore chargées : on garde le choix
+  assert.equal(pickVoice([], 'fr-FR', 'Thomas'), ''); // aucune voix locale connue : pas de voix (motif sonore à la place)
 });
 
 test('texte annoncé', () => {
@@ -108,4 +109,18 @@ test('historique du popup : 5 derniers pings, le plus récent en tête', () => {
 test('historique du popup : aucun champ de contenu', () => {
   const [entry] = pushRecentPing(undefined, { at: 1, site: 'mail.google.com', siteLabel: 'Gmail', source: 'gmail-chat', announced: false, status: 'debounced' });
   assert.deepEqual(Object.keys(entry).sort(), ['announced', 'at', 'site', 'siteLabel', 'source', 'status']);
+});
+
+test('voix réseau exclues du choix par défaut, du choix enregistré et de la liste', () => {
+  const voices = [
+    { voiceName: 'Google français', lang: 'fr-FR', remote: true },
+    { voiceName: 'Thomas', lang: 'fr-FR', remote: false },
+    { voiceName: 'Amélie', lang: 'fr-CA' },
+    { voiceName: 'Google Deutsch', lang: 'de-DE', remote: true },
+  ];
+  assert.equal(pickVoice(voices, 'fr-FR', ''), 'Thomas'); // la voix réseau fr-FR, placée avant, est ignorée
+  assert.equal(pickVoice(voices, 'fr-FR', 'Google français'), 'Thomas'); // choix enregistré réseau ignoré
+  assert.equal(pickVoice(voices, 'de-DE', ''), ''); // seule une voix réseau existe pour cette langue
+  assert.deepEqual(localVoices(voices).map((v) => v.voiceName), ['Thomas', 'Amélie']);
+  assert.equal(pickVoice([{ voiceName: 'Google US English', lang: 'en-US', remote: true }], 'en-US', ''), '');
 });
