@@ -202,8 +202,13 @@ async function disableAgentMode() {
   await setAgentMode(false); // les chips déjà affichés se retirent via storage.onChanged
   await syncAgentMode();
   await chrome.storage.session.remove('agentHidden');
-  if (await agentPermitted()) await chrome.permissions.remove(AGENT_PERMISSIONS);
-  console.info('[WhichProfile] agent mode désactivé, permissions retirées');
+  // Le mode est déjà coupé à ce stade : un échec du retrait des permissions ne doit pas le faire paraître actif.
+  try {
+    if (await agentPermitted()) await chrome.permissions.remove(AGENT_PERMISSIONS);
+  } catch (error) {
+    console.warn('[WhichProfile] permissions non retirées', error);
+  }
+  console.info('[WhichProfile] agent mode désactivé');
   return { ok: true };
 }
 

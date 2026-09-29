@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="280" viewBox="0 0 440 280">
+  <rect width="440" height="280" fill="#1d1f24"/>
+  <rect x="36" y="84" width="112" height="112" rx="24.64" fill="#2a2d34"/>
+  <circle cx="92" cy="140" r="26.32" fill="none" stroke="#e9964a" stroke-opacity="0.6" stroke-width="3.92"/>
+  <circle cx="53.92" cy="140" r="7.28" fill="#8b8f98"/>
+  <circle cx="130.08" cy="140" r="7.28" fill="#8b8f98"/>
+  <circle cx="92" cy="140" r="16.8" fill="#e9964a"/>
+  <text x="174" y="136" font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#ecebe8">WhichProfile</text>
+  <text x="174" y="166" font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" font-weight="400" fill="#e9964a">Which profile just pinged?</text>
+</svg>

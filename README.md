@@ -96,6 +96,7 @@ Les décisions du service worker (ping ignoré / absorbé / annoncé) sont visib
 ```sh
 node --test                    # tests automatisés, Node ≥ 18, aucune dépendance
 python3 scripts/make-icons.py  # régénère icons/ (Python standard, sans PIL)
+python3 scripts/make-promo.py  # régénère store/promo/small-tile-440x280.svg (le PNG est rendu par Chrome)
 ```
 
 Sous Node 22, `node --test test/` (avec un répertoire) ne fonctionne pas : utiliser `node --test` sans argument.
