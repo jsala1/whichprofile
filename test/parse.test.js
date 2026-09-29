@@ -32,7 +32,7 @@ test('parseGmailTitle : format EN réel', () => {
 
 test('parseGmailTitle : vue sans compteur = 0, Workspace, séparateurs de milliers', () => {
   assert.deepEqual(parseGmailTitle('Inbox - x@y - Gmail'), { view: 'Inbox', count: 0 });
-  assert.deepEqual(parseGmailTitle('Inbox (3) - julian@serendyme.com - Serendyme Mail'), { view: 'Inbox', count: 3 });
+  assert.deepEqual(parseGmailTitle('Inbox (3) - julian@example.com - Serendyme Mail'), { view: 'Inbox', count: 3 });
   assert.deepEqual(parseGmailTitle('Inbox (1,234) - x@y - Gmail'), { view: 'Inbox', count: 1234 });
   assert.deepEqual(parseGmailTitle('Boîte de réception (1 234) - x@y - Gmail'), { view: 'Boîte de réception', count: 1234 });
   assert.deepEqual(parseGmailTitle('Devis - v2 - x@y - Gmail'), { view: 'Devis - v2', count: 0 });
@@ -83,7 +83,7 @@ test('countUnreadInLabels : nombres, drapeaux et exclusions', () => {
 });
 
 test('labelFromEmail', () => {
-  assert.equal(labelFromEmail('julian@serendyme.com'), 'julian');
+  assert.equal(labelFromEmail('julian@example.com'), 'julian');
   assert.equal(labelFromEmail(''), '');
   assert.equal(labelFromEmail('pas-un-email'), '');
 });

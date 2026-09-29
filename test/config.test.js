@@ -17,7 +17,7 @@ const {
 const FR = { localLabel: 'profil sans compte', lang: 'fr-FR' };
 
 test('première exécution : libellé = partie locale de l’email, mode voix', () => {
-  const config = reconcile(undefined, 'julian@serendyme.com', FR);
+  const config = reconcile(undefined, 'julian@example.com', FR);
   assert.equal(config.schemaVersion, 1);
   assert.equal(config.identity.label, 'julian');
   assert.equal(config.identity.mode, 'voice');
@@ -56,13 +56,13 @@ test('libellé modifié par l’utilisateur conservé si l’email change', () =
   const stored = reconcile(undefined, '', FR);
   stored.identity.label = 'Perso';
   stored.identity.labelIsDefault = false;
-  const next = reconcile(stored, 'julian@serendyme.com');
+  const next = reconcile(stored, 'julian@example.com');
   assert.equal(next.identity.label, 'Perso');
-  assert.equal(next.identity.id, 'julian@serendyme.com');
+  assert.equal(next.identity.id, 'julian@example.com');
 });
 
 test('libellé par défaut suit l’email quand le profil se connecte', () => {
-  const next = reconcile(reconcile(undefined, ''), 'julian@serendyme.com');
+  const next = reconcile(reconcile(undefined, ''), 'julian@example.com');
   assert.equal(next.identity.label, 'julian');
 });
 
