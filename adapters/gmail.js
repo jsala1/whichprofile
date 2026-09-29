@@ -10,8 +10,11 @@
 (function () {
   'use strict';
 
+  const PARSE = typeof module !== 'undefined' && module.exports ? require('../lib/parse.js') : globalThis.LEQUEL_PARSE;
+
   // ====================================================================================================
   // SELECTORS — tout ce qui dépend du DOM de Gmail est ici. Jamais de classes obfusquées.
+  // Les mots « non lu » par langue sont dans lib/parse.js (UNREAD_WORDS), partagés avec les titres.
   // ====================================================================================================
   const SELECTORS = {
     // Frames qui hébergent le chat intégré (chemin de l'URL de la frame). Dans ces frames, tout est chat.
@@ -27,21 +30,42 @@
     items: '[aria-label]',
 
     // Frame principale uniquement : l'aria-label doit parler de chat, sinon c'est du mail.
-    // ex. « Chat, 3 unread messages », « Chat, 3 messages non lus », « Espaces, 1 non lu ».
-    topFrameChatHint: /\bchat\b|espaces?\b|\bspaces?\b|conversation|discussion|message (privé|direct)|direct message/i,
+    // « Chat » est identique dans toutes les langues ; « Espaces » et « conversation » varient.
+    // ex. « Chat, 3 unread messages », « Chat, 3 messages non lus », « Chat, 3 ungelesene Nachrichten ».
+    topFrameChatHint: new RegExp(
+      [
+        '\\bchat\\b',
+        'spaces?\\b', 'espaces?', 'espacios?', 'espaços?', 'spazi[oi]?\\b', 'bereiche?\\b', 'ruimten?\\b', // Espaces
+        'conversation', 'conversaci[oó]n', 'conversa', 'conversazion', 'unterhaltung', 'gesprek', // Conversation
+        'direct message', 'message (privé|direct)', 'mensaje directo', 'mensagem direta', 'messaggio diretto',
+        'direktnachricht', 'privébericht',
+      ].join('|'),
+      'iu',
+    ),
 
-    // Nombre de non-lus : « 3 unread », « 3 messages non lus », « 1 non lu ».
-    unreadCount: /(\d+)\s+(?:\S+\s+)?(?:unread|non[\s-]lus?)/i,
+    // Mot « non lu », toutes langues (construit depuis UNREAD_WORDS). Le nombre proche est le compteur ;
+    // sans nombre, l'élément compte pour 1.
+    unreadWords: PARSE.UNREAD_PATTERN,
 
-    // Non-lu sans nombre (« Alice, unread », « Design, non lu ») : compte pour 1.
-    unreadFlag: /\b(?:unread|non[\s-]lus?)\b/i,
-
-    // Libellés de mail à ne jamais compter comme du chat.
-    exclude:
-      /boîte de réception|\binbox\b|brouillons?|\bdrafts?\b|\bspam\b|envoyés|\bsent\b|suivis|starred|en attente|snoozed|corbeille|\btrash\b|tous les messages|all mail|importants?\b|catégories|categories|promotions|réseaux sociaux|social|notifications|forums|mises à jour|updates/i,
+    // Libellés de mail à ne jamais compter comme du chat (8 langues).
+    exclude: new RegExp(
+      [
+        '\\binbox\\b', 'boîte de réception', 'recibidos', 'bandeja de entrada', 'caixa de entrada', 'posta in arrivo',
+        'posteingang', 'postvak in', // Boîte de réception
+        '\\bdrafts?\\b', 'brouillons?', 'borradores?', 'rascunhos?', '\\bbozze\\b', 'entwürfe', 'concepten', // Brouillons
+        '\\bspam\\b', '\\bsent\\b', 'envoyés', 'enviados', '\\binviati\\b', 'gesendet', 'verzonden', // Spam, envoyés
+        'starred', 'suivis', 'destacados', 'com estrela', 'speciali', 'markiert', 'met ster', // Suivis
+        '\\btrash\\b', 'corbeille', 'papelera', 'lixeira', 'reciclagem', '\\bcestino\\b', 'papierkorb', 'prullenbak',
+        'all mail', 'tous les messages', 'todos los correos', 'todos os e-mails', 'tutti i messaggi', 'alle nachrichten', 'alle e-mail',
+        'promotions', 'promociones', 'promoções', 'promozioni', 'werbung', 'reclame',
+        'social', 'réseaux sociaux', 'updates', 'mises à jour', 'notificaciones', 'atualizações', 'aggiornamenti',
+        'benachrichtigungen', 'forums?', 'foros', 'fóruns', 'foren',
+      ].join('|'),
+      'iu',
+    ),
 
     // DEBUG : aria-labels journalisés comme candidats (en plus de ceux qui comptent).
-    debugCandidates: /unread|non[\s-]lus?|\bchat\b|espace|\bspace|conversation|\d/i,
+    debugCandidates: new RegExp(`${PARSE.UNREAD_PATTERN.source}|\\bchat\\b|\\d`, 'iu'),
   };
   // ====================================================================================================
 
@@ -50,7 +74,7 @@
     return;
   }
 
-  const { parseGmailTitle, createCounterTracker, countUnreadInLabels } = globalThis.LEQUEL_PARSE;
+  const { parseGmailTitle, createCounterTracker, countUnreadInLabels } = PARSE;
   const SCAN_DELAY_MS = 300;
   const POLL_MS = 2000;
   const isTop = window === window.top;
@@ -106,7 +130,7 @@
     const found = chatLabels();
     const total = countUnreadInLabels(
       found.map((f) => f.label),
-      { countPattern: SELECTORS.unreadCount, flagPattern: SELECTORS.unreadFlag, excludePattern: SELECTORS.exclude },
+      { unreadPattern: SELECTORS.unreadWords, excludePattern: SELECTORS.exclude },
     );
 
     if (debug) debugCandidates(total);
@@ -125,8 +149,7 @@
         snapshot.add(label);
         if (lastDebugSnapshot.has(label)) continue;
         const counted = countUnreadInLabels([label], {
-          countPattern: SELECTORS.unreadCount,
-          flagPattern: SELECTORS.unreadFlag,
+          unreadPattern: SELECTORS.unreadWords,
           excludePattern: SELECTORS.exclude,
         });
         const chatHint = isChatFrame || SELECTORS.topFrameChatHint.test(label);

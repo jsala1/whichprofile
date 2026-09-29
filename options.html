@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Lequel — options</title>
+    <title data-i18n="optionsTitle">Lequel</title>
     <link rel="stylesheet" href="options.css" />
   </head>
   <body class="page">
@@ -12,83 +12,83 @@
         <img src="icons/48.png" alt="" width="32" height="32" />
         <div>
           <h1>Lequel</h1>
-          <p class="muted">Réglages de ce profil Chrome. Chaque profil a les siens.</p>
+          <p class="muted" data-i18n="optionsIntro"></p>
         </div>
       </header>
 
       <section class="card">
-        <h2>Identité</h2>
+        <h2 data-i18n="sectionIdentity"></h2>
         <div class="field">
-          <span class="label">Compte détecté</span>
+          <span class="label" data-i18n="detectedAccount"></span>
           <output id="email" class="readonly">…</output>
         </div>
         <label class="field">
-          <span class="label">Libellé annoncé</span>
+          <span class="label" data-i18n="labelField"></span>
           <input id="label" type="text" maxlength="60" autocomplete="off" />
-          <span class="hint">Ce que la voix dira après le nom du service, par exemple « Gmail, <em>Serendyme</em> ».</span>
+          <span class="hint" data-i18n="labelHint"></span>
         </label>
       </section>
 
       <section class="card">
-        <h2>Annonce</h2>
+        <h2 data-i18n="sectionAnnouncement"></h2>
         <fieldset class="field">
-          <legend class="label">Mode</legend>
+          <legend class="label" data-i18n="mode"></legend>
           <div class="segmented">
-            <label><input type="radio" name="mode" value="voice" /> <span>Voix</span></label>
-            <label><input type="radio" name="mode" value="sound" /> <span>Son</span></label>
+            <label><input type="radio" name="mode" value="voice" /> <span data-i18n="modeVoice"></span></label>
+            <label><input type="radio" name="mode" value="sound" /> <span data-i18n="modeSound"></span></label>
           </div>
         </fieldset>
 
         <label class="field" data-mode="sound">
-          <span class="label">Motif sonore</span>
+          <span class="label" data-i18n="pattern"></span>
           <select id="pattern">
-            <option value="ding">Ding — une note</option>
-            <option value="double">Double — deux notes</option>
-            <option value="triple">Triple — trois notes montantes</option>
-            <option value="low">Grave</option>
-            <option value="high">Aigu</option>
+            <option value="ding" data-i18n="patternDing"></option>
+            <option value="double" data-i18n="patternDouble"></option>
+            <option value="triple" data-i18n="patternTriple"></option>
+            <option value="low" data-i18n="patternLow"></option>
+            <option value="high" data-i18n="patternHigh"></option>
           </select>
-          <span class="hint">Donnez un motif différent à chaque profil.</span>
+          <span class="hint" data-i18n="patternHint"></span>
         </label>
 
         <label class="field" data-mode="voice">
-          <span class="label">Langue de la voix</span>
+          <span class="label" data-i18n="voiceLang"></span>
           <select id="lang"></select>
         </label>
 
         <label class="field" data-mode="voice">
-          <span class="label">Voix</span>
+          <span class="label" data-i18n="voice"></span>
           <select id="voice"></select>
         </label>
 
         <div class="actions">
-          <button id="test" type="button" class="primary">Tester</button>
+          <button id="test" type="button" class="primary" data-i18n="testButton"></button>
           <output id="test-result" class="muted"></output>
         </div>
       </section>
 
       <section class="card">
-        <h2>Sources Gmail</h2>
+        <h2 data-i18n="sectionGmail"></h2>
         <label class="switch">
           <input id="src-gmail-chat" type="checkbox" />
-          <span><strong>Messages chat</strong><br /><span class="muted">Activé par défaut.</span></span>
+          <span><strong data-i18n="gmailChat"></strong><br /><span class="muted" data-i18n="gmailChatHint"></span></span>
         </label>
         <label class="switch">
           <input id="src-gmail-mail" type="checkbox" />
-          <span><strong>Nouveaux e-mails</strong><br /><span class="muted">Désactivé par défaut : les e-mails sont nombreux.</span></span>
+          <span><strong data-i18n="gmailMail"></strong><br /><span class="muted" data-i18n="gmailMailHint"></span></span>
         </label>
-        <p class="hint">Les autres sites (WhatsApp, LinkedIn, Slack…) sont toujours surveillés.</p>
+        <p class="hint" data-i18n="otherSitesHint"></p>
       </section>
 
       <section class="card">
-        <h2>Général</h2>
+        <h2 data-i18n="sectionGeneral"></h2>
         <label class="switch">
           <input id="muted" type="checkbox" />
-          <span><strong>Muet</strong><br /><span class="muted">Plus aucune annonce. Le dernier ping reste visible dans le popup.</span></span>
+          <span><strong data-i18n="muted"></strong><br /><span class="muted" data-i18n="mutedHint"></span></span>
         </label>
         <label class="switch">
           <input id="debug" type="checkbox" />
-          <span><strong>Mode DEBUG</strong><br /><span class="muted">Journalise dans la console de l'onglet Gmail les éléments candidats du chat, et dans celle du service worker les décisions de routage.</span></span>
+          <span><strong data-i18n="debug"></strong><br /><span class="muted" data-i18n="debugHint"></span></span>
         </label>
       </section>
 
@@ -96,6 +96,7 @@
     </main>
     <script src="lib/parse.js"></script>
     <script src="lib/config.js"></script>
+    <script src="lib/i18n.js"></script>
     <script src="options.js"></script>
   </body>
 </html>

@@ -1,0 +1,191 @@
+{
+  "localeCode": {
+    "message": "en",
+    "description": "Locale folder name; used to pick the default TTS language. Do not translate."
+  },
+  "extName": {
+    "message": "Lequel"
+  },
+  "extDescription": {
+    "message": "Announces which Chrome profile just got a notification, out loud or with a sound unique to each identity."
+  },
+  "actionTitle": {
+    "message": "Lequel — which profile?"
+  },
+  "optionsTitle": {
+    "message": "Lequel — settings"
+  },
+  "optionsIntro": {
+    "message": "Settings for this Chrome profile. Each profile has its own."
+  },
+  "sectionIdentity": {
+    "message": "Identity"
+  },
+  "detectedAccount": {
+    "message": "Detected account"
+  },
+  "noAccount": {
+    "message": "no Google account signed in to this Chrome profile"
+  },
+  "noAccountShort": {
+    "message": "profile without Google account"
+  },
+  "localLabel": {
+    "message": "profile without account",
+    "description": "Spoken label when no Google account is signed in to the Chrome profile."
+  },
+  "labelField": {
+    "message": "Spoken label"
+  },
+  "labelHint": {
+    "message": "What the voice says after the service name, e.g. “Gmail, Agency”."
+  },
+  "sectionAnnouncement": {
+    "message": "Announcement"
+  },
+  "mode": {
+    "message": "Mode"
+  },
+  "modeVoice": {
+    "message": "Voice"
+  },
+  "modeSound": {
+    "message": "Sound"
+  },
+  "pattern": {
+    "message": "Sound pattern"
+  },
+  "patternDing": {
+    "message": "Ding — one note"
+  },
+  "patternDouble": {
+    "message": "Double — two notes"
+  },
+  "patternTriple": {
+    "message": "Triple — three rising notes"
+  },
+  "patternLow": {
+    "message": "Low"
+  },
+  "patternHigh": {
+    "message": "High"
+  },
+  "patternHint": {
+    "message": "Give each profile a different pattern."
+  },
+  "voiceLang": {
+    "message": "Voice language"
+  },
+  "voice": {
+    "message": "Voice"
+  },
+  "voiceAuto": {
+    "message": "Automatic ($VALUE$)",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "Gmail, Agency"
+      }
+    }
+  },
+  "voiceAutoDefault": {
+    "message": "Automatic (default voice)"
+  },
+  "testButton": {
+    "message": "Test"
+  },
+  "testSiteLabel": {
+    "message": "Test",
+    "description": "Spoken in place of the service name by the Test button."
+  },
+  "testSpoken": {
+    "message": "Announced: “$VALUE$”",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "Gmail, Agency"
+      }
+    }
+  },
+  "testSound": {
+    "message": "Played: $VALUE$.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "Gmail, Agency"
+      }
+    }
+  },
+  "testFailed": {
+    "message": "Failed: $VALUE$",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "Gmail, Agency"
+      }
+    }
+  },
+  "noResponse": {
+    "message": "no response"
+  },
+  "sectionGmail": {
+    "message": "Gmail sources"
+  },
+  "gmailChat": {
+    "message": "Chat messages"
+  },
+  "gmailChatHint": {
+    "message": "On by default."
+  },
+  "gmailMail": {
+    "message": "New emails"
+  },
+  "gmailMailHint": {
+    "message": "Off by default: there are a lot of emails."
+  },
+  "otherSitesHint": {
+    "message": "Other sites (WhatsApp, LinkedIn, Slack…) are always watched."
+  },
+  "sectionGeneral": {
+    "message": "General"
+  },
+  "muted": {
+    "message": "Mute"
+  },
+  "mutedHint": {
+    "message": "No more announcements. The popup still shows the last ping."
+  },
+  "debug": {
+    "message": "DEBUG mode"
+  },
+  "debugHint": {
+    "message": "Logs Gmail chat candidates to the Gmail tab console, and routing decisions to the service worker console."
+  },
+  "saved": {
+    "message": "Saved"
+  },
+  "loadError": {
+    "message": "Loading error: $VALUE$",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "Gmail, Agency"
+      }
+    }
+  },
+  "error": {
+    "message": "Error"
+  },
+  "settingsButton": {
+    "message": "Settings"
+  },
+  "lastPing": {
+    "message": "Last ping"
+  },
+  "lastPingNone": {
+    "message": "none"
+  },
+  "lastPingMuted": {
+    "message": "(muted)"
+  }
+}

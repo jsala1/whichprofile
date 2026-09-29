@@ -24,4 +24,6 @@ Honest limits:
 • Gmail chat detection depends on Gmail's interface and may need an update if Google changes it.
 • Several events on the same site within 3 seconds produce a single announcement.
 
+Available in English, French, Spanish, Portuguese (Brazil and Portugal), Italian, German and Dutch.
+
 Free, no ads, no data collection.

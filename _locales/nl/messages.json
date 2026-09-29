@@ -1,0 +1,191 @@
+{
+  "localeCode": {
+    "message": "nl",
+    "description": "Locale folder name; used to pick the default TTS language. Do not translate."
+  },
+  "extName": {
+    "message": "Lequel"
+  },
+  "extDescription": {
+    "message": "Meldt welk Chrome-profiel net een melding kreeg, hardop of met een eigen geluid per identiteit."
+  },
+  "actionTitle": {
+    "message": "Lequel — welk profiel?"
+  },
+  "optionsTitle": {
+    "message": "Lequel — instellingen"
+  },
+  "optionsIntro": {
+    "message": "Instellingen van dit Chrome-profiel. Elk profiel heeft zijn eigen."
+  },
+  "sectionIdentity": {
+    "message": "Identiteit"
+  },
+  "detectedAccount": {
+    "message": "Gedetecteerd account"
+  },
+  "noAccount": {
+    "message": "geen Google-account ingelogd in dit Chrome-profiel"
+  },
+  "noAccountShort": {
+    "message": "profiel zonder Google-account"
+  },
+  "localLabel": {
+    "message": "profiel zonder account",
+    "description": "Spoken label when no Google account is signed in to the Chrome profile."
+  },
+  "labelField": {
+    "message": "Uitgesproken naam"
+  },
+  "labelHint": {
+    "message": "Wat de stem na de naam van de dienst zegt, bijvoorbeeld ‘Gmail, Bureau’."
+  },
+  "sectionAnnouncement": {
+    "message": "Aankondiging"
+  },
+  "mode": {
+    "message": "Modus"
+  },
+  "modeVoice": {
+    "message": "Stem"
+  },
+  "modeSound": {
+    "message": "Geluid"
+  },
+  "pattern": {
+    "message": "Geluidspatroon"
+  },
+  "patternDing": {
+    "message": "Ding — één toon"
+  },
+  "patternDouble": {
+    "message": "Dubbel — twee tonen"
+  },
+  "patternTriple": {
+    "message": "Driedubbel — drie stijgende tonen"
+  },
+  "patternLow": {
+    "message": "Laag"
+  },
+  "patternHigh": {
+    "message": "Hoog"
+  },
+  "patternHint": {
+    "message": "Geef elk profiel een ander patroon."
+  },
+  "voiceLang": {
+    "message": "Taal van de stem"
+  },
+  "voice": {
+    "message": "Stem"
+  },
+  "voiceAuto": {
+    "message": "Automatisch ($VALUE$)",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "Gmail, Agency"
+      }
+    }
+  },
+  "voiceAutoDefault": {
+    "message": "Automatisch (standaardstem)"
+  },
+  "testButton": {
+    "message": "Testen"
+  },
+  "testSiteLabel": {
+    "message": "Test",
+    "description": "Spoken in place of the service name by the Test button."
+  },
+  "testSpoken": {
+    "message": "Aangekondigd: ‘$VALUE$’",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "Gmail, Agency"
+      }
+    }
+  },
+  "testSound": {
+    "message": "Afgespeeld: $VALUE$.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "Gmail, Agency"
+      }
+    }
+  },
+  "testFailed": {
+    "message": "Mislukt: $VALUE$",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "Gmail, Agency"
+      }
+    }
+  },
+  "noResponse": {
+    "message": "geen antwoord"
+  },
+  "sectionGmail": {
+    "message": "Gmail-bronnen"
+  },
+  "gmailChat": {
+    "message": "Chatberichten"
+  },
+  "gmailChatHint": {
+    "message": "Standaard aan."
+  },
+  "gmailMail": {
+    "message": "Nieuwe e-mails"
+  },
+  "gmailMailHint": {
+    "message": "Standaard uit: e-mails zijn talrijk."
+  },
+  "otherSitesHint": {
+    "message": "De andere sites (WhatsApp, LinkedIn, Slack…) worden altijd gevolgd."
+  },
+  "sectionGeneral": {
+    "message": "Algemeen"
+  },
+  "muted": {
+    "message": "Dempen"
+  },
+  "mutedHint": {
+    "message": "Geen aankondigingen meer. De pop-up toont nog steeds het laatste signaal."
+  },
+  "debug": {
+    "message": "DEBUG-modus"
+  },
+  "debugHint": {
+    "message": "Logt chatkandidaten in de console van het Gmail-tabblad en routeringsbeslissingen in de console van de service worker."
+  },
+  "saved": {
+    "message": "Opgeslagen"
+  },
+  "loadError": {
+    "message": "Laadfout: $VALUE$",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "Gmail, Agency"
+      }
+    }
+  },
+  "error": {
+    "message": "Fout"
+  },
+  "settingsButton": {
+    "message": "Instellingen"
+  },
+  "lastPing": {
+    "message": "Laatste signaal"
+  },
+  "lastPingNone": {
+    "message": "geen"
+  },
+  "lastPingMuted": {
+    "message": "(gedempt)"
+  }
+}

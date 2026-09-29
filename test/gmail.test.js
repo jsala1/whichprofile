@@ -7,11 +7,7 @@ const assert = require('node:assert/strict');
 const { SELECTORS } = require('../adapters/gmail.js');
 const { countUnreadInLabels } = require('../lib/parse.js');
 
-const patterns = {
-  countPattern: SELECTORS.unreadCount,
-  flagPattern: SELECTORS.unreadFlag,
-  excludePattern: SELECTORS.exclude,
-};
+const patterns = { unreadPattern: SELECTORS.unreadWords, excludePattern: SELECTORS.exclude };
 
 // Reproduit le filtre de la frame principale : mot « chat » requis, puis comptage.
 const topFrameCount = (labels) => countUnreadInLabels(labels.filter((l) => SELECTORS.topFrameChatHint.test(l)), patterns);

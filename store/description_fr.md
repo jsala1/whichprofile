@@ -24,4 +24,6 @@ Limites, en toute honnêteté :
 • La détection du chat Gmail dépend de l'interface de Gmail et peut nécessiter une mise à jour si Google la modifie.
 • Plusieurs événements sur le même site en moins de 3 secondes donnent une seule annonce.
 
+Disponible en français, anglais, espagnol, portugais (Brésil et Portugal), italien, allemand et néerlandais.
+
 Gratuite, sans publicité, sans collecte.

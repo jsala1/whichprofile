@@ -1,20 +1,27 @@
 {
   "manifest_version": 3,
-  "name": "Lequel",
+  "default_locale": "en",
+  "name": "__MSG_extName__",
   "version": "1.0.0",
-  "description": "Annonce quel profil Chrome vient de recevoir une notification, à voix haute ou par un son propre à chaque identité.",
+  "description": "__MSG_extDescription__",
   "minimum_chrome_version": "116",
   "icons": {
     "16": "icons/16.png",
     "48": "icons/48.png",
     "128": "icons/128.png"
   },
-  "permissions": ["identity", "identity.email", "offscreen", "storage", "tts"],
+  "permissions": [
+    "identity",
+    "identity.email",
+    "offscreen",
+    "storage",
+    "tts"
+  ],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Lequel",
+    "default_title": "__MSG_actionTitle__",
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/16.png",
@@ -42,7 +49,9 @@
         "https://outlook.office.com/*",
         "https://outlook.live.com/*"
       ],
-      "js": ["core/notification-hook.js"],
+      "js": [
+        "core/notification-hook.js"
+      ],
       "world": "MAIN",
       "run_at": "document_start",
       "all_frames": true,
@@ -63,7 +72,9 @@
         "https://outlook.office.com/*",
         "https://outlook.live.com/*"
       ],
-      "js": ["core/bridge.js"],
+      "js": [
+        "core/bridge.js"
+      ],
       "run_at": "document_start",
       "all_frames": true,
       "match_about_blank": true
@@ -82,12 +93,20 @@
         "https://outlook.office.com/*",
         "https://outlook.live.com/*"
       ],
-      "js": ["lib/parse.js", "core/title-watcher.js"],
+      "js": [
+        "lib/parse.js",
+        "core/title-watcher.js"
+      ],
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://mail.google.com/*"],
-      "js": ["lib/parse.js", "adapters/gmail.js"],
+      "matches": [
+        "https://mail.google.com/*"
+      ],
+      "js": [
+        "lib/parse.js",
+        "adapters/gmail.js"
+      ],
       "run_at": "document_idle",
       "all_frames": true
     }

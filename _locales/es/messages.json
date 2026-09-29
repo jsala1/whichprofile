@@ -1,0 +1,191 @@
+{
+  "localeCode": {
+    "message": "es",
+    "description": "Locale folder name; used to pick the default TTS language. Do not translate."
+  },
+  "extName": {
+    "message": "Lequel"
+  },
+  "extDescription": {
+    "message": "Anuncia qué perfil de Chrome acaba de recibir una notificación, en voz alta o con un sonido propio de cada identidad."
+  },
+  "actionTitle": {
+    "message": "Lequel — ¿qué perfil?"
+  },
+  "optionsTitle": {
+    "message": "Lequel — ajustes"
+  },
+  "optionsIntro": {
+    "message": "Ajustes de este perfil de Chrome. Cada perfil tiene los suyos."
+  },
+  "sectionIdentity": {
+    "message": "Identidad"
+  },
+  "detectedAccount": {
+    "message": "Cuenta detectada"
+  },
+  "noAccount": {
+    "message": "ninguna cuenta de Google conectada a este perfil de Chrome"
+  },
+  "noAccountShort": {
+    "message": "perfil sin cuenta de Google"
+  },
+  "localLabel": {
+    "message": "perfil sin cuenta",
+    "description": "Spoken label when no Google account is signed in to the Chrome profile."
+  },
+  "labelField": {
+    "message": "Nombre anunciado"
+  },
+  "labelHint": {
+    "message": "Lo que dice la voz después del nombre del servicio, por ejemplo «Gmail, Agencia»."
+  },
+  "sectionAnnouncement": {
+    "message": "Anuncio"
+  },
+  "mode": {
+    "message": "Modo"
+  },
+  "modeVoice": {
+    "message": "Voz"
+  },
+  "modeSound": {
+    "message": "Sonido"
+  },
+  "pattern": {
+    "message": "Patrón de sonido"
+  },
+  "patternDing": {
+    "message": "Ding — una nota"
+  },
+  "patternDouble": {
+    "message": "Doble — dos notas"
+  },
+  "patternTriple": {
+    "message": "Triple — tres notas ascendentes"
+  },
+  "patternLow": {
+    "message": "Grave"
+  },
+  "patternHigh": {
+    "message": "Agudo"
+  },
+  "patternHint": {
+    "message": "Asigna un patrón distinto a cada perfil."
+  },
+  "voiceLang": {
+    "message": "Idioma de la voz"
+  },
+  "voice": {
+    "message": "Voz"
+  },
+  "voiceAuto": {
+    "message": "Automática ($VALUE$)",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "Gmail, Agency"
+      }
+    }
+  },
+  "voiceAutoDefault": {
+    "message": "Automática (voz predeterminada)"
+  },
+  "testButton": {
+    "message": "Probar"
+  },
+  "testSiteLabel": {
+    "message": "Prueba",
+    "description": "Spoken in place of the service name by the Test button."
+  },
+  "testSpoken": {
+    "message": "Anunciado: «$VALUE$»",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "Gmail, Agency"
+      }
+    }
+  },
+  "testSound": {
+    "message": "Reproducido: $VALUE$.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "Gmail, Agency"
+      }
+    }
+  },
+  "testFailed": {
+    "message": "Error: $VALUE$",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "Gmail, Agency"
+      }
+    }
+  },
+  "noResponse": {
+    "message": "sin respuesta"
+  },
+  "sectionGmail": {
+    "message": "Fuentes de Gmail"
+  },
+  "gmailChat": {
+    "message": "Mensajes de chat"
+  },
+  "gmailChatHint": {
+    "message": "Activado por defecto."
+  },
+  "gmailMail": {
+    "message": "Correos nuevos"
+  },
+  "gmailMailHint": {
+    "message": "Desactivado por defecto: los correos son muchos."
+  },
+  "otherSitesHint": {
+    "message": "Los demás sitios (WhatsApp, LinkedIn, Slack…) se vigilan siempre."
+  },
+  "sectionGeneral": {
+    "message": "General"
+  },
+  "muted": {
+    "message": "Silencio"
+  },
+  "mutedHint": {
+    "message": "Ningún anuncio más. La ventana emergente sigue mostrando el último aviso."
+  },
+  "debug": {
+    "message": "Modo DEBUG"
+  },
+  "debugHint": {
+    "message": "Registra en la consola de la pestaña de Gmail los candidatos del chat y en la del service worker las decisiones de enrutamiento."
+  },
+  "saved": {
+    "message": "Guardado"
+  },
+  "loadError": {
+    "message": "Error de carga: $VALUE$",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "Gmail, Agency"
+      }
+    }
+  },
+  "error": {
+    "message": "Error"
+  },
+  "settingsButton": {
+    "message": "Ajustes"
+  },
+  "lastPing": {
+    "message": "Último aviso"
+  },
+  "lastPingNone": {
+    "message": "ninguno"
+  },
+  "lastPingMuted": {
+    "message": "(silenciado)"
+  }
+}

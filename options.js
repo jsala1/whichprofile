@@ -1,7 +1,9 @@
 'use strict';
 
 const { reconcile, defaultLabel, pickVoice } = globalThis.LEQUEL_CONFIG;
+const { t, localeDefaults, translatePage } = globalThis.LEQUEL_I18N;
 const $ = (id) => document.getElementById(id);
+const locale = localeDefaults();
 
 let config = null;
 let voices = [];
@@ -9,7 +11,7 @@ let savedTimer = null;
 
 async function readConfig() {
   const { config: stored } = await chrome.storage.local.get('config');
-  return reconcile(stored, config ? config.identity.email : '');
+  return reconcile(stored, config ? config.identity.email : '', locale);
 }
 
 async function writeConfig(mutate) {
@@ -17,16 +19,17 @@ async function writeConfig(mutate) {
   mutate(next);
   await chrome.storage.local.set({ config: next });
   config = next;
-  $('saved').textContent = 'Enregistré';
+  $('saved').textContent = t('saved');
   clearTimeout(savedTimer);
   savedTimer = setTimeout(() => ($('saved').textContent = ''), 1500);
 }
 
 function langs() {
   const set = new Set(voices.map((v) => v.lang).filter(Boolean));
-  set.add('fr-FR');
+  set.add(locale.lang);
   set.add(config.identity.lang);
-  return [...set].sort((a, b) => (a === 'fr-FR' ? -1 : b === 'fr-FR' ? 1 : a.localeCompare(b)));
+  // Langue de la locale en tête, puis ordre alphabétique.
+  return [...set].sort((a, b) => (a === locale.lang ? -1 : b === locale.lang ? 1 : a.localeCompare(b)));
 }
 
 function voicesFor(lang) {
@@ -41,7 +44,7 @@ function renderVoiceSelects() {
   $('lang').replaceChildren(...langs().map((code) => new Option(code, code, false, code === lang)));
 
   const auto = pickVoice(voices, lang, '');
-  const options = [new Option(auto ? `Automatique (${auto})` : 'Automatique (voix par défaut)', '')];
+  const options = [new Option(auto ? t('voiceAuto', [auto]) : t('voiceAutoDefault'), '')];
   for (const voice of voicesFor(lang)) options.push(new Option(voice.voiceName, voice.voiceName));
   $('voice').replaceChildren(...options);
   $('voice').value = voicesFor(lang).some((v) => v.voiceName === voiceName) ? voiceName : '';
@@ -54,7 +57,7 @@ function renderMode() {
 
 function render() {
   const { identity, sources } = config;
-  $('email').textContent = identity.email || 'aucun compte Google connecté à ce profil Chrome';
+  $('email').textContent = identity.email || t('noAccount');
   if (document.activeElement !== $('label')) $('label').value = identity.label;
   for (const radio of document.querySelectorAll('input[name="mode"]')) radio.checked = radio.value === identity.mode;
   $('pattern').value = identity.pattern;
@@ -70,7 +73,7 @@ function bind() {
   $('label').addEventListener('change', () =>
     writeConfig((c) => {
       const value = $('label').value.trim();
-      c.identity.label = value || defaultLabel(c.identity.email);
+      c.identity.label = value || defaultLabel(c.identity.email, locale);
       c.identity.labelIsDefault = !value;
       $('label').value = c.identity.label;
     }),
@@ -108,24 +111,27 @@ function bind() {
     $('test-result').textContent = '…';
     try {
       const result = await chrome.runtime.sendMessage({ type: 'test' });
-      if (!result || !result.ok) throw new Error(result ? result.reason : 'pas de réponse');
+      if (!result || !result.ok) throw new Error(result ? result.reason : t('noResponse'));
       $('test-result').textContent =
-        result.mode === 'sound' ? `Motif « ${config.identity.pattern} » joué.` : `Annoncé : « ${result.text} »`;
+        result.mode === 'sound'
+          ? t('testSound', [$('pattern').selectedOptions[0].textContent])
+          : t('testSpoken', [result.text]);
     } catch (error) {
-      $('test-result').textContent = `Échec : ${error.message}`;
+      $('test-result').textContent = t('testFailed', [error.message]);
     }
   });
 
   // Le popup peut changer le mute pendant que la page est ouverte.
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'local' && changes.config && changes.config.newValue) {
-      config = reconcile(changes.config.newValue, config.identity.email);
+      config = reconcile(changes.config.newValue, config.identity.email, locale);
       render();
     }
   });
 }
 
 async function init() {
+  translatePage(document);
   // get-config passe par le SW : il lit l'email du profil et crée la config à la première exécution.
   const response = await chrome.runtime.sendMessage({ type: 'get-config' });
   config = response.config;
@@ -145,5 +151,5 @@ async function waitForVoices(attempt = 0) {
 }
 
 init().catch((error) => {
-  $('saved').textContent = `Erreur de chargement : ${error.message}`;
+  $('saved').textContent = t('loadError', [error.message]);
 });

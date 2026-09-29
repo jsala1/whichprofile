@@ -2,10 +2,21 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { reconcile, isSourceEnabled, shouldAnnounce, pickVoice, announcementText, LOCAL_LABEL } = require('../lib/config.js');
+const {
+  reconcile,
+  isSourceEnabled,
+  shouldAnnounce,
+  pickVoice,
+  announcementText,
+  ttsLangForLocale,
+  LOCAL_LABEL,
+} = require('../lib/config.js');
+
+// Ce que passe l'extension quand l'interface de Chrome est en français (voir lib/i18n.js).
+const FR = { localLabel: 'profil sans compte', lang: 'fr-FR' };
 
 test('première exécution : libellé = partie locale de l’email, mode voix', () => {
-  const config = reconcile(undefined, 'julian@example.com');
+  const config = reconcile(undefined, 'julian@example.com', FR);
   assert.equal(config.schemaVersion, 1);
   assert.equal(config.identity.label, 'julian');
   assert.equal(config.identity.mode, 'voice');
@@ -14,13 +25,34 @@ test('première exécution : libellé = partie locale de l’email, mode voix', 
 });
 
 test('profil sans compte → identité "local", libellé « profil sans compte »', () => {
-  const config = reconcile(undefined, '');
+  const config = reconcile(undefined, '', FR);
   assert.equal(config.identity.id, 'local');
+  assert.equal(config.identity.label, 'profil sans compte');
+});
+
+test('sans locale (hors navigateur) : repli anglais', () => {
+  const config = reconcile(undefined, '');
   assert.equal(config.identity.label, LOCAL_LABEL);
+  assert.equal(config.identity.lang, 'en-US');
+});
+
+test('langue TTS par défaut selon la locale de l’interface', () => {
+  const expected = { en: 'en-US', fr: 'fr-FR', es: 'es-ES', pt_BR: 'pt-BR', pt_PT: 'pt-PT', it: 'it-IT', de: 'de-DE', nl: 'nl-NL' };
+  for (const [locale, lang] of Object.entries(expected)) assert.equal(ttsLangForLocale(locale), lang, locale);
+  assert.equal(ttsLangForLocale('pt-BR'), 'pt-BR'); // forme navigateur
+  assert.equal(ttsLangForLocale('fr-CA'), 'fr-FR'); // langue de base
+  assert.equal(ttsLangForLocale('pt'), 'pt-BR'); // première variante
+  assert.equal(ttsLangForLocale('ja'), 'en-US'); // inconnue
+});
+
+test('la langue enregistrée prime sur la locale', () => {
+  const stored = reconcile(undefined, 'a@b.c', FR);
+  stored.identity.lang = 'de-DE';
+  assert.equal(reconcile(stored, 'a@b.c', FR).identity.lang, 'de-DE');
 });
 
 test('libellé modifié par l’utilisateur conservé si l’email change', () => {
-  const stored = reconcile(undefined, '');
+  const stored = reconcile(undefined, '', FR);
   stored.identity.label = 'Perso';
   stored.identity.labelIsDefault = false;
   const next = reconcile(stored, 'julian@example.com');
