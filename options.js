@@ -1,6 +1,6 @@
 'use strict';
 
-const { reconcile, defaultLabel, pickVoice } = globalThis.WHICHPROFILE_CONFIG;
+const { reconcile, defaultLabel, pickVoice, localVoices } = globalThis.WHICHPROFILE_CONFIG;
 const { t, localeDefaults, translatePage } = globalThis.WHICHPROFILE_I18N;
 const $ = (id) => document.getElementById(id);
 const locale = localeDefaults();
@@ -160,7 +160,8 @@ async function init() {
   // get-config passe par le SW : il lit l'email du profil et crée la config à la première exécution.
   const response = await chrome.runtime.sendMessage({ type: 'get-config' });
   config = response.config;
-  voices = await chrome.tts.getVoices();
+  // Voix locales seulement : les voix réseau enverraient le texte annoncé hors de l'appareil.
+  voices = localVoices(await chrome.tts.getVoices());
   render();
   bind();
   if (voices.length === 0) waitForVoices();
@@ -170,7 +171,7 @@ async function init() {
 async function waitForVoices(attempt = 0) {
   if (attempt >= 20) return;
   await new Promise((resolve) => setTimeout(resolve, 500));
-  voices = await chrome.tts.getVoices();
+  voices = localVoices(await chrome.tts.getVoices());
   if (voices.length === 0) return waitForVoices(attempt + 1);
   renderVoiceSelects();
 }

@@ -1,39 +1,73 @@
 # WhichProfile — Politique de confidentialité / Privacy policy
 
-Dernière mise à jour : 29 septembre 2026 (ajout du mode agent)
+- **En vigueur le / Effective date :** 29 septembre 2026 / September 29, 2026
+- **Périmètre / Scope :** l'extension Chrome WhichProfile, version 1.0.0 et suivantes, telle que distribuée sur le Chrome Web Store et sur https://github.com/jsala1/whichprofile / the WhichProfile Chrome extension, version 1.0.0 and later, as distributed on the Chrome Web Store and at https://github.com/jsala1/whichprofile
+- **Contact :** https://github.com/jsala1/whichprofile/issues
 
 ## Français
 
-**Aucune donnée ne quitte votre appareil.** WhichProfile n'effectue aucune requête réseau, n'utilise aucun serveur, aucun outil de statistiques, aucun code distant.
+**Aucune donnée ne quitte votre appareil du fait de WhichProfile.** L'extension n'effectue aucune requête réseau et n'utilise aucun serveur, outil de statistiques ou code distant.
 
-Ce que l'extension lit, localement :
-- **L'adresse email du compte Google connecté au profil Chrome** (`chrome.identity.getProfileUserInfo`). Elle sert uniquement à proposer un libellé par défaut (la partie avant « @ ») et à afficher le compte détecté dans les réglages. Elle est stockée dans le stockage local de l'extension, propre à ce profil, et n'est jamais transmise.
-- **Le fait qu'une notification a été créée** sur un des sites pris en charge, ou qu'un compteur de non-lus a augmenté (titre de l'onglet, badges de la messagerie Gmail). WhichProfile ne lit, ne transmet et ne stocke **aucun contenu de message** : ni titre, ni texte, ni expéditeur.
+### Ce que l'extension lit, localement
 
-Ce que l'extension stocke :
-- Vos réglages (libellé, mode, motif, voix, sources, muet, DEBUG) dans `chrome.storage.local`, sur cet appareil, pour ce profil.
-- Pour les 5 derniers signaux : le site, le type de signal, l'heure et s'il a été annoncé ; et l'heure de la dernière annonce par site. Dans `chrome.storage.session`, effacé à la fermeture du navigateur.
+- **L'adresse e-mail du compte Google connecté au profil Chrome** (`chrome.identity.getProfileUserInfo`). Elle sert uniquement à proposer un libellé par défaut (la partie avant « @ ») et à afficher le compte détecté dans les réglages. Elle est enregistrée dans le stockage local de l'extension, propre à ce profil (voir plus bas), et n'est jamais transmise.
+- **Le fait qu'une notification a été créée** sur un des sites couverts, ou que le compteur de non-lus du titre de l'onglet a augmenté. WhichProfile ne lit, ne transmet et ne stocke **aucun contenu de message** : ni titre, ni texte, ni expéditeur.
+- **Gmail :** l'extension lit les compteurs de non-lus de la liste des conversations (leurs libellés d'accessibilité) pour détecter une augmentation. Cette lecture est utilisée sur le moment, jamais stockée ni transmise.
 
-**Mode agent (facultatif, désactivé par défaut).** S'il est activé, le libellé du profil est écrit sur chaque page visitée (une pastille visible et un attribut `data-whichprofile`), pour que les agents IA de navigation sachent dans quel profil ils se trouvent. WhichProfile ne lit rien de ces pages et ne transmet rien, mais **les sites visités peuvent lire ce libellé**. Choisissez un libellé non personnel. La désactivation retire la pastille et l'accès aux sites.
+### Ce que l'extension stocke
 
-Les annonces vocales utilisent la synthèse vocale de Chrome (`chrome.tts`), qui s'appuie sur les voix installées sur votre système.
+Dans `chrome.storage.local`, sur cet appareil, pour ce profil, une seule entrée `config` :
+- `identity` : `email` (adresse du compte détecté, vide si aucun), `id` (cette adresse, ou `local`), `label` (libellé annoncé), `labelIsDefault`, `mode` (voix ou son), `pattern` (motif sonore), `lang` (langue de la voix), `voiceName` (voix choisie) ;
+- `sources` (chat et e-mails Gmail activés ou non), `muted`, `debug`, `agentMode`, `schemaVersion`.
+
+Dans `chrome.storage.session`, effacé à la fermeture du navigateur :
+- l'heure de la dernière annonce par site (anti-doublon de 12 s) ;
+- les 5 derniers signaux : site, type de signal, heure, annoncé ou non et pourquoi ;
+- en mode agent, les onglets où vous avez masqué le badge.
 
 Désinstaller l'extension supprime toutes ces données.
 
+### Synthèse vocale
+
+Les annonces utilisent la synthèse vocale de Chrome (`chrome.tts`). Seules les voix locales sont proposées : les voix réseau sont exclues, donc le texte prononcé ne quitte jamais votre appareil. Sans voix locale disponible, le motif sonore est joué à la place.
+
+### Mode agent (facultatif, désactivé par défaut)
+
+- À l'activation, l'extension demande l'**accès à tous les sites**. En cas de refus, le mode reste désactivé.
+- Une fois activé, elle ajoute sur chaque page visitée un **badge avec le libellé du profil** et un attribut `data-whichprofile`, pour que les lecteurs d'écran et les agents IA de navigation sachent dans quel profil ils se trouvent. Le libellé est **par défaut dérivé de votre adresse e-mail**, donc visible sur chaque page ouverte dans ce profil, et **lisible par les sites visités**. Choisissez un libellé non personnel avant d'activer ce mode.
+- Le badge ne lit rien des pages et WhichProfile n'envoie rien.
+- La désactivation retire le badge, l'attribut et l'accès à tous les sites.
+
 ## English
 
-**No data leaves your device.** WhichProfile makes no network requests and uses no server, analytics or remote code.
+**No data leaves your device because of WhichProfile.** The extension makes no network requests and uses no server, analytics or remote code.
 
-What the extension reads, locally:
-- **The email address of the Google account signed in to the Chrome profile** (`chrome.identity.getProfileUserInfo`). It is used only to suggest a default label (the part before "@") and to show the detected account in the settings. It is kept in the extension's local storage for that profile and is never transmitted.
-- **The fact that a notification was created** on a supported site, or that an unread counter went up (tab title, Gmail chat badges). WhichProfile does not read, transmit or store **any message content**: no title, text or sender.
+### What the extension reads, locally
 
-What the extension stores:
-- Your settings (label, mode, sound pattern, voice, sources, mute, debug) in `chrome.storage.local`, on this device, for this profile.
-- For the last 5 signals: the site, the signal type, the time and whether it was announced; and the time of the last announcement per site. In `chrome.storage.session`, cleared when the browser closes.
+- **The email address of the Google account signed in to the Chrome profile** (`chrome.identity.getProfileUserInfo`). It is used only to suggest a default label (the part before "@") and to show the detected account in the settings. It is saved in the extension's local storage for that profile (see below) and is never transmitted.
+- **The fact that a notification was created** on a covered site, or that the unread counter in the tab title went up. WhichProfile does not read, transmit or store **any message content**: no title, text or sender.
+- **Gmail:** the extension reads the unread badge counters of the conversation list (their accessibility labels) to detect an increase; used on the spot, never stored or transmitted.
 
-**Agent mode (optional, off by default).** When turned on, the profile label is written on every page you visit (a visible chip and a `data-whichprofile` attribute) so AI browsing agents know which profile they are in. WhichProfile reads nothing from those pages and transmits nothing, but **the websites you visit can read this label**. Choose a label that isn't personal. Turning it off removes the chip and the site access.
+### What the extension stores
 
-Voice announcements use Chrome's text-to-speech (`chrome.tts`), relying on the voices installed on your system.
+In `chrome.storage.local`, on this device, for this profile, a single `config` entry:
+- `identity`: `email` (detected account address, empty if none), `id` (that address, or `local`), `label` (spoken label), `labelIsDefault`, `mode` (voice or sound), `pattern` (sound pattern), `lang` (voice language), `voiceName` (chosen voice);
+- `sources` (Gmail chat and email on or off), `muted`, `debug`, `agentMode`, `schemaVersion`.
+
+In `chrome.storage.session`, cleared when the browser closes:
+- the time of the last announcement per site (12-second de-duplication);
+- the last 5 signals: site, signal type, time, whether it was announced and why not;
+- in Agent mode, the tabs where you hid the badge.
 
 Uninstalling the extension deletes all of this data.
+
+### Text-to-speech
+
+Announcements use Chrome's text-to-speech (`chrome.tts`). Only local voices are offered — network voices are excluded — so the spoken text never leaves your device. If no local voice is available, the sound pattern plays instead.
+
+### Agent mode (optional, off by default)
+
+- Turning it on asks for **access to all sites**. If you refuse, it stays off.
+- Once on, it adds to every page you visit a **badge showing the profile label** and a `data-whichprofile` attribute, so screen readers and AI browser agents can tell which profile they are in. The label is **derived from your email address by default**, so it is visible on every page opened in this profile and **readable by the websites you visit**. Pick a label that isn't personal before turning this mode on.
+- The badge reads nothing from the pages, and WhichProfile sends nothing.
+- Turning it off removes the badge, the attribute and the access to all sites.

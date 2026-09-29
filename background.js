@@ -4,7 +4,7 @@ importScripts('lib/sites.js', 'lib/parse.js', 'lib/config.js', 'lib/i18n.js');
 
 const { isKnownHost, siteLabel } = globalThis.WHICHPROFILE_SITES;
 const { createDebouncer } = globalThis.WHICHPROFILE_PARSE;
-const { DEBOUNCE_MS, reconcile, isSourceEnabled, shouldAnnounce, pickVoice, announcementText, pushRecentPing } =
+const { DEBOUNCE_MS, reconcile, isSourceEnabled, shouldAnnounce, pickVoice, localVoices, announcementText, pushRecentPing } =
   globalThis.WHICHPROFILE_CONFIG;
 const { t, localeDefaults } = globalThis.WHICHPROFILE_I18N;
 
@@ -36,11 +36,27 @@ async function loadConfig() {
 
 // --- Annonce -------------------------------------------------------------------
 
+// Les voix du système arrivent ≈ 2 s après le démarrage de Chrome : on attend un peu une voix locale.
+async function loadLocalVoices() {
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const voices = localVoices(await chrome.tts.getVoices());
+    if (voices.length > 0) return voices;
+    await new Promise((resolve) => setTimeout(resolve, 300));
+  }
+  return [];
+}
+
 async function speak(config, siteText) {
   const { label, lang, voiceName } = config.identity;
-  const voices = await chrome.tts.getVoices();
-  const chosen = pickVoice(voices, lang, voiceName);
+  const chosen = pickVoice(await loadLocalVoices(), lang, voiceName);
+  if (!chosen) {
+    // Jamais de voix réseau : sans voix locale, le motif sonore remplace la voix.
+    console.warn('[WhichProfile] aucune voix locale : motif sonore à la place');
+    await playPattern(config.identity.pattern);
+    return;
+  }
   const options = {
+    voiceName: chosen,
     lang,
     rate: 1.1,
     // enqueue:true : le moteur TTS est partagé entre profils, false couperait l'annonce d'un autre profil.
@@ -50,7 +66,6 @@ async function speak(config, siteText) {
       if (config.debug) console.info('[WhichProfile] tts', event.type);
     },
   };
-  if (chosen) options.voiceName = chosen;
   chrome.tts.speak(announcementText(siteText, label), options);
 }
 
