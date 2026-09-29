@@ -89,6 +89,8 @@ store/                     textes Chrome Web Store + SUBMISSION.md (checklist da
 - **2026-09-29 — E-mail du profil : persisté**, dans `config.identity.email` et `identity.id` de `storage.local`, et non relu à la volée. privacy.md le déclare avec la liste complète des clés de `storage.local` et `storage.session`.
 - **2026-09-29 — Textes Store alignés sur l'audit externe** : nouvel objectif unique (profil perceptible, Agent mode inclus) ; descriptions en texte brut, sans markdown ; plus de « read-only / no DOM modification » (le wrapper `Notification` et le badge de l'Agent mode sont décrits tels quels) ; limites ajoutées (conversation ouverte, dépendance à chaque site, Gmail testé en français) ; mention des marques ; privacy.md avec en-tête (date d'effet, périmètre, contact GitHub Issues).
 
+- **2026-09-29 — Soumission Chrome Web Store** : version 1.0.0 envoyée à 23h30, ID `nkfkdanbfikhpkdhebfemmplgagjfllg`, publication différée (manuelle après validation). Page Store attendue : https://chromewebstore.google.com/detail/nkfkdanbfikhpkdhebfemmplgagjfllg (active seulement après publication).
+
 ## Limites connues
 
 - Notifications push reçues onglet fermé (service worker du site) : invisibles. Celles déclenchées depuis la page via `registration.showNotification` sont vues.
@@ -111,4 +113,5 @@ Plages horaires par identité ; bouton « je partage mon écran » ; adaptateurs
 - [x] **v1 close** (2026-09-29) : T1–T4, T6, T7 ✅ en réel ; T5, T9 non vérifiés
 - [x] Agent mode (opt-in) ajouté à la v1
 - [x] Dépôt public https://github.com/jsala1/whichprofile ; captures 1280×800 (`store/screenshots/`) et tuile 440×280 (`store/promo/`) produites dans Chrome for Testing
-- [ ] Soumission Store : paquet prêt (`sh scripts/pack.sh`) ; reste la déclaration « données collectées » et l'envoi (Julian)
+- [x] **Soumis au Chrome Web Store le 2026-09-29 à 23h30** par Julian. ID de l'extension : `nkfkdanbfikhpkdhebfemmplgagjfllg`. Publication différée : à publier manuellement après validation.
+- [ ] Validation Store, puis publication manuelle ; ensuite, installer depuis le Store dans chaque profil (l'ID diffère de celui des versions non empaquetées)
