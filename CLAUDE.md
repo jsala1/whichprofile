@@ -51,6 +51,8 @@ store/                     textes Chrome Web Store
 - **2026-09-29 — Voix.** Select « Voix » alimenté par `chrome.tts.getVoices` ; vide = première voix de la langue choisie (fr-FR par défaut). `rate 1.1`.
 - **2026-09-29 — `enqueue: true` au lieu de `false`.** Le moteur TTS est partagé par tous les profils du même Chrome : avec `enqueue:false`, l'annonce du profil B couperait celle du profil A (T4). Le debounce borne déjà la file.
 - **2026-09-29 — Le bouton Tester** passe par le vrai chemin (message au SW → `announce`) mais ignore mute et debounce, sinon il serait inutilisable pour régler un profil muet.
+- **2026-09-29 — Voix chargées en différé.** Sous macOS, `chrome.tts.getVoices()` renvoie `[]` pendant ≈ 2 s après le démarrage de Chrome (constaté dans Chrome for Testing 154). Les options réessaient toutes les 500 ms ; `pickVoice` garde la voix enregistrée quand la liste est vide. « Automatique » tombe sur la première voix fr-FR de la liste système, qui est « Eddy (French (France)) » : choisir Thomas dans le select si on la préfère.
+- **2026-09-29 — Tests : `node --test`** sans argument (Node 22 refuse un répertoire).
 - **2026-09-29 — bridge.js en document_start** (et non idle) pour ne pas rater une notification émise avant la fin du chargement.
 
 ## Limites connues
@@ -70,4 +72,4 @@ Plages horaires par identité ; bouton « je partage mon écran » ; adaptateurs
 - [x] 2. Cœur générique + offscreen + options + popup + tests
 - [x] 3. Adaptateur Gmail + DEBUG
 - [x] 4. README + store + icônes
-- [ ] 5. Vérification finale
+- [x] 5. Vérification finale (T2 + T8 dans Chrome for Testing 154, profil jetable ; T1, T3–T7, T9 à faire par Julian)

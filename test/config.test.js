@@ -59,6 +59,7 @@ test('pickVoice : choix explicite, puis langue exacte, puis préfixe', () => {
   assert.equal(pickVoice(voices, 'fr-BE', ''), 'Amélie');
   assert.equal(pickVoice(voices, 'de-DE', ''), '');
   assert.equal(pickVoice([], 'fr-FR', ''), '');
+  assert.equal(pickVoice([], 'fr-FR', 'Thomas'), 'Thomas'); // voix pas encore chargées : on garde le choix
 });
 
 test('texte annoncé', () => {

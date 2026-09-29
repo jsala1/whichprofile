@@ -132,6 +132,16 @@ async function init() {
   voices = await chrome.tts.getVoices();
   render();
   bind();
+  if (voices.length === 0) waitForVoices();
+}
+
+// Les voix du système arrivent quelques secondes après le démarrage de Chrome : on réessaie.
+async function waitForVoices(attempt = 0) {
+  if (attempt >= 20) return;
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  voices = await chrome.tts.getVoices();
+  if (voices.length === 0) return waitForVoices(attempt + 1);
+  renderVoiceSelects();
 }
 
 init().catch((error) => {
