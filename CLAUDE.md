@@ -12,9 +12,9 @@ Extension Chrome (MV3) chargée dans **chaque** profil Chrome. Quand une notific
 
 - Manifest V3, vanilla JS, **zéro dépendance, zéro bundler, zéro build**, pas de TypeScript, pas de `npm install`. Chargeable « non empaquetée » telle quelle.
 - Tests : `node --test test/` (Node natif).
-- Permissions : `identity`, `identity.email`, `offscreen`, `storage`, `tts`. Rien d'autre. Pas de `host_permissions` (les `matches` des content scripts suffisent), pas de `tabs`, `<all_urls>`, `webNavigation`, `scripting`.
+- Permissions obligatoires : `identity`, `identity.email`, `offscreen`, `storage`, `tts`. Rien d'autre. Pas de `host_permissions` (les `matches` des content scripts suffisent), pas de `tabs`, `webNavigation`. **Seule exception : l'Agent mode**, avec `scripting` et `<all_urls>` en *optionnel*, demandés au clic et rendus à la désactivation.
 - Aucune requête réseau, aucun analytics, aucun code distant.
-- Lecture seule du DOM des sites. Aucune modification.
+- Lecture seule du DOM des sites surveillés. **Seule exception : l'Agent mode (opt-in)**, qui *écrit* un chip et `data-whichprofile` sur chaque page, sans rien lire.
 - **Aucun contenu de message nulle part** : ni titre, ni body, ni dans `recentPings`. Les pings ne portent que `{type, source}` ; le site est dérivé de `sender.origin` côté service worker.
 - Pas de logo ni de nom de marque tiers dans les icônes ou le nom.
 
@@ -36,6 +36,8 @@ lib/parse.js               fonctions pures : compteurs, tracker, debounce, email
 lib/config.js              config par défaut, réconciliation, toggles de source, shouldAnnounce, choix de voix,
                            DEFAULT_TTS_LANG (locale → voix par défaut)
 lib/i18n.js                chrome.i18n : traduction des pages, valeurs par défaut de la locale (navigateur seulement)
+lib/chip.js                Agent mode : modèle pur du chip (texte, role, aria-label, CSS), testé
+agent/chip.js              Agent mode : content script enregistré dynamiquement (<all_urls>, frame principale, document_idle)
 _locales/<code>/messages.json  en (défaut), fr, es, pt_BR, pt_PT, it, de, nl — mêmes clés partout
 scripts/make-icons.py      PNG 16/48/128 en Python stdlib (pas de PIL sur la machine)
 scripts/pack.sh            tests puis dist/whichprofile-<version>.zip (hors .git, test/, scripts/, store/, dist/, CLAUDE.md, README.md, icons/*.svg, fichiers cachés)
@@ -74,6 +76,10 @@ store/                     textes Chrome Web Store + SUBMISSION.md (checklist da
 - **2026-09-29 — Message dans une conversation déjà ouverte : pas d'annonce, voulu.** Le site le marque lu aussitôt (pas de compteur, souvent pas de notification) et l'utilisateur regarde déjà ce profil. Documenté dans README « Pourquoi ça n'a pas sonné ? ».
 - **2026-09-29 — Paquet Store** : `scripts/pack.sh` sans npm. Il lance les tests, zippe, puis vérifie que chaque fichier du manifest est présent et qu'aucun fichier de dev ne l'est. `store/` et `icons/icon.svg` sont exclus en plus de la liste demandée (inutiles à l'exécution). `dist/` ignoré par git.
 - **2026-09-29 — Soumission** : `store/SUBMISSION.md`. URL de confidentialité : https://github.com/jsala1/whichprofile/blob/main/store/privacy.md. Elle suppose le dépôt poussé en public, et le dépôt local n'a pas encore de remote. La petite tuile 440×280 est obligatoire et pas encore produite. La déclaration « données collectées » (e-mail) reste à trancher par Julian (recommandation : déclarer).
+
+- **2026-09-29 — Agent mode dans la v1 (décision Julian).** Réglage OFF par défaut. À l'activation, `chrome.permissions.request({permissions:['scripting'], origins:['<all_urls>']})` depuis le clic dans les options ; refus = reste OFF. Actif = `config.agentMode` ET permissions accordées. Le SW enregistre `agent/chip.js` (`registerContentScripts`, frame principale, `document_idle`, persistant) et l'injecte dans les onglets déjà ouverts. Le chip est en Shadow DOM fermé, bas-droite, `pointer-events` limités au chip ; clic = masqué pour cet onglet (liste des onglets dans `storage.session`), `data-whichprofile` reste posé. `role="status"` et `aria-label="Chrome profile: {label}"` sont sur l'hôte (DOM de la page), en anglais dans toutes les langues puisque c'est une étiquette machine. Libellé mis à jour en direct via `storage.onChanged`. Désactivation : script désenregistré, chips retirés, permissions rendues. Une permission retirée dans `chrome://extensions` repasse la config à OFF (`permissions.onRemoved`). Un test statique interdit toute lecture du DOM dans `agent/chip.js`.
+- **2026-09-29 — Conséquence confidentialité de l'Agent mode** : le libellé devient lisible par tous les sites visités. Dit dans l'aide des options, le README, privacy.md et la justification Store : choisir un libellé non personnel.
+- **2026-09-29 — Nom de client retiré de l'historique** avant le premier push public : le commit de clôture v1 (ex-`55b51e0`, désormais `859106a`) nommait un profil client ; remplacé par « 3 profils réels ».
 
 ## Limites connues
 

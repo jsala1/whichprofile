@@ -196,5 +196,17 @@
   },
   "statusSourceOff": {
     "message": "non annoncé (source désactivée)"
+  },
+  "sectionAgent": {
+    "message": "Agents IA"
+  },
+  "agentMode": {
+    "message": "Mode agent"
+  },
+  "agentModeHint": {
+    "message": "Affiche une petite pastille avec le libellé de ce profil sur chaque page et l'ajoute à la page (data-whichprofile), pour que les agents IA de navigation sachent dans quel profil ils sont. Les sites peuvent lire ce libellé : choisissez-en un qui ne soit pas personnel. Nécessite l'accès à tous les sites ; la désactivation retire cet accès."
+  },
+  "agentModeDenied": {
+    "message": "Permission refusée : le mode agent reste désactivé."
   }
 }

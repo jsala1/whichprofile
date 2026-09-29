@@ -24,6 +24,8 @@ Honest limits:
 • Gmail chat detection depends on Gmail's interface and may need an update if Google changes it.
 • Several messages on the same site within 12 seconds produce a single announcement: WhichProfile announces the profile, not every message.
 
+Agent mode: lets AI browsing agents know which profile they're in (optional, off by default; asks for access to all sites only when you turn it on).
+
 Available in English, French, Spanish, Portuguese (Brazil and Portugal), Italian, German and Dutch.
 
 Free, no ads, no data collection.

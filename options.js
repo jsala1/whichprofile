@@ -4,6 +4,8 @@ const { reconcile, defaultLabel, pickVoice } = globalThis.WHICHPROFILE_CONFIG;
 const { t, localeDefaults, translatePage } = globalThis.WHICHPROFILE_I18N;
 const $ = (id) => document.getElementById(id);
 const locale = localeDefaults();
+// Permissions optionnelles de l'Agent mode (optional_permissions / optional_host_permissions du manifest).
+const AGENT_PERMISSIONS = { permissions: ['scripting'], origins: ['<all_urls>'] };
 
 let config = null;
 let voices = [];
@@ -65,6 +67,7 @@ function render() {
   $('src-gmail-mail').checked = !!sources['gmail-mail'];
   $('muted').checked = !!config.muted;
   $('debug').checked = !!config.debug;
+  $('agent').checked = !!config.agentMode;
   renderVoiceSelects();
   renderMode();
 }
@@ -106,6 +109,28 @@ function bind() {
 
   $('muted').addEventListener('change', () => writeConfig((c) => (c.muted = $('muted').checked)));
   $('debug').addEventListener('change', () => writeConfig((c) => (c.debug = $('debug').checked)));
+
+  // Activation : la demande de permission doit partir du clic (geste utilisateur). Refus = reste désactivé.
+  // Désactivation : le service worker retire le script et les permissions.
+  $('agent').addEventListener('change', async (event) => {
+    const enable = event.target.checked;
+    $('agent-result').textContent = '';
+    try {
+      if (enable) {
+        const granted = await chrome.permissions.request(AGENT_PERMISSIONS);
+        if (!granted) {
+          event.target.checked = false;
+          $('agent-result').textContent = t('agentModeDenied');
+          return;
+        }
+      }
+      const result = await chrome.runtime.sendMessage({ type: enable ? 'agent-enable' : 'agent-disable' });
+      if (!result || !result.ok) throw new Error(result ? result.reason : t('noResponse'));
+    } catch (error) {
+      event.target.checked = !enable;
+      $('agent-result').textContent = t('testFailed', [error.message]);
+    }
+  });
 
   $('test').addEventListener('click', async () => {
     $('test-result').textContent = '…';

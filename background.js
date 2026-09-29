@@ -138,6 +138,98 @@ async function handlePing(message, sender) {
   return { ok: true, announced, reason: status };
 }
 
+// --- Agent mode -------------------------------------------------------------------
+// Opt-in : chip avec le libellé sur chaque page + data-whichprofile sur <html>, pour les agents IA de navigation.
+// Permissions optionnelles demandées par la page d'options ; l'état actif = config.agentMode ET permissions accordées.
+
+const AGENT_SCRIPT_ID = 'whichprofile-agent-chip';
+const AGENT_PERMISSIONS = { permissions: ['scripting'], origins: ['<all_urls>'] };
+const AGENT_FILES = ['lib/chip.js', 'agent/chip.js'];
+
+function agentPermitted() {
+  return chrome.permissions.contains(AGENT_PERMISSIONS);
+}
+
+async function setAgentMode(enabled) {
+  const config = await loadConfig();
+  if (config.agentMode === enabled) return config;
+  config.agentMode = enabled;
+  await chrome.storage.local.set({ config });
+  return config;
+}
+
+// Aligne l'enregistrement du content script sur la config et les permissions (démarrage, changements).
+async function syncAgentMode() {
+  const permitted = await agentPermitted();
+  let config = await loadConfig();
+  if (config.agentMode && !permitted) config = await setAgentMode(false); // permission retirée dans chrome://extensions
+  const active = config.agentMode && permitted;
+  if (!chrome.scripting) return active;
+  const registered = await chrome.scripting.getRegisteredContentScripts({ ids: [AGENT_SCRIPT_ID] });
+  if (active && registered.length === 0) {
+    await chrome.scripting.registerContentScripts([
+      {
+        id: AGENT_SCRIPT_ID,
+        js: AGENT_FILES,
+        matches: ['<all_urls>'],
+        runAt: 'document_idle',
+        allFrames: false,
+        persistAcrossSessions: true,
+      },
+    ]);
+  } else if (!active && registered.length > 0) {
+    await chrome.scripting.unregisterContentScripts({ ids: [AGENT_SCRIPT_ID] });
+  }
+  return active;
+}
+
+async function enableAgentMode() {
+  if (!(await agentPermitted())) return { ok: false, reason: 'permission-denied' };
+  await setAgentMode(true);
+  await syncAgentMode();
+  // Le script enregistré ne vaut que pour les prochains chargements : on l'injecte aussi dans les onglets ouverts.
+  const tabs = await chrome.tabs.query({});
+  await Promise.all(
+    tabs.map((tab) =>
+      chrome.scripting.executeScript({ target: { tabId: tab.id }, files: AGENT_FILES }).catch(() => {}), // chrome://, Web Store…
+    ),
+  );
+  console.info('[WhichProfile] agent mode activé');
+  return { ok: true };
+}
+
+async function disableAgentMode() {
+  await setAgentMode(false); // les chips déjà affichés se retirent via storage.onChanged
+  await syncAgentMode();
+  await chrome.storage.session.remove('agentHidden');
+  if (await agentPermitted()) await chrome.permissions.remove(AGENT_PERMISSIONS);
+  console.info('[WhichProfile] agent mode désactivé, permissions retirées');
+  return { ok: true };
+}
+
+async function agentState(tabId) {
+  const [config, permitted, { agentHidden = [] }] = await Promise.all([
+    loadConfig(),
+    agentPermitted(),
+    chrome.storage.session.get('agentHidden'),
+  ]);
+  return { enabled: config.agentMode && permitted, label: config.identity.label, hidden: agentHidden.includes(tabId) };
+}
+
+async function hideAgentChip(tabId) {
+  const { agentHidden = [] } = await chrome.storage.session.get('agentHidden');
+  if (!agentHidden.includes(tabId)) await chrome.storage.session.set({ agentHidden: [...agentHidden, tabId] });
+  return { ok: true };
+}
+
+chrome.tabs.onRemoved.addListener(async (tabId) => {
+  const { agentHidden = [] } = await chrome.storage.session.get('agentHidden');
+  if (agentHidden.includes(tabId)) await chrome.storage.session.set({ agentHidden: agentHidden.filter((id) => id !== tabId) });
+});
+chrome.permissions.onAdded.addListener(() => syncAgentMode());
+chrome.permissions.onRemoved.addListener(() => syncAgentMode());
+chrome.runtime.onStartup.addListener(() => syncAgentMode());
+
 // Bouton « Tester » : même chemin d'annonce, sans mute ni debounce.
 async function handleTest() {
   const config = await loadConfig();
@@ -156,6 +248,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'ping' && !fromExtensionPage) task = handlePing(message, sender);
   else if (message.type === 'test' && fromExtensionPage) task = handleTest();
   else if (message.type === 'get-config' && fromExtensionPage) task = loadConfig().then((config) => ({ ok: true, config }));
+  else if (message.type === 'agent-enable' && fromExtensionPage) task = enableAgentMode();
+  else if (message.type === 'agent-disable' && fromExtensionPage) task = disableAgentMode();
+  else if (message.type === 'agent-state' && !fromExtensionPage && sender.tab) task = agentState(sender.tab.id);
+  else if (message.type === 'agent-hide' && !fromExtensionPage && sender.tab) task = hideAgentChip(sender.tab.id);
   if (!task) return false;
 
   task.then(sendResponse, (error) => {
@@ -167,4 +263,5 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 chrome.runtime.onInstalled.addListener(() => {
   loadConfig().then((config) => console.info('[WhichProfile] prêt', { id: config.identity.id, label: config.identity.label }));
+  syncAgentMode();
 });

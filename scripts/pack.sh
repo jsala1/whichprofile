@@ -36,6 +36,7 @@ MISSING=$(node -e '
     ...Object.values(m.icons), ...Object.values(m.action.default_icon),
     ...m.content_scripts.flatMap((c) => c.js),
     `_locales/${m.default_locale}/messages.json`,
+    "lib/chip.js", "agent/chip.js", // Agent mode : enregistrés dynamiquement, hors manifest
   ];
   const zipped = new Set(process.argv[1].split("\n"));
   console.log(files.filter((f) => !zipped.has(f)).join(" "));
