@@ -19,7 +19,7 @@ Sites couverts : Gmail (chat, et e-mails en option), Google Chat, WhatsApp Web, 
 Respect de la vie privée :
 • Aucune donnée ne quitte votre ordinateur. Aucune requête réseau, aucun compte à créer, aucune statistique.
 • WhichProfile ne stocke ni ne transmet jamais le contenu de vos messages : elle détecte seulement qu'une notification est arrivée ou qu'un compteur de non-lus a augmenté.
-• L'adresse du compte Google du profil est lue uniquement pour proposer un libellé par défaut et pour afficher, dans les réglages, à quel compte correspond ce profil. Elle reste dans ce profil.
+• L'adresse du compte Google du profil est lue uniquement pour proposer un libellé par défaut et pour afficher, dans les réglages et le popup, à quel compte correspond ce profil. Elle reste dans ce profil.
 
 Limites, en toute honnêteté :
 • L'onglet du service doit être ouvert : une notification reçue onglet fermé n'est pas visible par WhichProfile.

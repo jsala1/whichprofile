@@ -56,27 +56,51 @@ test('tracker : [null, 1, 1, 2, 0, 1] → pings aux index 3 et 5 seulement', () 
   assert.deepEqual(pingIndexes([null, 1, 1, 2, 0, 1]), [3, 5]);
 });
 
-// Hystérésis (2026-09-30). Les séquences commencent par une lecture 0 : c'est la référence (première lecture,
-// jamais annoncée), ce qui donne les nombres d'annonces attendus pour les séquences qui suivent.
-test('hystérésis : [1, null, null, null, 1] → 2 annonces (3 titres sans compteur = tout lu, puis vrai nouveau message)', () => {
-  assert.deepEqual(pingIndexes([0, 1, null, null, null, 1]), [1, 5]);
+// Hystérésis en DURÉE (2026-09-30) : un titre sans compteur ne remet à 0 qu'après 6 s continues.
+// Les séquences commencent par une lecture 0 : c'est la référence (première lecture, jamais annoncée).
+// Lectures toutes les 2 s (rythme du polling) sauf mention contraire.
+const every2s = (sequence) => sequence.map((_, i) => i * 2000);
+
+test('hystérésis : [1, ∅ pendant ≥ 6 s, 1] → 2 annonces (tout lu, puis vrai nouveau message)', () => {
+  const sequence = [0, 1, null, null, null, null, 1]; // null de 4 s à 10 s : 6 s continues
+  assert.deepEqual(pingIndexes(sequence, every2s(sequence)), [1, 6]);
 });
 
 test('hystérésis : [0, 1, null, 1, null, 1] → 1 seule annonce (clignotement)', () => {
-  assert.deepEqual(pingIndexes([0, 0, 1, null, 1, null, 1]), [2]);
+  const sequence = [0, 0, 1, null, 1, null, 1];
+  assert.deepEqual(pingIndexes(sequence, every2s(sequence)), [2]);
 });
 
 test('hystérésis : [2, null, 3] → 2 annonces', () => {
-  assert.deepEqual(pingIndexes([0, 2, null, 3]), [1, 3]);
+  const sequence = [0, 2, null, 3];
+  assert.deepEqual(pingIndexes(sequence, every2s(sequence)), [1, 3]);
 });
 
-test('hystérésis : [2, null, 1] → 1 seule annonce (un seul titre sans compteur ne remet pas à 0)', () => {
-  assert.deepEqual(pingIndexes([0, 2, null, 1]), [1]);
+test('hystérésis : [2, null, 1] → 1 seule annonce (un titre sans compteur ne remet pas à 0)', () => {
+  const sequence = [0, 2, null, 1];
+  assert.deepEqual(pingIndexes(sequence, every2s(sequence)), [1]);
 });
 
-test('hystérésis : 2 titres sans compteur ne suffisent pas, le 3e remet à 0', () => {
-  assert.deepEqual(pingIndexes([0, 1, null, null, 1]), [1]);
-  assert.deepEqual(pingIndexes([0, 1, null, null, null, 1]), [1, 5]);
+test('hystérésis : 50 lectures null en 200 ms → pas de remise à zéro', () => {
+  // Le MutationObserver de <head> peut appeler check() des dizaines de fois par seconde.
+  const nulls = Array.from({ length: 50 }, () => null);
+  const sequence = [0, 1, ...nulls, 1];
+  const times = [0, 1000, ...nulls.map((_, i) => 1100 + i * 4), 1400];
+  assert.deepEqual(pingIndexes(sequence, times), [1]);
+});
+
+test('hystérésis : null continu 6,5 s → remise à zéro, le message suivant est annoncé', () => {
+  assert.deepEqual(pingIndexes([0, 1, null, null, 1], [0, 1000, 2000, 8500, 9000]), [1, 4]);
+});
+
+test('hystérésis : null pendant 5,9 s seulement → pas de remise à zéro', () => {
+  assert.deepEqual(pingIndexes([0, 1, null, null, 1], [0, 1000, 2000, 7900, 8000]), [1]);
+});
+
+test('hystérésis : un compteur au milieu interrompt la série de null (la durée repart de zéro)', () => {
+  const sequence = [0, 1, null, null, 1, null, null, 1];
+  const times = [0, 1000, 2000, 6000, 7000, 8000, 12000, 13000]; // deux séries de 4 s, jamais 6 s continues
+  assert.deepEqual(pingIndexes(sequence, times), [1]);
 });
 
 function cappedPings(sequence, times) {
@@ -96,8 +120,8 @@ test('tracker plafonné : après 60 s, une nouvelle augmentation est annoncée',
   assert.deepEqual(cappedPings([0, 1, 0, 1], [0, 1000, 2000, 62000]), [1, 3]);
 });
 
-test('tracker plafonné (rythme réel de 2 s) : tout lu puis nouveau message dans la minute → annoncé', () => {
-  assert.deepEqual(cappedPings([0, 1, null, null, null, 1], [0, 2000, 4000, 6000, 8000, 10000]), [1, 5]);
+test('tracker plafonné (rythme réel de 2 s) : tout lu ≥ 6 s puis nouveau message dans la minute → annoncé', () => {
+  assert.deepEqual(cappedPings([0, 1, null, null, null, null, 1], [0, 2000, 4000, 6000, 8000, 10000, 12000]), [1, 6]);
 });
 
 test('tracker plafonné (rythme réel de 2 s) : clignotement null / 1 pendant 60 s → 1 seule annonce', () => {

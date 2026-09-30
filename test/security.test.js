@@ -8,8 +8,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const { route, PING_SOURCES } = require('../lib/route.js');
-const { agentEnableRefusal } = require('../lib/config.js');
-const { hashString } = require('../lib/parse.js');
+const { agentEnableRefusal, agentBadgeState, pingGate, reconcile } = require('../lib/config.js');
+const { hashString, createPingThrottle } = require('../lib/parse.js');
 
 const root = path.join(__dirname, '..');
 
@@ -200,4 +200,67 @@ test('hook : aucun Symbol ni propriété ajoutés, rien de détectable par la ma
   assert.equal(Object.getOwnPropertySymbols(show).length, 0);
   assert.equal(show[Symbol.for('whichprofile.wrapped')], undefined);
   assert.ok(!code('core/notification-hook.js').includes('Symbol'));
+});
+
+// --- Correctif 1 : throttle par hôte|source, appliqué après le test de source ---------------------------------
+test('Gmail : gmail-mail (désactivé) à t=0 puis gmail-chat à t=120 ms → le chat passe', () => {
+  const config = reconcile(undefined, 'julian@example.com'); // gmail-mail OFF, gmail-chat ON par défaut
+  const throttle = createPingThrottle(250);
+  const host = 'mail.google.com';
+  assert.equal(pingGate({ config, host, source: 'gmail-mail', throttle, now: 0 }), 'source-disabled');
+  assert.equal(pingGate({ config, host, source: 'gmail-chat', throttle, now: 120 }), 'pass');
+});
+
+test('throttle : même hôte|source à moins de 250 ms → throttled ; autre source ou 250 ms plus tard → passe', () => {
+  const config = reconcile(undefined, 'julian@example.com');
+  const throttle = createPingThrottle(250);
+  const host = 'web.whatsapp.com';
+  assert.equal(pingGate({ config, host, source: 'title', throttle, now: 0 }), 'pass');
+  assert.equal(pingGate({ config, host, source: 'title', throttle, now: 100 }), 'throttled');
+  assert.equal(pingGate({ config, host, source: 'notification', throttle, now: 150 }), 'pass');
+  assert.equal(pingGate({ config, host, source: 'title', throttle, now: 400 }), 'pass');
+});
+
+test('background.js : le throttle passe par pingGate, après loadConfig et resolveSource', () => {
+  const source = code('background.js');
+  const handle = source.slice(source.indexOf('async function handlePing'), source.indexOf('// Bouton « Tester »'));
+  assert.ok(handle.indexOf('resolveSource(') < handle.indexOf('pingGate('));
+  assert.ok(!/lastSeen\.get\(host\)/.test(source));
+});
+
+// --- Correctif 2 : garde « libellé neutre » après activation ------------------------------------------------
+test('Agent mode ON puis libellé vidé → aucun onglet ne reçoit l’e-mail (badge retiré)', () => {
+  const config = reconcile(undefined, 'julian@example.com');
+  config.identity.label = 'Agence';
+  config.identity.labelIsDefault = false;
+  config.agentMode = true;
+  assert.deepEqual(agentBadgeState(config, true, [], 1), { enabled: true, label: 'Agence', hidden: false });
+
+  // Libellé vidé : reconcile le remplace par la partie avant « @ » (libellé par défaut).
+  const emptied = reconcile({ ...config, identity: { ...config.identity, label: '', labelIsDefault: true } }, 'julian@example.com');
+  assert.equal(emptied.identity.label, 'julian');
+  const state = agentBadgeState(emptied, true, [], 1);
+  assert.equal(state.enabled, false);
+  assert.equal(state.label, '');
+  assert.ok(!JSON.stringify(state).includes('julian'));
+
+  // Retapé à l'identique ou adresse complète : même refus.
+  for (const label of ['julian', 'Julian', 'julian@example.com']) {
+    const typed = { ...config, identity: { ...config.identity, label, labelIsDefault: false } };
+    assert.deepEqual(agentBadgeState(typed, true, [], 1), { enabled: false, label: '', hidden: false }, label);
+  }
+});
+
+test('agent/chip.js : l’état vient du service worker (garde incluse), jamais de la config brute', () => {
+  const source = code('agent/chip.js');
+  assert.ok(!source.includes('identity'));
+  assert.ok(!source.includes('newValue'));
+  assert.match(source, /onChanged\.addListener[\s\S]*send\(\{ type: 'agent-state' \}\)/);
+});
+
+test('options.js et background.js : garde du libellé après activation', () => {
+  const options = code('options.js');
+  assert.match(options, /config\.agentMode && labelDerivedFromEmail\(candidate\)/);
+  const background = code('background.js');
+  assert.match(background, /config\.agentMode && labelDerivedFromEmail\(config\.identity\)[\s\S]{0,200}disableAgentMode\(\)/);
 });

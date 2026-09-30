@@ -14,7 +14,7 @@ Extension Chrome (MV3) chargée dans **chaque** profil Chrome. Quand une notific
 - Tests : `node --test test/` (Node natif).
 - Permissions obligatoires : `identity`, `identity.email`, `offscreen`, `storage`, `tts`. Rien d'autre. Pas de `host_permissions` (les `matches` des content scripts suffisent), pas de `tabs`, `webNavigation`. **Seule exception : l'Agent mode**, avec `scripting` et `<all_urls>` en *optionnel*, demandés au clic et rendus à la désactivation.
 - Aucune requête réseau, aucun analytics, aucun code distant.
-- Lecture seule du DOM des sites surveillés. **Seule exception : l'Agent mode (opt-in)**, qui *écrit* un chip et `data-whichprofile` sur chaque page, sans rien lire.
+- Lecture seule du DOM des sites surveillés. **Seule exception : l'Agent mode (opt-in)**, qui ajoute un badge en shadow root fermé sur chaque page, rien de lisible par la page, sans rien lire.
 - **Aucun contenu de message nulle part** : ni titre, ni body, ni dans `recentPings`. Les pings ne portent que `{type, source}` ; le site est dérivé de `sender.origin` côté service worker.
 - Pas de logo ni de nom de marque tiers dans les icônes ou le nom.
 
@@ -96,14 +96,14 @@ store/                     textes Chrome Web Store + SUBMISSION.md (checklist da
   - `role="status"`, `aria-label="Chrome profile: {label}"` et le libellé vivent uniquement sur le `.chip`, dans le shadow root fermé ;
   - le libellé visible est du contenu généré CSS (`::after { content: attr(data-label) }`), pas un nœud texte, donc `window.find()` ne peut pas le deviner par essais ;
   - construction factorisée dans `lib/chip.js` (`mountChip`), testée sous Node avec un DOM minimal et vérifiée dans Chrome ;
-  - garde : les options, et le SW (raison `label-from-email`), refusent l'activation tant que le libellé est dérivé de l'e-mail (`labelDerivedFromEmail` : libellé par défaut, partie avant « @ » ou adresse complète) ; message i18n `agentModeNeedsNeutralLabel` ;
+  - garde : les options, et le SW (raison `label-is-email`), refusent l'activation tant que le libellé est dérivé de l'e-mail (`labelDerivedFromEmail` : libellé par défaut, partie avant « @ » ou adresse complète) ; message i18n `agentModeNeedsNeutralLabel` ;
   - `agentModeHint` corrigé dans les 8 locales : il mentionnait `data-whichprofile` et « lisible par les sites ».
 
   Les décisions datées plus haut qui parlent de `data-whichprofile` décrivent la v1.0.0, telle que soumise.
 - **Fuites résiduelles connues (Agent mode actif)** : la présence de l'élément `whichprofile-chip` révèle aux pages que l'extension est installée et le mode actif ; la taille du badge, mesurable par `elementsFromPoint`, trahit à peu près la longueur du libellé. Le libellé lui-même n'est pas lisible.
 
 - **2026-09-30 — v1.0.1, durcissement après un audit sécurité / vie privée indépendant (2 évaluateurs).**
-  1. **Compteur de titre : hystérésis** (corrigé le même jour ; la première version gardait `last` indéfiniment et cassait le cas nominal « tout lu, puis (1) »). Un titre sans compteur ne remet `last` à 0 qu'après `NULL_RESET_READS = 3` lectures null consécutives (≈ 6 s au rythme de 2 s). Cela **remplace la règle « null = 0 immédiatement » de l'écart A** (2026-09-29). Un clignotement (null, 1, null, 1…) n'atteint jamais le seuil : aucune annonce en boucle. En filet, un plafond par hôte (`title-watcher`, `capMs: 60000`) limite à 1 annonce par 60 s sans valeur strictement supérieure au maximum vu depuis la dernière annonce ; un « tout lu » confirmé par l'hystérésis remet ce maximum à 0, pour que le vrai nouveau message suivant soit annoncé même dans la minute. Séquences testées, précédées d'une lecture 0 de référence : [1,∅,∅,∅,1] → 2 annonces ; [0,1,∅,1,∅,1] → 1 ; [2,∅,3] → 2 ; [2,∅,1] → 1.
+  1. **Compteur de titre : hystérésis** (corrigé le même jour ; la première version gardait `last` indéfiniment et cassait le cas nominal « tout lu, puis (1) »). Un titre sans compteur ne remet `last` à 0 qu'après `NULL_RESET_MS = 6000` : 6 s **continues** sans compteur, mesurées depuis la première lecture null et non en nombre de lectures (le MutationObserver de `<head>` peut appeler `check()` des dizaines de fois par seconde ; corrigé après vérification indépendante du diff). Cela **remplace la règle « null = 0 immédiatement » de l'écart A** (2026-09-29). Un clignotement (null, 1, null, 1…) n'atteint jamais le seuil : aucune annonce en boucle. En filet, un plafond par hôte (`title-watcher`, `capMs: 60000`) limite à 1 annonce par 60 s sans valeur strictement supérieure au maximum vu depuis la dernière annonce ; un « tout lu » confirmé par l'hystérésis remet ce maximum à 0, pour que le vrai nouveau message suivant soit annoncé même dans la minute. Séquences testées au rythme de 2 s, précédées d'une lecture 0 de référence : [1, ∅ pendant ≥ 6 s, 1] → 2 annonces ; [0,1,∅,1,∅,1] → 1 ; [2,∅,3] → 2 ; [2,∅,1] → 1 ; 50 null en 200 ms → pas de remise à zéro ; null continu 6,5 s → remise à zéro.
   2. **Throttle d'entrée** : `bridge.js` ignore un événement à moins de 500 ms du précédent ; `handlePing` garde `lastSeen[host]` en mémoire et répond immédiatement sous 250 ms (sans storage, sans `recordPing`, sans `loadConfig`).
   3. **Logs** : plus d'`identity.id` ni de libellé, seulement `{ hasAccount }`.
   4. **Hook** : `WeakSet` privé au lieu de `Symbol.for('whichprofile.wrapped')`, qui permettait de détecter l'extension via le trap `get` ; `showNotification` est enveloppé dans un Proxy, pour que son `toString()` ne révèle pas notre code ; `emit()` seulement si `Notification.permission === 'granted'`.
@@ -115,6 +115,11 @@ store/                     textes Chrome Web Store + SUBMISSION.md (checklist da
   10. **Garde SW** `agentEnableRefusal` : raison `label-is-email` (libellé par défaut avec e-mail, ou retapé à l'identique).
 
   Nouveau `test/security.test.js` : contrôle statique des fichiers livrés, routage, hook exécuté dans `vm`. Textes Store et SUBMISSION alignés ; les instructions de test demandent d'abord d'autoriser les notifications sur discord.com, sans quoi `new Notification` ne déclenche plus rien.
+
+- **2026-09-30 — v1.0.1, corrections après vérification indépendante du diff.**
+  1. **Throttle Gmail** : la clé du throttle de 250 ms devient `hôte|source`, appliquée **après** le test de source (`pingGate`, lib/config.js). Avant, le ping `gmail-mail` (désactivé par défaut) consommait le créneau de l'hôte et le ping `gmail-chat` qui suivait était jeté : plus d'annonce de chat.
+  2. **Garde « libellé neutre » après activation** : les options refusent un libellé dérivé de l'e-mail quand l'Agent mode est actif (valeur précédente restaurée, message `agentModeNeedsNeutralLabel`) ; le SW coupe le mode sur `storage.onChanged` en filet ; `agentBadgeState` n'envoie jamais un tel libellé aux onglets, et `agent/chip.js` redemande l'état au SW au lieu de lire la config brute.
+  3. **Hystérésis en durée** (voir point 1 de l'entrée précédente).
 
 ## Limites connues
 

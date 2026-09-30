@@ -6,6 +6,8 @@
   const { parseUnreadCount, createCounterTracker } = globalThis.WHICHPROFILE_PARSE;
   const POLL_MS = 2000;
   // Plafond par hôte (un title-watcher par onglet) : au plus 1 annonce / 60 s sans nouveau maximum.
+  // Hystérésis en durée (lib/parse.js) : check() peut être appelé très souvent par le MutationObserver,
+  // la remise à zéro n'a lieu qu'après 6 s continues de titre sans compteur.
   const CAP_MS = 60000;
   const tracker = createCounterTracker({ capMs: CAP_MS });
 
