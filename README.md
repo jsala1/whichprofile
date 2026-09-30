@@ -78,6 +78,8 @@ Ouvrir le popup de l'extension **dans le profil concerné** : il liste les 5 der
 | « non annoncé (doublon) » | Un autre signal du même site a été annoncé moins de 12 s avant. On annonce une identité, pas chaque message. |
 | « non annoncé (muet) » | Le mode Muet est activé (popup ou réglages). |
 | « non annoncé (source désactivée) » | Gmail : les nouveaux e-mails sont désactivés par défaut (Réglages → Sources Gmail). Une notification Gmail qui ne vient pas du chat est comptée comme e-mail. |
+| Tout était lu, puis un nouveau message arrive, sans ligne dans le popup | Depuis la v1.0.1, un titre d'onglet sans compteur vaut « inconnu » : on garde la dernière valeur connue. « (1) » après « (3) » n'est donc pas une augmentation. De plus, dans la minute qui suit une annonce, il faut dépasser le maximum déjà vu. La notification du site, elle, est annoncée si les notifications sont autorisées pour ce site. |
+| Le site ne notifie pas (notifications non autorisées) | Depuis la v1.0.1, une notification n'est prise en compte que si le site a la permission d'en afficher (`Notification.permission === "granted"`). Sinon, seul le compteur du titre peut déclencher une annonce. |
 | « ✓ annoncé » mais rien entendu | Volume du Mac, sortie audio, ou voix de synthèse absente : Réglages → Tester. |
 | Rien dans les 10 s après l'ouverture d'un onglet | Voulu : la première lecture du compteur sert de référence, pour ne pas annoncer les non-lus déjà présents au chargement. |
 | Chat Gmail jamais détecté | Voir « Ajuster la détection du chat Gmail » ci-dessous (Gmail dans une autre langue que le français ou l'anglais : non vérifié). |

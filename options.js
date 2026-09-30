@@ -114,6 +114,7 @@ function bind() {
   // Désactivation : le service worker retire le script et les permissions.
   $('agent').addEventListener('change', async (event) => {
     const enable = event.target.checked;
+    let granted = false;
     $('agent-result').textContent = '';
     try {
       if (enable) {
@@ -125,7 +126,7 @@ function bind() {
           $('label').focus();
           return;
         }
-        const granted = await chrome.permissions.request(AGENT_PERMISSIONS);
+        granted = await chrome.permissions.request(AGENT_PERMISSIONS);
         if (!granted) {
           event.target.checked = false;
           $('agent-result').textContent = t('agentModeDenied');
@@ -137,6 +138,8 @@ function bind() {
     } catch (error) {
       event.target.checked = !enable;
       $('agent-result').textContent = t('testFailed', [error.message]);
+      // Permission accordée mais activation échouée : on ne garde pas un accès à tous les sites inutilisé.
+      if (enable && granted) chrome.permissions.remove(AGENT_PERMISSIONS).catch(() => {});
     }
   });
 

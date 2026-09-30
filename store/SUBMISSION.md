@@ -71,7 +71,7 @@ Dans l'ordre du tableau de bord développeur (https://chrome.google.com/webstore
 ## 5. Instructions de test (pour le relecteur, facultatif mais utile)
 
 - [ ] Coller :
-  > Install, open the extension's options and press **Test**: the voice says "Test, <label>" (or plays a tone in Sound mode). The label defaults to the part before "@" of the Google account signed in to the Chrome profile, or "profile without account". For a live check, open https://discord.com (no login needed), run `new Notification("x")` in the DevTools console of that tab: the extension announces "Discord, <label>". The popup lists the last 5 signals and whether they were announced. No account or credentials are required.
+  > Install, open the extension's options and press **Test**: the voice says "Test, <label>" (or plays a tone in Sound mode, or a tone if no local voice is installed, even in Voice mode). The label defaults to the part before "@" of the Google account signed in to the Chrome profile, or "profile without account". For a live check, open https://discord.com (no login needed), allow notifications for that site (run `await Notification.requestPermission()` in the DevTools console and accept; the extension only reacts to notifications the site is allowed to show), then run `new Notification("x")`: the extension announces "Discord, <label>". The popup lists the last 5 signals and whether they were announced. No account or credentials are required.
 
 ## 6. Envoyer
 

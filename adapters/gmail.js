@@ -64,8 +64,9 @@
       'iu',
     ),
 
-    // DEBUG : aria-labels journalisés comme candidats (en plus de ceux qui comptent).
-    debugCandidates: new RegExp(`${PARSE.UNREAD_PATTERN.source}|\\bchat\\b|\\d`, 'iu'),
+    // DEBUG : aria-labels journalisés comme candidats. Limité aux libellés « non lu » (audit 2026-09-30) :
+    // plus de libellés retenus pour un simple chiffre ou le mot « chat ».
+    debugCandidates: PARSE.UNREAD_PATTERN,
   };
   // ====================================================================================================
 
@@ -74,7 +75,7 @@
     return;
   }
 
-  const { parseGmailTitle, createCounterTracker, countUnreadInLabels } = PARSE;
+  const { parseGmailTitle, createCounterTracker, countUnreadInLabels, hashString } = PARSE;
   const SCAN_DELAY_MS = 300;
   const POLL_MS = 2000;
   const isTop = window === window.top;
@@ -172,11 +173,13 @@
   function scanTitle() {
     const title = document.title;
     const parsed = parseGmailTitle(title);
-    if (debug && title !== lastTitle) log('titre', parsed ? `vue="${parsed.view}" compteur=${parsed.count}` : 'non reconnu');
+    // La vue peut être l'objet d'un fil ouvert : jamais en clair, ni en mémoire comme clé, ni dans les logs.
+    const viewKey = parsed ? hashString(parsed.view) : null;
+    if (debug && title !== lastTitle) log('titre', parsed ? `vue#${viewKey} compteur=${parsed.count}` : 'non reconnu');
     lastTitle = title;
     if (!parsed) return;
-    if (!mailTrackers.has(parsed.view)) mailTrackers.set(parsed.view, createCounterTracker());
-    if (mailTrackers.get(parsed.view).update(parsed.count, Date.now())) ping('gmail-mail');
+    if (!mailTrackers.has(viewKey)) mailTrackers.set(viewKey, createCounterTracker());
+    if (mailTrackers.get(viewKey).update(parsed.count, Date.now())) ping('gmail-mail');
   }
 
   // --- Boucle ----------------------------------------------------------------------------------------

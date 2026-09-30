@@ -39,6 +39,9 @@
     "page": "options.html",
     "open_in_tab": true
   },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; connect-src 'none'; img-src 'self'; style-src 'self'; base-uri 'none'"
+  },
   "content_scripts": [
     {
       "matches": [
