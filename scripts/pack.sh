@@ -21,10 +21,10 @@ echo "→ $OUT"
 mkdir -p dist
 rm -f "$OUT"
 # Exclus : dépôt git, tests, scripts, docs internes, textes Store (servent au formulaire, pas à l'extension),
-# sorties de build, source SVG des icônes, fichiers cachés (.gitignore, .DS_Store).
+# sorties de build, visuels du README (docs/), source SVG des icônes, fichiers cachés (.gitignore, .DS_Store).
 zip -q -r -X "$OUT" . \
   -x '.*' -x '*/.*' \
-  -x 'test/*' -x 'scripts/*' -x 'dist/*' -x 'store/*' -x 'icons/*.svg' \
+  -x 'test/*' -x 'scripts/*' -x 'dist/*' -x 'store/*' -x 'docs/*' -x 'node_modules/*' -x 'icons/*.svg' \
   -x 'CLAUDE.md' -x 'README.md'
 
 echo "→ vérification"
@@ -38,6 +38,8 @@ MISSING=$(node -e '
     `_locales/${m.default_locale}/messages.json`,
     "lib/chip.js", "agent/chip.js", // Agent mode : enregistrés dynamiquement, hors manifest
     "lib/sites.js", "lib/config.js", "lib/i18n.js", "lib/route.js", // chargés par importScripts / <script>
+    "ui/tokens.css", "ui/components.css", "ui/fonts/BricolageGrotesque.woff2", "ui/fonts/OFL.txt", // identité v1.0.2
+    "options.css", "popup.css", "LICENSE",
   ];
   const zipped = new Set(process.argv[1].split("\n"));
   console.log(files.filter((f) => !zipped.has(f)).join(" "));
@@ -46,7 +48,7 @@ if [ -n "$MISSING" ]; then
   echo "Fichiers manquants dans le zip : $MISSING" >&2
   exit 1
 fi
-FORBIDDEN=$(printf '%s\n' "$LIST" | grep -E '^(\.git/|test/|scripts/|dist/|store/|CLAUDE\.md$|README\.md$)|/\.|^\.' || true)
+FORBIDDEN=$(printf '%s\n' "$LIST" | grep -E '^(\.git/|test/|scripts/|dist/|store/|docs/|node_modules/|CLAUDE\.md$|README\.md$)|/\.|^\.' || true)
 if [ -n "$FORBIDDEN" ]; then
   echo "Fichiers qui ne devraient pas être dans le zip : $FORBIDDEN" >&2
   exit 1
@@ -54,4 +56,8 @@ fi
 
 COUNT=$(printf '%s\n' "$LIST" | grep -vc '/$')
 SIZE=$(du -k "$OUT" | cut -f1)
+if [ "$SIZE" -ge 1024 ]; then
+  echo "Zip trop gros : ${SIZE} Ko (limite 1 Mo)" >&2
+  exit 1
+fi
 echo "OK : $OUT — $COUNT fichiers, ${SIZE} Ko"

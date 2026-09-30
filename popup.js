@@ -43,10 +43,39 @@ function renderPings(pings) {
   );
 }
 
+// Ligne 2 : dernier ping annoncé, s'il existe.
+function renderLastEvent(pings) {
+  const last = Array.isArray(pings) ? pings.find((ping) => ping.announced) : null;
+  $('last-event').hidden = !last;
+  if (last) $('last-event').textContent = `${t('statusAnnounced')} · ${last.siteLabel} · ${formatTime(last.at)}`;
+}
+
 function render() {
   $('label').textContent = config.identity.label;
   $('email').textContent = config.identity.email || t('noAccountShort');
   $('muted').checked = !!config.muted;
+  $('state-mode').textContent = config.identity.mode === 'sound' ? t('modeSound') : t('modeVoice');
+  document.body.classList.toggle('is-muted', !!config.muted);
+}
+
+// Bouton Tester : même chemin que les options ; point rouge le temps de la lecture.
+async function test() {
+  const button = $('test');
+  button.classList.add('is-playing');
+  try {
+    const result = await chrome.runtime.sendMessage({ type: 'test' });
+    if (result && result.ok && result.mode !== 'sound') {
+      const deadline = Date.now() + 10000;
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      while (Date.now() < deadline && (await new Promise((resolve) => chrome.tts.isSpeaking(resolve)))) {
+        await new Promise((resolve) => setTimeout(resolve, 150));
+      }
+    } else {
+      await new Promise((resolve) => setTimeout(resolve, 700)); // motif < 1 s
+    }
+  } finally {
+    button.classList.remove('is-playing');
+  }
 }
 
 async function init() {
@@ -54,7 +83,9 @@ async function init() {
   const response = await chrome.runtime.sendMessage({ type: 'get-config' });
   config = response.config;
   render();
-  renderPings((await chrome.storage.session.get('recentPings')).recentPings);
+  const { recentPings } = await chrome.storage.session.get('recentPings');
+  renderPings(recentPings);
+  renderLastEvent(recentPings);
 
   $('muted').addEventListener('change', async () => {
     const { config: stored } = await chrome.storage.local.get('config');
@@ -65,9 +96,13 @@ async function init() {
   });
 
   $('options').addEventListener('click', () => chrome.runtime.openOptionsPage());
+  $('test').addEventListener('click', test);
 
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'session' && changes.recentPings) renderPings(changes.recentPings.newValue);
+    if (area === 'session' && changes.recentPings) {
+      renderPings(changes.recentPings.newValue);
+      renderLastEvent(changes.recentPings.newValue);
+    }
     if (area === 'local' && changes.config && changes.config.newValue) {
       config = reconcile(changes.config.newValue, config.identity.email, locale);
       render();

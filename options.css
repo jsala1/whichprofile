@@ -1,138 +1,119 @@
-:root {
-  --bg: #f6f5f2;
-  --surface: #ffffff;
-  --ink: #1d1f24;
-  --muted: #6b6f78;
-  --line: #e3e1dc;
-  --accent: #d9822b;
-  --accent-ink: #ffffff;
-  --focus: #2f6fdf;
-  color-scheme: light dark;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #17181b;
-    --surface: #212328;
-    --ink: #ecebe8;
-    --muted: #9a9ea6;
-    --line: #34363c;
-    --accent: #e9964a;
-    --accent-ink: #17181b;
-    --focus: #7aa7ff;
-  }
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font: 14px/1.45 -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-}
-
-h1,
-h2 {
-  margin: 0;
-  font-weight: 600;
-}
-
-h1 {
-  font-size: 20px;
-}
-
-h2 {
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--muted);
-  margin-bottom: 14px;
-}
-
-p {
-  margin: 0;
-}
+/* Page d'options — identité v1.0.2. Tokens et composants : ui/tokens.css, ui/components.css. */
 
 .muted,
 .hint {
-  color: var(--muted);
+  color: var(--ink-2);
 }
 
 .hint {
-  font-size: 12px;
+  font-size: 12.5px;
 }
 
 .wrap {
-  max-width: 560px;
+  max-width: 620px;
   margin: 0 auto;
-  padding: 32px 16px 64px;
+  padding: 40px 16px 56px;
 }
 
+/* En-tête : icône 32 + nom + version */
 .head {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
+.head h1 {
+  font-size: 26px;
+}
+
+.version {
+  margin-left: 4px;
+  font: 500 13px/1 var(--font-ui);
+  letter-spacing: 0;
+  color: var(--ink-2);
+  vertical-align: 3px;
+}
+
+/* Panneaux */
 .card {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 18px 20px;
+  border-radius: var(--r-md);
+  padding: 22px 24px;
   margin-bottom: 16px;
 }
 
+.card h2 {
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+/* Le libellé du profil, héros de la page */
+.profile-pill--hero {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+/* Lignes de formulaire, séparées par des filets */
 .field {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin: 0 0 16px;
-  padding: 0;
+  margin: 0;
+  padding: 14px 0;
   border: 0;
+  border-top: 1px solid var(--line);
 }
 
-.field:last-child {
-  margin-bottom: 0;
+.card h2 + .field,
+.profile-pill--hero + .field {
+  border-top: 0;
+  padding-top: 0;
 }
 
 .label {
-  font-weight: 500;
+  font-weight: 600;
   padding: 0;
 }
 
+legend.label {
+  float: left;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
 .readonly {
-  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-  font-size: 13px;
+  font: 13px/1.4 ui-monospace, 'SF Mono', Menlo, monospace;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
 }
 
 input[type='text'],
 select {
-  font: inherit;
-  color: inherit;
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 8px 10px;
   width: 100%;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: 14px/1.4 var(--font-ui);
 }
 
-input:focus-visible,
-select:focus-visible,
-button:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
+input[type='text']:hover,
+select:hover {
+  border-color: var(--ink-2);
 }
 
+/* Mode voix / son */
 .segmented {
   display: inline-flex;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  overflow: hidden;
   width: max-content;
+  padding: 3px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
 }
 
 .segmented label {
@@ -146,7 +127,11 @@ button:focus-visible {
 
 .segmented span {
   display: block;
-  padding: 7px 18px;
+  padding: 6px 18px;
+  border-radius: var(--r-pill);
+  font-weight: 600;
+  color: var(--ink-2);
+  transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
 }
 
 .segmented input:checked + span {
@@ -155,117 +140,84 @@ button:focus-visible {
 }
 
 .segmented input:focus-visible + span {
-  outline: 2px solid var(--focus);
-  outline-offset: -2px;
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
 }
 
+/* Interrupteurs (cases à cocher), séparés par des filets */
 .switch {
   display: flex;
   gap: 12px;
   align-items: flex-start;
-  margin-bottom: 14px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
   cursor: pointer;
 }
 
+.card h2 + .switch {
+  border-top: 0;
+  padding-top: 0;
+}
+
 .switch input {
-  margin-top: 3px;
-  accent-color: var(--accent);
-  width: 16px;
-  height: 16px;
   flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+}
+
+.card > .hint {
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
 }
 
 .actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   flex-wrap: wrap;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
 }
 
-button {
-  font: inherit;
-  border-radius: 8px;
+#agent-result:not(:empty) {
+  display: block;
+  padding-top: 8px;
+}
+
+/* Aperçu du badge de l'Agent mode : le vrai badge (lib/chip.js), en position fixe à l'intérieur du cadre
+   grâce au transform, qui fait du cadre le bloc conteneur. */
+.agent-preview {
+  position: relative;
+  height: 96px;
+  margin-top: 14px;
   border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--ink);
-  padding: 8px 16px;
-  cursor: pointer;
-}
-
-button.primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--accent-ink);
-  font-weight: 600;
+  border-radius: var(--r-sm);
+  background:
+    linear-gradient(var(--line-2), var(--line-2)) 18px 22px / 45% 8px no-repeat,
+    linear-gradient(var(--line), var(--line)) 18px 42px / 70% 6px no-repeat,
+    linear-gradient(var(--line), var(--line)) 18px 56px / 58% 6px no-repeat,
+    var(--surface-2);
+  transform: translateZ(0);
+  overflow: hidden;
 }
 
 .saved {
   min-height: 1.5em;
-  color: var(--muted);
-  font-size: 12px;
+  color: var(--ink-2);
+  font-size: 12.5px;
   text-align: center;
 }
 
-[hidden] {
-  display: none !important;
+/* Pied de page */
+.foot {
+  margin-top: 24px;
+  color: var(--ink-2);
+  font-size: 12.5px;
+  text-align: center;
+  line-height: 1.7;
 }
 
-/* Popup */
-.popup {
-  width: 280px;
-}
-
-.popup .wrap {
-  padding: 16px;
-}
-
-.popup .head {
-  margin-bottom: 14px;
-}
-
-.popup .row {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 8px 0;
-  border-top: 1px solid var(--line);
-}
-
-.popup .row .value {
-  text-align: right;
-  overflow-wrap: anywhere;
-}
-
-.popup .pings-title {
-  margin: 14px 0 6px;
-  padding-top: 12px;
-  border-top: 1px solid var(--line);
-}
-
-.popup .pings {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  font-size: 12px;
-}
-
-.popup .ping {
-  display: flex;
-  flex-direction: column;
-  padding: 5px 0;
-  border-bottom: 1px solid var(--line);
-}
-
-.popup .ping .status {
-  color: var(--muted);
-}
-
-.popup .ping.announced .status {
-  color: var(--accent);
-}
-
-.popup .link {
-  display: block;
-  margin-top: 12px;
-  width: 100%;
+.foot a {
+  color: var(--ink);
 }

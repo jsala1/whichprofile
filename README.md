@@ -1,8 +1,16 @@
+![WhichProfile](docs/og-1200x630.png)
+
 # WhichProfile
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-14151f.svg)](LICENSE)
 
 Extension Chrome qui **annonce quel profil Chrome vient de recevoir une notification**.
 
-macOS vous dit « Gmail » ou « WhatsApp », jamais *quel compte*. WhichProfile, installée dans chacun de vos profils, dit par exemple « Gmail, Serendyme » à voix haute, ou joue un motif sonore propre à ce profil.
+- Site : https://whichprofile.app — confidentialité : https://whichprofile.app/privacy
+- **In review on the Chrome Web Store** (en cours d'examen).
+- Contact : hello@whichprofile.app
+
+Votre système vous dit quel service vient de notifier, jamais *quel compte*. WhichProfile, installée dans chacun de vos profils, annonce à voix haute le service et le libellé du profil, ou joue un motif sonore propre à ce profil. La liste des sites couverts est plus bas, dans « Sites couverts ».
 
 - Aucune donnée ne quitte l'appareil. Aucune requête réseau. Aucun contenu de message lu, transmis ou stocké.
 - Manifest V3, JavaScript sans dépendance, sans build.
@@ -32,7 +40,7 @@ Après une mise à jour du code : `chrome://extensions` → bouton ↻ de WhichP
 | Muet | Plus aucune annonce ; le popup liste quand même les derniers pings. |
 | Mode DEBUG | Journalise dans la console (voir « Ajuster la détection du chat Gmail »). |
 
-## Sites surveillés
+## Sites couverts (Sites covered)
 
 | Site | Détection |
 |---|---|
@@ -42,7 +50,7 @@ Après une mise à jour du code : `chrome://extensions` → bouton ↻ de WhichP
 
 Plusieurs signaux pour un même événement (hook + titre + adaptateur) donnent **une seule** annonce : WhichProfile ignore les nouveaux signaux d'un site pendant **12 s** après une annonce. On annonce une identité, pas chaque message.
 
-Le popup liste les **5 derniers pings** : heure, site, source (`notification`, `title`, `gmail-chat`, `gmail-mail`) et s'il a été annoncé ou pourquoi il ne l'a pas été (muet, doublon, source désactivée). C'est le premier endroit où regarder quand une annonce manque ou se répète, sans passer par DEBUG.
+Le popup garde, repliés sous « Derniers pings », les **5 derniers pings** : heure, site, source (`notification`, `title`, `gmail-chat`, `gmail-mail`) et s'il a été annoncé ou pourquoi il ne l'a pas été (muet, doublon, source désactivée). C'est le premier endroit où regarder quand une annonce manque ou se répète, sans passer par DEBUG.
 
 ## Agent mode — why
 
@@ -98,8 +106,8 @@ Les décisions du service worker (ping ignoré / absorbé / annoncé) sont visib
 
 ```sh
 node --test                    # tests automatisés, Node ≥ 18, aucune dépendance
-python3 scripts/make-icons.py  # régénère icons/ (Python standard, sans PIL)
-python3 scripts/make-promo.py  # régénère store/promo/small-tile-440x280.svg (le PNG est rendu par Chrome)
+python3 scripts/make-icons.py  # régénère icons/16, 32, 48, 128.png depuis icons/icon.svg (Python standard, sans PIL)
+CHROME=/chemin/vers/chrome-for-testing node scripts/screenshots.mjs  # captures brutes Store → store/screenshots/raw/
 ```
 
 Sous Node 22, `node --test test/` (avec un répertoire) ne fonctionne pas : utiliser `node --test` sans argument.
@@ -137,3 +145,7 @@ Toute modification de la liste des sites se fait **dans `lib/sites.js` et `manif
 ## Confidentialité
 
 Voir `store/privacy.md`. En bref : l'email du profil est lu localement pour proposer un libellé, stocké dans ce profil uniquement, et jamais transmis.
+
+## Licence
+
+MIT — voir [LICENSE](LICENSE). Police Bricolage Grotesque sous SIL Open Font License 1.1 (`ui/fonts/OFL.txt`).

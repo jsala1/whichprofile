@@ -6,13 +6,13 @@ Dans l'ordre du tableau de bord développeur (https://chrome.google.com/webstore
 
 - [ ] Compte développeur Chrome Web Store actif (frais d'inscription uniques de 5 $ payés), e-mail de contact vérifié, validation en deux étapes activée sur le compte Google.
 - [ ] Statut « non-professionnel » (non-trader) déclaré : extension gratuite, perso, sans activité commerciale.
-- [x] Dépôt public https://github.com/jsala1/whichprofile (branche `main`, Issues activées) ; https://github.com/jsala1/whichprofile/blob/main/store/privacy.md répond sans connexion (vérifié le 2026-09-29, HTTP 200).
-- [ ] `sh scripts/pack.sh` → `dist/whichprofile-1.0.1.zip` (tests verts, fichiers vérifiés).
+- [x] Dépôt public https://github.com/jsala1/whichprofile (branche `main`, Issues activées) ; le site https://whichprofile.app et https://whichprofile.app/privacy répondent (vérifié le 2026-09-30, HTTP 200) ; privacy.md du dépôt reste la source, sans connexion (vérifié le 2026-09-29, HTTP 200).
+- [ ] `sh scripts/pack.sh` → `dist/whichprofile-1.0.2.zip` (tests verts, fichiers vérifiés).
 
 ## 1. Paquet (« Add new item »)
 
-- [ ] Téléverser `dist/whichprofile-1.0.1.zip`.
-- [ ] Vérifier ce que le tableau de bord lit dans le manifest : nom **WhichProfile**, version **1.0.1**, résumé = `extDescription` de chaque locale (EN : « Tells you which Chrome profile just got a notification — by voice or sound. »). Le résumé n'est pas modifiable dans le formulaire : il se change dans `_locales/*/messages.json`.
+- [ ] Téléverser `dist/whichprofile-1.0.2.zip`.
+- [ ] Vérifier ce que le tableau de bord lit dans le manifest : nom **WhichProfile**, version **1.0.2**, site `https://whichprofile.app` (homepage_url), résumé = `extDescription` de chaque locale (EN : « Says which Chrome profile just got a notification — by voice or a sound. Nothing leaves your computer. »). Le résumé n'est pas modifiable dans le formulaire : il se change dans `_locales/*/messages.json`.
 
 ## 2. Fiche Store (« Store listing »)
 
@@ -27,19 +27,20 @@ Dans l'ordre du tableau de bord développeur (https://chrome.google.com/webstore
 ### Ressources graphiques
 
 - [ ] **Icône du Store 128×128** : `icons/128.png`.
-- [ ] **Captures d'écran 1280×800**, dans cet ordre, depuis `store/screenshots/` (profil jetable, interface EN, libellé de démo « Agency », aucun e-mail ni donnée réelle) :
-  1. `1-options-voice-test-1280x800.png` : réglages, mode Voix, « Announced: “Test, Agency” ».
-  2. `2-popup-recent-pings-1280x800.png` : popup avec 5 pings (annoncé, doublon, muet). Il s'agit du vrai popup, agrandi 1,55× et centré pour la capture.
-  3. `3-agent-mode-chip-1280x800.png` : discord.com/register avec le chip « Agency » en bas à droite, à sa taille réelle.
+- [ ] **Captures d'écran 1280×800** : composées par le CTO à partir des captures brutes de `store/screenshots/raw/` (`node scripts/screenshots.mjs` : Chrome for Testing, profil jetable sans compte, libellé « Agency », deviceScaleFactor 2, aucun e-mail ni site réel à l'image) :
+  - `options-light.png`, `options-dark.png` : réglages, page entière, 1000 px de large ;
+  - `popup-light.png`, `popup-dark.png` : popup à sa taille réelle (320 px) ;
+  - `badge-neutral.png` : badge de l'Agent mode sur une page locale neutre (`scripts/fixtures/article.html`) ;
+  - `agent-toggle-on.png` : section Agent mode, interrupteur activé, aperçu du badge.
   - Fiche FR : les mêmes captures conviennent (interface anglaise). Captures FR facultatives.
-- [ ] **Petite tuile promotionnelle 440×280** : `store/promo/small-tile-440x280.png` (source : `small-tile-440x280.svg`, générée par `scripts/make-promo.py`).
-- [ ] Tuile marquee 1400×560, vidéo : facultatives, à laisser vides.
+- [ ] **Petite tuile promotionnelle 440×280** : fournie par le CTO (`01_Store/v1.0.2_assets/promo-tile-440x280.png`, iCloud).
+- [ ] Tuile marquee 1400×560 : fournie par le CTO (`01_Store/v1.0.2_assets/marquee-1400x560.png`), facultative ; vidéo : vide.
 
 ### Champs supplémentaires
 
 - [ ] Site officiel : vide (nécessite un domaine vérifié dans la Search Console).
-- [ ] Page d'accueil : https://github.com/jsala1/whichprofile
-- [ ] URL d'assistance : https://github.com/jsala1/whichprofile/issues (activer les Issues sur le dépôt).
+- [ ] Page d'accueil : https://whichprofile.app
+- [ ] URL d'assistance : https://github.com/jsala1/whichprofile/issues (Issues activées) ; contact public : hello@whichprofile.app.
 - [ ] Contenu pour adultes : **Non**.
 
 ## 3. Confidentialité (« Privacy »)
@@ -60,7 +61,7 @@ Dans l'ordre du tableau de bord développeur (https://chrome.google.com/webstore
   - Recommandation prudente : cocher **Informations personnelles identifiables** (l'e-mail du profil est lu via `identity.email`), même s'il reste sur l'appareil. Ne rien cocher d'autre : aucun contenu de message n'est lu ni stocké, et les compteurs de non-lus ne sont pas conservés.
   - À trancher par Julian : si la définition de Google ne vise que les données transmises hors de l'appareil, on peut ne rien cocher. Le cocher coûte une mention sur la fiche ; ne pas le cocher alors qu'il le fallait coûte un rejet.
 - [ ] Cocher les **3 certifications** : pas de vente ni de transfert à des tiers ; pas d'usage sans rapport avec l'objectif unique ; pas d'usage pour évaluer la solvabilité ou accorder des prêts.
-- [ ] **URL de la politique de confidentialité** : https://github.com/jsala1/whichprofile/blob/main/store/privacy.md
+- [ ] **URL de la politique de confidentialité** : https://whichprofile.app/privacy
 
 ## 4. Distribution
 

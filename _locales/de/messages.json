@@ -7,7 +7,7 @@
     "message": "WhichProfile"
   },
   "extDescription": {
-    "message": "Sagt Ihnen, welches Chrome-Profil gerade eine Benachrichtigung erhalten hat – per Stimme oder Ton."
+    "message": "Sagt, welches Chrome-Profil gerade eine Benachrichtigung erhalten hat – per Stimme oder Ton. Nichts verlässt Ihren Computer."
   },
   "actionTitle": {
     "message": "WhichProfile — welches Profil?"
@@ -211,5 +211,18 @@
   },
   "agentModeNeedsNeutralLabel": {
     "message": "Wählen Sie zuerst einen neutralen Namen (weder Ihren Namen noch Ihre E-Mail-Adresse) und schalten Sie dann den Agentenmodus ein: Er erscheint auf jeder Seite."
+  },
+  "footerPrivacy": {
+    "message": "Datenschutzerklärung"
+  },
+  "footerContact": {
+    "message": "Kontakt:"
+  },
+  "footerSource": {
+    "message": "Quellcode"
+  },
+  "footerLegal": {
+    "message": "Independent project, not affiliated with Google. Product names are trademarks of their owners.",
+    "description": "Legal notice: kept in English in every locale, do not translate."
   }
 }
