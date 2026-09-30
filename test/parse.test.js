@@ -56,14 +56,27 @@ test('tracker : [null, 1, 1, 2, 0, 1] → pings aux index 3 et 5 seulement', () 
   assert.deepEqual(pingIndexes([null, 1, 1, 2, 0, 1]), [3, 5]);
 });
 
-test('tracker : null après référence = valeur inconnue, la précédente est gardée', () => {
-  // Règle changée le 2026-09-30 (audit) : avant, null valait 0 et [2, null, 1] pingeait à l'index 2.
-  assert.deepEqual(pingIndexes([2, null, 1]), []);
-  assert.deepEqual(pingIndexes([2, null, 3]), [2]);
+// Hystérésis (2026-09-30). Les séquences commencent par une lecture 0 : c'est la référence (première lecture,
+// jamais annoncée), ce qui donne les nombres d'annonces attendus pour les séquences qui suivent.
+test('hystérésis : [1, null, null, null, 1] → 2 annonces (3 titres sans compteur = tout lu, puis vrai nouveau message)', () => {
+  assert.deepEqual(pingIndexes([0, 1, null, null, null, 1]), [1, 5]);
 });
 
-test('tracker (audit) : [0, 1, null, 1, null, 1] → une seule annonce', () => {
-  assert.deepEqual(pingIndexes([0, 1, null, 1, null, 1]), [1]);
+test('hystérésis : [0, 1, null, 1, null, 1] → 1 seule annonce (clignotement)', () => {
+  assert.deepEqual(pingIndexes([0, 0, 1, null, 1, null, 1]), [2]);
+});
+
+test('hystérésis : [2, null, 3] → 2 annonces', () => {
+  assert.deepEqual(pingIndexes([0, 2, null, 3]), [1, 3]);
+});
+
+test('hystérésis : [2, null, 1] → 1 seule annonce (un seul titre sans compteur ne remet pas à 0)', () => {
+  assert.deepEqual(pingIndexes([0, 2, null, 1]), [1]);
+});
+
+test('hystérésis : 2 titres sans compteur ne suffisent pas, le 3e remet à 0', () => {
+  assert.deepEqual(pingIndexes([0, 1, null, null, 1]), [1]);
+  assert.deepEqual(pingIndexes([0, 1, null, null, null, 1]), [1, 5]);
 });
 
 function cappedPings(sequence, times) {
@@ -81,6 +94,16 @@ test('tracker plafonné : valeur strictement supérieure au maximum → annonce 
 
 test('tracker plafonné : après 60 s, une nouvelle augmentation est annoncée', () => {
   assert.deepEqual(cappedPings([0, 1, 0, 1], [0, 1000, 2000, 62000]), [1, 3]);
+});
+
+test('tracker plafonné (rythme réel de 2 s) : tout lu puis nouveau message dans la minute → annoncé', () => {
+  assert.deepEqual(cappedPings([0, 1, null, null, null, 1], [0, 2000, 4000, 6000, 8000, 10000]), [1, 5]);
+});
+
+test('tracker plafonné (rythme réel de 2 s) : clignotement null / 1 pendant 60 s → 1 seule annonce', () => {
+  const sequence = [0, ...Array.from({ length: 30 }, (_, i) => (i % 2 ? null : 1))];
+  const times = sequence.map((_, i) => i * 2000);
+  assert.deepEqual(cappedPings(sequence, times), [1]);
 });
 
 test('tracker : chauffe écoulée puis (1) → ping', () => {
