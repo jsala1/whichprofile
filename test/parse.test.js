@@ -56,9 +56,31 @@ test('tracker : [null, 1, 1, 2, 0, 1] → pings aux index 3 et 5 seulement', () 
   assert.deepEqual(pingIndexes([null, 1, 1, 2, 0, 1]), [3, 5]);
 });
 
-test('tracker : null après référence puis (1) → ping', () => {
-  // Tout est lu, le titre perd son compteur, puis un nouveau message arrive.
-  assert.deepEqual(pingIndexes([2, null, 1]), [2]);
+test('tracker : null après référence = valeur inconnue, la précédente est gardée', () => {
+  // Règle changée le 2026-09-30 (audit) : avant, null valait 0 et [2, null, 1] pingeait à l'index 2.
+  assert.deepEqual(pingIndexes([2, null, 1]), []);
+  assert.deepEqual(pingIndexes([2, null, 3]), [2]);
+});
+
+test('tracker (audit) : [0, 1, null, 1, null, 1] → une seule annonce', () => {
+  assert.deepEqual(pingIndexes([0, 1, null, 1, null, 1]), [1]);
+});
+
+function cappedPings(sequence, times) {
+  const tracker = createCounterTracker({ capMs: 60000 });
+  return sequence.flatMap((count, i) => (tracker.update(count, times[i]) ? [i] : []));
+}
+
+test('tracker plafonné (titre) : 0/1 en boucle pendant 60 s → une seule annonce', () => {
+  assert.deepEqual(cappedPings([0, 1, 0, 1, 0, 1], [0, 1000, 2000, 3000, 4000, 5000]), [1]);
+});
+
+test('tracker plafonné : valeur strictement supérieure au maximum → annonce même dans les 60 s', () => {
+  assert.deepEqual(cappedPings([0, 1, 0, 2], [0, 1000, 2000, 3000]), [1, 3]);
+});
+
+test('tracker plafonné : après 60 s, une nouvelle augmentation est annoncée', () => {
+  assert.deepEqual(cappedPings([0, 1, 0, 1], [0, 1000, 2000, 62000]), [1, 3]);
 });
 
 test('tracker : chauffe écoulée puis (1) → ping', () => {

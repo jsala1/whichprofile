@@ -5,7 +5,9 @@
 
   const { parseUnreadCount, createCounterTracker } = globalThis.WHICHPROFILE_PARSE;
   const POLL_MS = 2000;
-  const tracker = createCounterTracker();
+  // Plafond par hôte (un title-watcher par onglet) : au plus 1 annonce / 60 s sans nouveau maximum.
+  const CAP_MS = 60000;
+  const tracker = createCounterTracker({ capMs: CAP_MS });
 
   function check() {
     if (tracker.update(parseUnreadCount(document.title), Date.now())) {

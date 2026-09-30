@@ -1,6 +1,6 @@
 // Service worker : reçoit les pings, résout l'identité du profil, filtre, débounce, annonce.
 // Aucun état en mémoire qui ne soit reconstruisible depuis chrome.storage (le SW peut s'endormir à tout moment).
-importScripts('lib/sites.js', 'lib/parse.js', 'lib/config.js', 'lib/i18n.js');
+importScripts('lib/sites.js', 'lib/parse.js', 'lib/config.js', 'lib/i18n.js', 'lib/route.js');
 
 const { isKnownHost, siteLabel } = globalThis.WHICHPROFILE_SITES;
 const { createDebouncer } = globalThis.WHICHPROFILE_PARSE;
@@ -8,7 +8,7 @@ const {
   DEBOUNCE_MS,
   reconcile,
   isSourceEnabled,
-  labelDerivedFromEmail,
+  agentEnableRefusal,
   shouldAnnounce,
   pickVoice,
   localVoices,
@@ -17,6 +17,7 @@ const {
 } =
   globalThis.WHICHPROFILE_CONFIG;
 const { t, localeDefaults } = globalThis.WHICHPROFILE_I18N;
+const { route } = globalThis.WHICHPROFILE_ROUTE;
 
 const OFFSCREEN_URL = 'offscreen.html';
 
@@ -142,11 +143,20 @@ function recordPing(entry) {
   return recentQueue;
 }
 
+// Throttle d'entrée, en mémoire seulement : un ping du même hôte à moins de 250 ms du précédent est rejeté
+// avant toute lecture de storage, sans être enregistré. Perdu à la mise en veille du SW, sans conséquence.
+const PING_THROTTLE_MS = 250;
+const lastSeen = new Map();
+
 async function handlePing(message, sender) {
   const host = senderHost(sender);
   if (!isKnownHost(host)) return { ok: false, reason: 'unknown-site' };
 
   const now = Date.now();
+  const previous = lastSeen.get(host);
+  lastSeen.set(host, now);
+  if (previous !== undefined && now - previous < PING_THROTTLE_MS) return { ok: true, announced: false, reason: 'throttled' };
+
   const config = await loadConfig();
   const source = resolveSource(message.source, host, sender);
 
@@ -185,7 +195,15 @@ async function setAgentMode(enabled) {
 }
 
 // Aligne l'enregistrement du content script sur la config et les permissions (démarrage, changements).
-async function syncAgentMode() {
+// Sérialisé : permissions.onAdded et enableAgentMode peuvent lancer deux synchronisations en même temps.
+let syncQueue = Promise.resolve();
+function syncAgentMode() {
+  const run = syncQueue.then(doSyncAgentMode);
+  syncQueue = run.catch((error) => console.warn('[WhichProfile] agent sync', error));
+  return run;
+}
+
+async function doSyncAgentMode() {
   const permitted = await agentPermitted();
   let config = await loadConfig();
   if (config.agentMode && !permitted) config = await setAgentMode(false); // permission retirée dans chrome://extensions
@@ -193,16 +211,21 @@ async function syncAgentMode() {
   if (!chrome.scripting) return active;
   const registered = await chrome.scripting.getRegisteredContentScripts({ ids: [AGENT_SCRIPT_ID] });
   if (active && registered.length === 0) {
-    await chrome.scripting.registerContentScripts([
-      {
-        id: AGENT_SCRIPT_ID,
-        js: AGENT_FILES,
-        matches: ['<all_urls>'],
-        runAt: 'document_idle',
-        allFrames: false,
-        persistAcrossSessions: true,
-      },
-    ]);
+    try {
+      await chrome.scripting.registerContentScripts([
+        {
+          id: AGENT_SCRIPT_ID,
+          js: AGENT_FILES,
+          matches: ['<all_urls>'],
+          runAt: 'document_idle',
+          allFrames: false,
+          persistAcrossSessions: true,
+        },
+      ]);
+    } catch (error) {
+      // Déjà enregistré par une synchronisation concurrente : c'est l'état voulu.
+      if (!/Duplicate script ID/i.test(String(error && error.message))) throw error;
+    }
   } else if (!active && registered.length > 0) {
     await chrome.scripting.unregisterContentScripts({ ids: [AGENT_SCRIPT_ID] });
   }
@@ -210,9 +233,9 @@ async function syncAgentMode() {
 }
 
 async function enableAgentMode() {
-  // Même garde que la page d'options : pas de badge portant un libellé dérivé de l'e-mail.
-  if (labelDerivedFromEmail((await loadConfig()).identity)) return { ok: false, reason: 'label-from-email' };
-  if (!(await agentPermitted())) return { ok: false, reason: 'permission-denied' };
+  // Même garde que la page d'options, appliquée ici aussi : l'UI seule ne suffit pas.
+  const refusal = agentEnableRefusal((await loadConfig()).identity, await agentPermitted());
+  if (refusal) return { ok: false, reason: refusal };
   await setAgentMode(true);
   await syncAgentMode();
   // Le script enregistré ne vaut que pour les prochains chargements : on l'injecte aussi dans les onglets ouverts.
@@ -266,26 +289,27 @@ chrome.runtime.onStartup.addListener(() => syncAgentMode());
 // Bouton « Tester » : même chemin d'annonce, sans mute ni debounce.
 async function handleTest() {
   const config = await loadConfig();
-  console.info('[WhichProfile] test', { mode: config.identity.mode, label: config.identity.label });
+  console.info('[WhichProfile] test', { mode: config.identity.mode, hasAccount: !!config.identity.email });
   const testLabel = t('testSiteLabel');
   await announce(config, testLabel);
   return { ok: true, mode: config.identity.mode, text: announcementText(testLabel, config.identity.label) };
 }
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (!message || message.target === 'offscreen') return false;
+const HANDLERS = {
+  ping: (message, sender) => handlePing(message, sender),
+  test: () => handleTest(),
+  'get-config': () => loadConfig().then((config) => ({ ok: true, config })),
+  'agent-enable': () => enableAgentMode(),
+  'agent-disable': () => disableAgentMode(),
+  'agent-state': (message, sender) => agentState(sender.tab.id),
+  'agent-hide': (message, sender) => hideAgentChip(sender.tab.id),
+};
 
-  // Les pages de l'extension (options, popup) ont une URL chrome-extension:// ; les content scripts, celle du site.
-  const fromExtensionPage = typeof sender.url === 'string' && sender.url.startsWith(chrome.runtime.getURL(''));
-  let task = null;
-  if (message.type === 'ping' && !fromExtensionPage) task = handlePing(message, sender);
-  else if (message.type === 'test' && fromExtensionPage) task = handleTest();
-  else if (message.type === 'get-config' && fromExtensionPage) task = loadConfig().then((config) => ({ ok: true, config }));
-  else if (message.type === 'agent-enable' && fromExtensionPage) task = enableAgentMode();
-  else if (message.type === 'agent-disable' && fromExtensionPage) task = disableAgentMode();
-  else if (message.type === 'agent-state' && !fromExtensionPage && sender.tab) task = agentState(sender.tab.id);
-  else if (message.type === 'agent-hide' && !fromExtensionPage && sender.tab) task = hideAgentChip(sender.tab.id);
-  if (!task) return false;
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  // route() (lib/route.js) : origine du message, onglet, source de ping autorisée. null = ignoré.
+  const action = route(message, sender, chrome.runtime.getURL(''));
+  if (!action) return false;
+  const task = HANDLERS[action](message, sender);
 
   task.then(sendResponse, (error) => {
     console.error('[WhichProfile]', error);
@@ -295,6 +319,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 chrome.runtime.onInstalled.addListener(() => {
-  loadConfig().then((config) => console.info('[WhichProfile] prêt', { id: config.identity.id, label: config.identity.label }));
+  loadConfig().then((config) => console.info('[WhichProfile] prêt', { hasAccount: !!config.identity.email }));
   syncAgentMode();
 });

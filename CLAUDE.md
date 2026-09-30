@@ -102,6 +102,20 @@ store/                     textes Chrome Web Store + SUBMISSION.md (checklist da
   Les décisions datées plus haut qui parlent de `data-whichprofile` décrivent la v1.0.0, telle que soumise.
 - **Fuites résiduelles connues (Agent mode actif)** : la présence de l'élément `whichprofile-chip` révèle aux pages que l'extension est installée et le mode actif ; la taille du badge, mesurable par `elementsFromPoint`, trahit à peu près la longueur du libellé. Le libellé lui-même n'est pas lisible.
 
+- **2026-09-30 — v1.0.1, durcissement après un audit sécurité / vie privée indépendant (2 évaluateurs).**
+  1. **Compteur de titre** : un titre sans compteur vaut *inconnu*, on garde `last`. Cela **remplace la règle « null = 0 après référence » de l'écart A** (2026-09-29). Plafond par hôte (`title-watcher`, `capMs: 60000`) : au plus 1 annonce par 60 s sans valeur strictement supérieure au maximum vu depuis la dernière annonce. Conséquence voulue : tout lire (« WhatsApp ») puis « (1) » n'est plus annoncé par le titre ; seule la notification du site l'est.
+  2. **Throttle d'entrée** : `bridge.js` ignore un événement à moins de 500 ms du précédent ; `handlePing` garde `lastSeen[host]` en mémoire et répond immédiatement sous 250 ms (sans storage, sans `recordPing`, sans `loadConfig`).
+  3. **Logs** : plus d'`identity.id` ni de libellé, seulement `{ hasAccount }`.
+  4. **Hook** : `WeakSet` privé au lieu de `Symbol.for('whichprofile.wrapped')`, qui permettait de détecter l'extension via le trap `get` ; `showNotification` est enveloppé dans un Proxy, pour que son `toString()` ne révèle pas notre code ; `emit()` seulement si `Notification.permission === 'granted'`.
+  5. **Options** : si `agent-enable` échoue après une permission accordée, la permission est retirée.
+  6. **`syncAgentMode` sérialisé**, et « Duplicate script ID » ignoré.
+  7. **Routage** extrait dans `lib/route.js` (fonction pure `route`), avec `message.source` en liste blanche {notification, title, gmail-chat, gmail-mail}.
+  8. **Gmail DEBUG** : candidats limités à `UNREAD_PATTERN` ; clé de `mailTrackers` = `hashString(view)` (FNV-1a), jamais la vue en clair.
+  9. **CSP explicite** des pages de l'extension.
+  10. **Garde SW** `agentEnableRefusal` : raison `label-is-email` (libellé par défaut avec e-mail, ou retapé à l'identique).
+
+  Nouveau `test/security.test.js` : contrôle statique des fichiers livrés, routage, hook exécuté dans `vm`. Textes Store et SUBMISSION alignés ; les instructions de test demandent d'abord d'autoriser les notifications sur discord.com, sans quoi `new Notification` ne déclenche plus rien.
+
 ## Limites connues
 
 - Notifications push reçues onglet fermé (service worker du site) : invisibles. Celles déclenchées depuis la page via `registration.showNotification` sont vues.
@@ -134,3 +148,4 @@ Plages horaires par identité ; bouton « je partage mon écran » ; adaptateurs
 - Publisher ID : `b6dd2025-ae76-49dc-bd43-f8e2bd27c752`.
 - Package soumis : `dist/whichprofile-1.0.0.zip`, produit par `sh scripts/pack.sh` au commit `2fda89d`.
 - **v1.0.1 préparée le 30/09/2026** pour remplacer la 1.0.0 avant publication (libellé de l'Agent mode non lisible par les pages) : `dist/whichprofile-1.0.1.zip`. À re-soumettre par Julian.
+- v1.0.1 complétée le même jour par le durcissement issu de l'audit sécurité (voir décisions) ; zip refait.

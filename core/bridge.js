@@ -3,7 +3,14 @@
 (() => {
   'use strict';
 
+  // Throttle d'entrée : un événement à moins de 500 ms du précédent est ignoré.
+  const MIN_INTERVAL_MS = 500;
+  let lastAt = -Infinity;
+
   document.addEventListener('whichprofile:notif', () => {
+    const now = Date.now();
+    if (now - lastAt < MIN_INTERVAL_MS) return;
+    lastAt = now;
     try {
       chrome.runtime.sendMessage({ type: 'ping', source: 'notification' }).catch(() => {});
     } catch (_) {

@@ -19,7 +19,7 @@ Sites covered: Gmail (chat, and email as an option), Google Chat, WhatsApp Web, 
 Privacy:
 • Nothing leaves your computer. No network requests, no account to create, no analytics.
 • WhichProfile never stores or transmits the content of your messages — it only detects that a notification arrived or that an unread counter went up.
-• The profile's Google account address is used only to suggest a default label. It stays in that profile.
+• The profile's Google account address is read only to suggest a default label and to show, in the settings, which account this profile is. It stays in that profile.
 
 Honest limits:
 • The site's tab must be open: notifications received while the tab is closed are not visible to WhichProfile.
