@@ -2,7 +2,7 @@
 
 - **En vigueur le / Effective date :** 30 septembre 2026 / September 30, 2026 (v1.0.1 : le libellé du mode agent n'est plus lisible par les pages / Agent mode label no longer readable by pages)
 - **Périmètre / Scope :** l'extension Chrome WhichProfile, version 1.0.0 et suivantes, telle que distribuée sur le Chrome Web Store et sur https://github.com/jsala1/whichprofile / the WhichProfile Chrome extension, version 1.0.0 and later, as distributed on the Chrome Web Store and at https://github.com/jsala1/whichprofile
-- **Contact :** https://github.com/jsala1/whichprofile/issues
+- **Contact :** hello@whichprofile.app — ou / or https://github.com/jsala1/whichprofile/issues
 
 ## Français
 

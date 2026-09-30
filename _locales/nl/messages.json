@@ -7,7 +7,7 @@
     "message": "WhichProfile"
   },
   "extDescription": {
-    "message": "Vertelt je welk Chrome-profiel net een melding kreeg — met een stem of een geluid."
+    "message": "Zegt welk Chrome-profiel net een melding kreeg — met een stem of een geluid. Niets verlaat je computer."
   },
   "actionTitle": {
     "message": "WhichProfile — welk profiel?"
@@ -211,5 +211,18 @@
   },
   "agentModeNeedsNeutralLabel": {
     "message": "Kies eerst een neutrale naam (niet je naam of e-mailadres) en zet daarna de agentmodus aan: die verschijnt op elke pagina."
+  },
+  "footerPrivacy": {
+    "message": "Privacybeleid"
+  },
+  "footerContact": {
+    "message": "Contact:"
+  },
+  "footerSource": {
+    "message": "Broncode"
+  },
+  "footerLegal": {
+    "message": "Independent project, not affiliated with Google. Product names are trademarks of their owners.",
+    "description": "Legal notice: kept in English in every locale, do not translate."
   }
 }

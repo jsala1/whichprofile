@@ -14,7 +14,7 @@ const { hashString, createPingThrottle } = require('../lib/parse.js');
 const root = path.join(__dirname, '..');
 
 // --- Fichiers livrés : mêmes exclusions que scripts/pack.sh -------------------------------------------------
-const EXCLUDED_DIRS = new Set(['.git', 'test', 'scripts', 'dist', 'store', 'node_modules']);
+const EXCLUDED_DIRS = new Set(['.git', 'test', 'scripts', 'dist', 'store', 'docs', 'node_modules']);
 const EXCLUDED_FILES = new Set(['CLAUDE.md', 'README.md']);
 
 function shippedFiles(dir = root) {

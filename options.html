@@ -4,20 +4,26 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title data-i18n="optionsTitle">WhichProfile</title>
+    <link rel="stylesheet" href="ui/tokens.css" />
+    <link rel="stylesheet" href="ui/components.css" />
     <link rel="stylesheet" href="options.css" />
   </head>
   <body class="page">
     <main class="wrap">
       <header class="head">
-        <img src="icons/48.png" alt="" width="32" height="32" />
+        <img src="icons/32.png" alt="" width="32" height="32" />
         <div>
-          <h1>WhichProfile</h1>
+          <h1>WhichProfile <span id="version" class="version"></span></h1>
           <p class="muted" data-i18n="optionsIntro"></p>
         </div>
       </header>
 
       <section class="card">
         <h2 data-i18n="sectionIdentity"></h2>
+        <!-- Le libellé du profil, héros de la page : même puce que le site. -->
+        <p class="profile-pill profile-pill--hero" aria-hidden="true">
+          <span class="profile-pill__dot"></span><span id="label-pill" class="profile-pill__text"></span>
+        </p>
         <div class="field">
           <span class="label" data-i18n="detectedAccount"></span>
           <output id="email" class="readonly">…</output>
@@ -62,7 +68,7 @@
         </label>
 
         <div class="actions">
-          <button id="test" type="button" class="primary" data-i18n="testButton"></button>
+          <button id="test" type="button" class="primary btn btn--primary" data-i18n="testButton"></button>
           <output id="test-result" class="muted"></output>
         </div>
       </section>
@@ -99,10 +105,24 @@
           <span><strong data-i18n="agentMode"></strong><br /><span class="muted" data-i18n="agentModeHint"></span></span>
         </label>
         <output id="agent-result" class="hint"></output>
+        <!-- Aperçu : le vrai badge (lib/chip.js), contenu dans ce cadre. -->
+        <div id="agent-preview" class="agent-preview" aria-hidden="true" hidden></div>
       </section>
 
       <p id="saved" class="saved" aria-live="polite"></p>
+
+      <footer class="foot">
+        <p>
+          <a href="https://whichprofile.app/privacy" target="_blank" rel="noopener" data-i18n="footerPrivacy"></a>
+          <span aria-hidden="true">·</span>
+          <span data-i18n="footerContact"></span> <a href="mailto:hello@whichprofile.app">hello@whichprofile.app</a>
+          <span aria-hidden="true">·</span>
+          <a href="https://github.com/jsala1/whichprofile" target="_blank" rel="noopener" data-i18n="footerSource"></a>
+        </p>
+        <p data-i18n="footerLegal"></p>
+      </footer>
     </main>
+    <script src="lib/chip.js"></script>
     <script src="lib/parse.js"></script>
     <script src="lib/config.js"></script>
     <script src="lib/i18n.js"></script>

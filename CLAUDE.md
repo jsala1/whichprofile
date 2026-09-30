@@ -39,8 +39,13 @@ lib/i18n.js                chrome.i18n : traduction des pages, valeurs par défa
 lib/chip.js                Agent mode : modèle pur du chip (texte, role, aria-label, CSS), testé
 agent/chip.js              Agent mode : content script enregistré dynamiquement (<all_urls>, frame principale, document_idle)
 _locales/<code>/messages.json  en (défaut), fr, es, pt_BR, pt_PT, it, de, nl — mêmes clés partout
-scripts/make-icons.py      PNG 16/48/128 en Python stdlib (pas de PIL sur la machine)
-scripts/make-promo.py      tuile Store 440×280 en SVG (PNG rendu par Chrome)
+scripts/make-icons.py      PNG 16/32/48/128 depuis icons/icon.svg, Python stdlib (128 = 96 px + 16 px transparents)
+scripts/screenshots.mjs    captures brutes Store (Node pur + Chrome for Testing) → store/screenshots/raw/
+scripts/fixtures/          page locale neutre pour la capture du badge
+ui/                        tokens.css, components.css, fonts/ (Bricolage Grotesque + OFL.txt) — identité v1.0.2
+popup.css                  styles du popup (320 px)
+docs/                      visuels du README (hors zip)
+LICENSE                    MIT
 scripts/pack.sh            tests puis dist/whichprofile-<version>.zip (hors .git, test/, scripts/, store/, dist/, CLAUDE.md, README.md, icons/*.svg, fichiers cachés)
 store/                     textes Chrome Web Store + SUBMISSION.md (checklist dans l'ordre du formulaire)
 ```
@@ -121,6 +126,18 @@ store/                     textes Chrome Web Store + SUBMISSION.md (checklist da
   2. **Garde « libellé neutre » après activation** : les options refusent un libellé dérivé de l'e-mail quand l'Agent mode est actif (valeur précédente restaurée, message `agentModeNeedsNeutralLabel`) ; le SW coupe le mode sur `storage.onChanged` en filet ; `agentBadgeState` n'envoie jamais un tel libellé aux onglets, et `agent/chip.js` redemande l'état au SW au lieu de lire la config brute.
   3. **Hystérésis en durée** (voir point 1 de l'entrée précédente).
 
+- **2026-09-30 — v1.0.2 « nouvelle identité »** (prompt CTO, GO Julian).
+  - **Icônes** : `icons/icon.svg` = SVG fourni, sans le bloc `<metadata>` C2PA (5 formes). PNG 16/32/48 plein cadre et 128 = 96 px de dessin + 16 px transparents, régénérés par `scripts/make-icons.py`. Aucun PNG d'iCloud : la 128 fournie n'avait pas d'alpha.
+  - **Tokens** `ui/tokens.css` + composants `ui/components.css` (puce, boutons pilule, focus 3 px, `prefers-reduced-motion`). Bricolage Grotesque, OFL, avec `ui/fonts/OFL.txt` du dépôt google/fonts, pour les titres et le libellé ; les contrôles restent en `system-ui`.
+  - **Rouge** (`--signal`) : seulement sur le point de la puce et sur le bouton Tester pendant la lecture (`.is-playing`, `chrome.tts.isSpeaking`). Un test statique vérifie les sélecteurs.
+  - **Options** : en-tête icône 32 + version ; libellé en puce héros ; panneaux et filets ; pied de page site, contact, source, plus `footerLegal` en anglais dans les 8 locales. Nouvelles clés `footerPrivacy`, `footerContact`, `footerSource`, traduites.
+  - **Aperçu de l'Agent mode** : le vrai badge de `lib/chip.js`, monté dans `#agent-preview` (un `transform` fait du cadre le bloc conteneur du `position: fixed`). La CSP `style-src 'self'` bloque le `<style>` du shadow root : `options.js` passe à `mountChip` un document qui le remplace par un `<template>` et applique la même CSS par `adoptedStyleSheets`. `lib/chip.js` n'est pas touché, sauf la couleur du point.
+  - **Badge** : seule modification, la couleur du point, #e9964a → #ff6b61. Contrôle pixel sur la page neutre, v1.0.1 contre v1.0.2 : 124 pixels différents, tous dans le point (12×12 px à DPR 2).
+  - **Popup** : puce, e-mail en petit, état (voix / son) + interrupteur Muet, dernier événement annoncé, boutons Réglages / Tester, et `<details>` « Derniers pings » replié. On garde le diagnostic, et les textes Store (« shown in the popup ») restent vrais.
+  - **Manifest** : 1.0.2, `homepage_url` https://whichprofile.app, icônes en 4 tailles, nouvelle `extDescription` (EN / FR mot pour mot, 6 traduites). Permissions, CSP et content scripts inchangés.
+  - `privacy.md` : seule modification, la ligne Contact (hello@ ou Issues GitHub). Date d'effet inchangée.
+  - **Supprimés** : `scripts/make-promo.py`, `store/promo/`, `store/screenshots/*.png` (ancienne identité). Les visuels Store finaux sont composés par le CTO à partir de `store/screenshots/raw/`.
+
 ## Limites connues
 
 - Notifications push reçues onglet fermé (service worker du site) : invisibles. Celles déclenchées depuis la page via `registration.showNotification` sont vues.
@@ -154,3 +171,5 @@ Plages horaires par identité ; bouton « je partage mon écran » ; adaptateurs
 - Package soumis : `dist/whichprofile-1.0.0.zip`, produit par `sh scripts/pack.sh` au commit `2fda89d`.
 - **v1.0.1 préparée le 30/09/2026** pour remplacer la 1.0.0 avant publication (libellé de l'Agent mode non lisible par les pages) : `dist/whichprofile-1.0.1.zip`. À re-soumettre par Julian.
 - v1.0.1 complétée le même jour par le durcissement issu de l'audit sécurité (voir décisions) ; zip refait.
+- **v1.0.2 préparée le 30/09/2026** (nouvelle identité, site https://whichprofile.app, contact hello@whichprofile.app, licence MIT) : `dist/whichprofile-1.0.2.zip`. Export pour audit CTO : iCloud `01_Store/v1.0.2_export/`.
+- v1.0.1 review annulée le … ; v1.0.2 soumise le … (dates à fournir par Julian).

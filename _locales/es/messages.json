@@ -7,7 +7,7 @@
     "message": "WhichProfile"
   },
   "extDescription": {
-    "message": "Te dice qué perfil de Chrome acaba de recibir una notificación — por voz o con un sonido."
+    "message": "Dice qué perfil de Chrome acaba de recibir una notificación — en voz alta o con un sonido. Nada sale de tu ordenador."
   },
   "actionTitle": {
     "message": "WhichProfile — ¿qué perfil?"
@@ -211,5 +211,18 @@
   },
   "agentModeNeedsNeutralLabel": {
     "message": "Elige primero un nombre neutro (ni tu nombre ni tu dirección de correo) y luego activa el modo agente: se muestra en cada página."
+  },
+  "footerPrivacy": {
+    "message": "Política de privacidad"
+  },
+  "footerContact": {
+    "message": "Contacto:"
+  },
+  "footerSource": {
+    "message": "Código fuente"
+  },
+  "footerLegal": {
+    "message": "Independent project, not affiliated with Google. Product names are trademarks of their owners.",
+    "description": "Legal notice: kept in English in every locale, do not translate."
   }
 }

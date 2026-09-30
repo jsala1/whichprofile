@@ -1,78 +1,122 @@
 #!/usr/bin/env python3
-"""Génère icons/16.png, 48.png, 128.png et icons/icon.svg.
+"""Génère icons/16.png, 32.png, 48.png et 128.png depuis icons/icon.svg (source unique).
 
-Python standard uniquement (zlib + struct) : PIL n'est pas disponible sur la machine.
-Motif : trois profils (points), celui du milieu « parle » (plein, accent, onde autour).
-Anticrénelage par sur-échantillonnage 4x4.
+Python standard uniquement (xml + zlib + struct) : pas de PIL sur la machine.
+Gère ce que contient l'icône : <rect> (rx, fill, stroke, stroke-width, stroke-opacity, fill-opacity)
+et <circle> (fill). Anticrénelage par sur-échantillonnage 8×8.
+
+- 16, 32, 48 : dessin plein cadre.
+- 128 : 96 px de dessin + 16 px de marge transparente (exigence du Chrome Web Store).
 
     python3 scripts/make-icons.py
 """
 import math
 import os
 import struct
+import xml.etree.ElementTree as ET
 import zlib
 
-ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "icons")
-SIZES = (16, 48, 128)
-SAMPLES = 4
-
-INK = (0x1D, 0x1F, 0x24)
-MUTED = (0x8B, 0x8F, 0x98)
-ACCENT = (0xE9, 0x96, 0x4A)
-
-# Formes en coordonnées unitaires [0, 1], dessinées dans l'ordre.
-BG_RADIUS = 0.22
-DOTS = [((0.16, 0.5), 0.065, MUTED), ((0.84, 0.5), 0.065, MUTED), ((0.5, 0.5), 0.15, ACCENT)]
-RING = ((0.5, 0.5), 0.235, 0.035, ACCENT, 0.6)  # centre, rayon, épaisseur, couleur, opacité
-RING_MIN_SIZE = 48  # l'onde est illisible en 16 px
+HERE = os.path.dirname(os.path.abspath(__file__))
+ICONS = os.path.join(HERE, "..", "icons")
+SOURCE = os.path.join(ICONS, "icon.svg")
+SAMPLES = 8
+# taille du PNG → (taille du dessin, marge)
+LAYOUT = {16: (16, 0), 32: (32, 0), 48: (48, 0), 128: (96, 16)}
 
 
-def in_rounded_rect(x, y, r):
-    dx = max(r - x, 0, x - (1 - r))
-    dy = max(r - y, 0, y - (1 - r))
-    return dx * dx + dy * dy <= r * r
+def parse_color(value):
+    value = value.strip().lstrip("#")
+    if len(value) == 3:
+        value = "".join(c * 2 for c in value)
+    return tuple(int(value[i : i + 2], 16) / 255 for i in (0, 2, 4))
 
 
-def blend(dst, color, alpha):
-    return tuple(d * (1 - alpha) + c * alpha for d, c in zip(dst, color))
+def number(el, name, default=0.0):
+    return float(el.get(name, default))
 
 
-def sample(x, y, size):
-    """Couleur et opacité (0..1) d'un point."""
-    if not in_rounded_rect(x, y, BG_RADIUS):
-        return (0, 0, 0), 0.0
-    color = INK
-    if size >= RING_MIN_SIZE:
-        (cx, cy), radius, width, ring_color, opacity = RING
-        if abs(math.hypot(x - cx, y - cy) - radius) <= width / 2:
-            color = blend(color, ring_color, opacity)
-    for (cx, cy), radius, dot_color in DOTS:
-        if math.hypot(x - cx, y - cy) <= radius:
-            color = dot_color
-    return color, 1.0
+def rounded_rect_distance(x, y, rx, ry, w, h, r):
+    """Distance signée au bord d'un rectangle arrondi (négative à l'intérieur)."""
+    cx, cy = rx + w / 2, ry + h / 2
+    qx = abs(x - cx) - (w / 2 - r)
+    qy = abs(y - cy) - (h / 2 - r)
+    outside = math.hypot(max(qx, 0), max(qy, 0))
+    return outside + min(max(qx, qy), 0) - r
 
 
-def render(size):
+def load_shapes():
+    root = ET.parse(SOURCE).getroot()
+    view = [float(v) for v in root.get("viewBox").split()]
+    shapes = []
+    for el in root:
+        tag = el.tag.split("}")[-1]
+        if tag == "rect":
+            geom = (number(el, "x"), number(el, "y"), number(el, "width"), number(el, "height"), number(el, "rx"))
+            dist = lambda x, y, g=geom: rounded_rect_distance(x, y, *g)
+        elif tag == "circle":
+            cx, cy, r = number(el, "cx"), number(el, "cy"), number(el, "r")
+            dist = lambda x, y, c=(cx, cy, r): math.hypot(x - c[0], y - c[1]) - c[2]
+        else:
+            raise ValueError(f"forme non gérée : {tag}")
+        fill = el.get("fill", "#000")
+        stroke = el.get("stroke")
+        shapes.append(
+            {
+                "dist": dist,
+                "fill": None if fill == "none" else parse_color(fill),
+                "fill_opacity": number(el, "fill-opacity", 1),
+                "stroke": parse_color(stroke) if stroke and stroke != "none" else None,
+                "stroke_opacity": number(el, "stroke-opacity", 1),
+                "stroke_width": number(el, "stroke-width", 1),
+            }
+        )
+    return view, shapes
+
+
+def over(dst, color, alpha):
+    """Composition « source-over » en alpha non prémultiplié. dst = (r, g, b, a)."""
+    r, g, b, a = dst
+    out_a = alpha + a * (1 - alpha)
+    if out_a == 0:
+        return (0.0, 0.0, 0.0, 0.0)
+    mix = lambda s, d: (s * alpha + d * a * (1 - alpha)) / out_a
+    return (mix(color[0], r), mix(color[1], g), mix(color[2], b), out_a)
+
+
+def sample(shapes, x, y):
+    pixel = (0.0, 0.0, 0.0, 0.0)
+    for shape in shapes:
+        d = shape["dist"](x, y)
+        if shape["fill"] and d <= 0:
+            pixel = over(pixel, shape["fill"], shape["fill_opacity"])
+        if shape["stroke"] and abs(d) <= shape["stroke_width"] / 2:
+            pixel = over(pixel, shape["stroke"], shape["stroke_opacity"])
+    return pixel
+
+
+def render(size, view, shapes):
+    art, margin = LAYOUT[size]
+    vx, vy, vw, vh = view
     rows = []
     for py in range(size):
         row = bytearray([0])  # filtre PNG : aucun
         for px in range(size):
-            acc = [0.0, 0.0, 0.0]
-            alpha = 0.0
+            acc = [0.0, 0.0, 0.0, 0.0]  # couleurs prémultipliées + alpha
             for sy in range(SAMPLES):
                 for sx in range(SAMPLES):
-                    x = (px + (sx + 0.5) / SAMPLES) / size
-                    y = (py + (sy + 0.5) / SAMPLES) / size
-                    color, a = sample(x, y, size)
-                    alpha += a
-                    for i in range(3):
-                        acc[i] += color[i] * a
+                    u = (px + (sx + 0.5) / SAMPLES - margin) / art
+                    v = (py + (sy + 0.5) / SAMPLES - margin) / art
+                    if not (0 <= u <= 1 and 0 <= v <= 1):
+                        continue  # marge : transparente
+                    r, g, b, a = sample(shapes, vx + u * vw, vy + v * vh)
+                    acc[0] += r * a
+                    acc[1] += g * a
+                    acc[2] += b * a
+                    acc[3] += a
             n = SAMPLES * SAMPLES
-            if alpha:
-                pixel = [round(acc[i] / alpha) for i in range(3)]
-            else:
-                pixel = [0, 0, 0]
-            row.extend(pixel + [round(255 * alpha / n)])
+            alpha = acc[3] / n
+            rgb = [round(255 * acc[i] / acc[3]) if acc[3] else 0 for i in range(3)]
+            row.extend(rgb + [round(255 * alpha)])
         rows.append(bytes(row))
     return b"".join(rows)
 
@@ -86,33 +130,13 @@ def png(size, raw):
     return b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", header) + chunk(b"IDAT", zlib.compress(raw, 9)) + chunk(b"IEND", b"")
 
 
-def hex_color(rgb):
-    return "#%02x%02x%02x" % rgb
-
-
-def svg():
-    (cx, cy), radius, width, ring_color, opacity = RING
-    dots = "\n".join(
-        f'  <circle cx="{x * 128:g}" cy="{y * 128:g}" r="{r * 128:g}" fill="{hex_color(c)}"/>' for (x, y), r, c in DOTS
-    )
-    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
-  <rect width="128" height="128" rx="{BG_RADIUS * 128:g}" fill="{hex_color(INK)}"/>
-  <circle cx="{cx * 128:g}" cy="{cy * 128:g}" r="{radius * 128:g}" fill="none" stroke="{hex_color(ring_color)}" stroke-opacity="{opacity}" stroke-width="{width * 128:g}"/>
-{dots}
-</svg>
-"""
-
-
 def main():
-    os.makedirs(ROOT, exist_ok=True)
-    for size in SIZES:
-        path = os.path.join(ROOT, f"{size}.png")
+    view, shapes = load_shapes()
+    for size in LAYOUT:
+        path = os.path.join(ICONS, f"{size}.png")
         with open(path, "wb") as f:
-            f.write(png(size, render(size)))
+            f.write(png(size, render(size, view, shapes)))
         print("écrit", os.path.relpath(path))
-    with open(os.path.join(ROOT, "icon.svg"), "w") as f:
-        f.write(svg())
-    print("écrit icons/icon.svg")
 
 
 if __name__ == "__main__":

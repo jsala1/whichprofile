@@ -4,6 +4,7 @@ const { reconcile, defaultLabel, pickVoice, localVoices, labelDerivedFromEmail }
 const { t, localeDefaults, translatePage } = globalThis.WHICHPROFILE_I18N;
 const $ = (id) => document.getElementById(id);
 const locale = localeDefaults();
+const { chipModel, mountChip, TAG: CHIP_TAG } = globalThis.WHICHPROFILE_CHIP;
 // Permissions optionnelles de l'Agent mode (optional_permissions / optional_host_permissions du manifest).
 const AGENT_PERMISSIONS = { permissions: ['scripting'], origins: ['<all_urls>'] };
 
@@ -57,8 +58,61 @@ function renderMode() {
   for (const el of document.querySelectorAll('[data-mode]')) el.hidden = el.dataset.mode !== mode;
 }
 
+// Aperçu de l'Agent mode : le vrai badge de lib/chip.js, monté tel quel dans #agent-preview.
+// La CSP des pages de l'extension (style-src 'self') bloque le <style> que mountChip met dans le shadow root :
+// ce « document » le remplace par un <template> inerte et applique la même CSS (model.css) par
+// adoptedStyleSheets. Même balisage, même CSS que sur les pages : rendu identique, lib/chip.js intact.
+let previewBadge = null;
+function previewDocument(model) {
+  return {
+    createElement(tag) {
+      if (tag === 'style') return document.createElement('template');
+      const element = document.createElement(tag);
+      if (tag === CHIP_TAG) {
+        element.attachShadow = (init) => {
+          const root = HTMLElement.prototype.attachShadow.call(element, init);
+          const sheet = new CSSStyleSheet();
+          sheet.replaceSync(model.css);
+          root.adoptedStyleSheets = [sheet];
+          return root;
+        };
+      }
+      return element;
+    },
+  };
+}
+
+function renderAgentPreview() {
+  const model = config.agentMode ? chipModel(config.identity.label) : null;
+  $('agent-preview').hidden = !model;
+  if (!model) {
+    if (previewBadge) previewBadge.remove();
+    previewBadge = null;
+    return;
+  }
+  if (!previewBadge) previewBadge = mountChip(previewDocument(model), $('agent-preview'), model, null);
+  else previewBadge.update(model);
+}
+
+// Bouton Tester : point rouge (.is-playing) le temps de la lecture, et seulement pendant.
+async function markPlaying(mode) {
+  const button = $('test');
+  button.classList.add('is-playing');
+  if (mode === 'sound') {
+    await new Promise((resolve) => setTimeout(resolve, 700)); // motif < 1 s
+  } else {
+    const deadline = Date.now() + 10000;
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    while (Date.now() < deadline && (await new Promise((resolve) => chrome.tts.isSpeaking(resolve)))) {
+      await new Promise((resolve) => setTimeout(resolve, 150));
+    }
+  }
+  button.classList.remove('is-playing');
+}
+
 function render() {
   const { identity, sources } = config;
+  $('label-pill').textContent = identity.label;
   $('email').textContent = identity.email || t('noAccount');
   if (document.activeElement !== $('label')) $('label').value = identity.label;
   for (const radio of document.querySelectorAll('input[name="mode"]')) radio.checked = radio.value === identity.mode;
@@ -68,6 +122,7 @@ function render() {
   $('muted').checked = !!config.muted;
   $('debug').checked = !!config.debug;
   $('agent').checked = !!config.agentMode;
+  renderAgentPreview();
   renderVoiceSelects();
   renderMode();
 }
@@ -161,6 +216,7 @@ function bind() {
     try {
       const result = await chrome.runtime.sendMessage({ type: 'test' });
       if (!result || !result.ok) throw new Error(result ? result.reason : t('noResponse'));
+      markPlaying(result.mode);
       $('test-result').textContent =
         result.mode === 'sound'
           ? t('testSound', [$('pattern').selectedOptions[0].textContent])
@@ -181,6 +237,7 @@ function bind() {
 
 async function init() {
   translatePage(document);
+  $('version').textContent = `v${chrome.runtime.getManifest().version}`;
   // get-config passe par le SW : il lit l'email du profil et crée la config à la première exécution.
   const response = await chrome.runtime.sendMessage({ type: 'get-config' });
   config = response.config;

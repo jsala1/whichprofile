@@ -7,7 +7,7 @@
     "message": "WhichProfile"
   },
   "extDescription": {
-    "message": "Tells you which Chrome profile just got a notification — by voice or sound."
+    "message": "Says which Chrome profile just got a notification — by voice or a sound. Nothing leaves your computer."
   },
   "actionTitle": {
     "message": "WhichProfile"
@@ -211,5 +211,18 @@
   },
   "agentModeNeedsNeutralLabel": {
     "message": "Choose a neutral label first (not your name or email address), then turn Agent mode on: it is shown on every page."
+  },
+  "footerPrivacy": {
+    "message": "Privacy policy"
+  },
+  "footerContact": {
+    "message": "Contact:"
+  },
+  "footerSource": {
+    "message": "Source code"
+  },
+  "footerLegal": {
+    "message": "Independent project, not affiliated with Google. Product names are trademarks of their owners.",
+    "description": "Legal notice: kept in English in every locale, do not translate."
   }
 }

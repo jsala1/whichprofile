@@ -3,24 +3,41 @@
   <head>
     <meta charset="utf-8" />
     <title>WhichProfile</title>
-    <link rel="stylesheet" href="options.css" />
+    <link rel="stylesheet" href="ui/tokens.css" />
+    <link rel="stylesheet" href="ui/components.css" />
+    <link rel="stylesheet" href="popup.css" />
   </head>
   <body class="popup">
     <main class="wrap">
+      <!-- Ligne 1 : la puce du profil, et le compte en petit -->
       <header class="head">
-        <img src="icons/48.png" alt="" width="28" height="28" />
-        <div>
-          <h1 id="label">…</h1>
-          <p id="email" class="muted"></p>
-        </div>
+        <p class="profile-pill profile-pill--lg">
+          <span class="profile-pill__dot"></span><span id="label" class="profile-pill__text">…</span>
+        </p>
+        <p id="email" class="email"></p>
       </header>
-      <label class="switch">
-        <input id="muted" type="checkbox" />
-        <span><strong data-i18n="muted"></strong></span>
-      </label>
-      <h2 class="pings-title" data-i18n="recentPings"></h2>
-      <ol id="pings" class="pings"></ol>
-      <button id="options" type="button" class="link" data-i18n="settingsButton"></button>
+
+      <!-- Ligne 2 : état (voix / son / muet) et dernier événement annoncé -->
+      <div class="state">
+        <span id="state-mode" class="state-mode"></span>
+        <label class="mute">
+          <input id="muted" type="checkbox" />
+          <span data-i18n="muted"></span>
+        </label>
+      </div>
+      <p id="last-event" class="last-event" hidden></p>
+
+      <!-- Ligne 3 : Options, Tester -->
+      <div class="actions">
+        <button id="options" type="button" class="btn link" data-i18n="settingsButton"></button>
+        <button id="test" type="button" class="btn" data-i18n="testButton"></button>
+      </div>
+
+      <!-- Diagnostic : les 5 derniers pings, repliés -->
+      <details class="recent">
+        <summary data-i18n="recentPings"></summary>
+        <ol id="pings" class="pings"></ol>
+      </details>
     </main>
     <script src="lib/parse.js"></script>
     <script src="lib/config.js"></script>
