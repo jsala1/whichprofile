@@ -10,7 +10,7 @@
 
 ### Ce que l'extension lit, localement
 
-- **L'adresse e-mail du compte Google connecté au profil Chrome** (`chrome.identity.getProfileUserInfo`). Elle sert uniquement à proposer un libellé par défaut (la partie avant « @ ») et à afficher le compte détecté dans les réglages. Elle est enregistrée dans le stockage local de l'extension, propre à ce profil (voir plus bas), et n'est jamais transmise.
+- **L'adresse e-mail du compte Google connecté au profil Chrome** (`chrome.identity.getProfileUserInfo`). Elle sert uniquement à proposer un libellé par défaut (la partie avant « @ ») et à afficher le compte détecté dans les réglages et le popup. Elle est enregistrée dans le stockage local de l'extension, propre à ce profil (voir plus bas), et n'est jamais transmise.
 - **Le fait qu'une notification a été créée** sur un des sites couverts, ou que le compteur de non-lus du titre de l'onglet a augmenté. WhichProfile ne transmet ni ne stocke **aucun contenu de message**, et ne lit jamais le titre ni le texte des notifications. Sur Gmail, le titre de l'onglet (qui peut contenir l'objet de la conversation ouverte) n'est lu que pour en extraire le compteur de non-lus, puis oublié.
 - **Gmail :** l'extension lit les libellés d'accessibilité (aria-label) du panneau de navigation et des cadres du chat pour compter les éléments marqués non lus ; traités en mémoire puis oubliés. En mode DEBUG (désactivé par défaut), ceux qui ressemblent à des compteurs sont écrits dans la console de développement de l'onglet Gmail, sur votre appareil.
 
@@ -44,7 +44,7 @@ Les annonces utilisent la synthèse vocale de Chrome (`chrome.tts`). Seules les 
 
 ### What the extension reads, locally
 
-- **The email address of the Google account signed in to the Chrome profile** (`chrome.identity.getProfileUserInfo`). It is used only to suggest a default label (the part before "@") and to show the detected account in the settings. It is saved in the extension's local storage for that profile (see below) and is never transmitted.
+- **The email address of the Google account signed in to the Chrome profile** (`chrome.identity.getProfileUserInfo`). It is used only to suggest a default label (the part before "@") and to show the detected account in the settings and the popup. It is saved in the extension's local storage for that profile (see below) and is never transmitted.
 - **The fact that a notification was created** on a covered site, or that the unread counter in the tab title went up. WhichProfile never transmits or stores **any message content**, and never reads the title or text of notifications. On Gmail, the tab title (which can include the subject of the open conversation) is read only to extract the unread counter, then discarded.
 - **Gmail:** the extension reads the accessibility labels (aria-label) of the navigation panel and of the chat frames to count items marked unread; processed in memory and discarded. In DEBUG mode (off by default) those that look like counters are written to the Gmail tab's developer console, on your device.
 

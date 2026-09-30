@@ -7,12 +7,12 @@ Dans l'ordre du tableau de bord développeur (https://chrome.google.com/webstore
 - [ ] Compte développeur Chrome Web Store actif (frais d'inscription uniques de 5 $ payés), e-mail de contact vérifié, validation en deux étapes activée sur le compte Google.
 - [ ] Statut « non-professionnel » (non-trader) déclaré : extension gratuite, perso, sans activité commerciale.
 - [x] Dépôt public https://github.com/jsala1/whichprofile (branche `main`, Issues activées) ; https://github.com/jsala1/whichprofile/blob/main/store/privacy.md répond sans connexion (vérifié le 2026-09-29, HTTP 200).
-- [ ] `sh scripts/pack.sh` → `dist/whichprofile-1.0.0.zip` (tests verts, fichiers vérifiés).
+- [ ] `sh scripts/pack.sh` → `dist/whichprofile-1.0.1.zip` (tests verts, fichiers vérifiés).
 
 ## 1. Paquet (« Add new item »)
 
-- [ ] Téléverser `dist/whichprofile-1.0.0.zip`.
-- [ ] Vérifier ce que le tableau de bord lit dans le manifest : nom **WhichProfile**, version **1.0.0**, résumé = `extDescription` de chaque locale (EN : « Tells you which Chrome profile just got a notification — by voice or sound. »). Le résumé n'est pas modifiable dans le formulaire : il se change dans `_locales/*/messages.json`.
+- [ ] Téléverser `dist/whichprofile-1.0.1.zip`.
+- [ ] Vérifier ce que le tableau de bord lit dans le manifest : nom **WhichProfile**, version **1.0.1**, résumé = `extDescription` de chaque locale (EN : « Tells you which Chrome profile just got a notification — by voice or sound. »). Le résumé n'est pas modifiable dans le formulaire : il se change dans `_locales/*/messages.json`.
 
 ## 2. Fiche Store (« Store listing »)
 

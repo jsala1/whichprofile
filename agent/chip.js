@@ -51,11 +51,11 @@
 
   send({ type: 'agent-state' }).then(apply);
 
-  // Libellé modifié, ou Agent mode désactivé : mise à jour immédiate de tous les onglets ouverts.
+  // Libellé modifié, ou Agent mode désactivé : on redemande l'état au service worker (qui applique la garde
+  // « libellé neutre »), plutôt que de lire la config brute : un libellé dérivé de l'e-mail n'arrive jamais ici.
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== 'local' || !changes.config) return;
-    const config = changes.config.newValue;
-    apply({ enabled: !!(config && config.agentMode), label: config && config.identity ? config.identity.label : '' });
+    send({ type: 'agent-state' }).then(apply);
   });
 
   // Certaines apps remplacent le contenu de <html> : on remet le badge s'il a été détaché.

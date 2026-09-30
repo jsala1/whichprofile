@@ -3,12 +3,14 @@
 importScripts('lib/sites.js', 'lib/parse.js', 'lib/config.js', 'lib/i18n.js', 'lib/route.js');
 
 const { isKnownHost, siteLabel } = globalThis.WHICHPROFILE_SITES;
-const { createDebouncer } = globalThis.WHICHPROFILE_PARSE;
+const { createDebouncer, createPingThrottle } = globalThis.WHICHPROFILE_PARSE;
 const {
   DEBOUNCE_MS,
   reconcile,
-  isSourceEnabled,
   agentEnableRefusal,
+  agentBadgeState,
+  labelDerivedFromEmail,
+  pingGate,
   shouldAnnounce,
   pickVoice,
   localVoices,
@@ -143,25 +145,24 @@ function recordPing(entry) {
   return recentQueue;
 }
 
-// Throttle d'entrée, en mémoire seulement : un ping du même hôte à moins de 250 ms du précédent est rejeté
-// avant toute lecture de storage, sans être enregistré. Perdu à la mise en veille du SW, sans conséquence.
+// Throttle d'entrée, en mémoire seulement : un ping de même `hôte|source` à moins de 250 ms du précédent est
+// rejeté sans être enregistré. Appliqué APRÈS le test de source (pingGate). Perdu à la mise en veille du SW.
 const PING_THROTTLE_MS = 250;
-const lastSeen = new Map();
+const pingThrottle = createPingThrottle(PING_THROTTLE_MS);
 
 async function handlePing(message, sender) {
   const host = senderHost(sender);
   if (!isKnownHost(host)) return { ok: false, reason: 'unknown-site' };
 
   const now = Date.now();
-  const previous = lastSeen.get(host);
-  lastSeen.set(host, now);
-  if (previous !== undefined && now - previous < PING_THROTTLE_MS) return { ok: true, announced: false, reason: 'throttled' };
-
   const config = await loadConfig();
   const source = resolveSource(message.source, host, sender);
 
+  const gate = pingGate({ config, host, source, throttle: pingThrottle, now });
+  if (gate === 'throttled') return { ok: true, announced: false, reason: 'throttled' };
+
   let status;
-  if (!isSourceEnabled(config, source)) status = 'source-disabled';
+  if (gate === 'source-disabled') status = 'source-disabled';
   else if (!(await debouncer.hit(host, now))) status = 'debounced';
   else status = shouldAnnounce(config, now) ? 'announced' : 'muted';
 
@@ -269,7 +270,7 @@ async function agentState(tabId) {
     agentPermitted(),
     chrome.storage.session.get('agentHidden'),
   ]);
-  return { enabled: config.agentMode && permitted, label: config.identity.label, hidden: agentHidden.includes(tabId) };
+  return agentBadgeState(config, permitted, agentHidden, tabId);
 }
 
 async function hideAgentChip(tabId) {
@@ -283,6 +284,16 @@ chrome.tabs.onRemoved.addListener(async (tabId) => {
   if (agentHidden.includes(tabId)) await chrome.storage.session.set({ agentHidden: agentHidden.filter((id) => id !== tabId) });
 });
 chrome.permissions.onAdded.addListener(() => syncAgentMode());
+// Filet : libellé redevenu dérivé de l'e-mail alors que l'Agent mode est actif (options contournées, autre
+// profil de sync, etc.) → on coupe le mode. Les badges, eux, sont déjà retirés par agentBadgeState.
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area !== 'local' || !changes.config) return;
+  const config = changes.config.newValue;
+  if (config && config.agentMode && labelDerivedFromEmail(config.identity)) {
+    console.warn('[WhichProfile] libellé dérivé de l’e-mail : mode agent coupé');
+    disableAgentMode();
+  }
+});
 chrome.permissions.onRemoved.addListener(() => syncAgentMode());
 chrome.runtime.onStartup.addListener(() => syncAgentMode());
 

@@ -73,14 +73,27 @@ function render() {
 }
 
 function bind() {
-  $('label').addEventListener('change', () =>
+  $('label').addEventListener('change', () => {
+    const value = $('label').value.trim();
+    // Garde « libellé neutre » après activation : Agent mode actif et libellé dérivé de l'e-mail → refusé,
+    // valeur précédente restaurée (le SW coupe aussi le mode en filet si la config y arrive autrement).
+    const candidate = {
+      ...config.identity,
+      label: value || defaultLabel(config.identity.email, locale),
+      labelIsDefault: !value,
+    };
+    if (config.agentMode && labelDerivedFromEmail(candidate)) {
+      $('label').value = config.identity.label;
+      $('agent-result').textContent = t('agentModeNeedsNeutralLabel');
+      $('saved').textContent = t('agentModeNeedsNeutralLabel');
+      return;
+    }
     writeConfig((c) => {
-      const value = $('label').value.trim();
-      c.identity.label = value || defaultLabel(c.identity.email, locale);
-      c.identity.labelIsDefault = !value;
+      c.identity.label = candidate.label;
+      c.identity.labelIsDefault = candidate.labelIsDefault;
       $('label').value = c.identity.label;
-    }),
-  );
+    });
+  });
 
   for (const radio of document.querySelectorAll('input[name="mode"]')) {
     radio.addEventListener('change', () =>
