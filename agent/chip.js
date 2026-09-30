@@ -1,6 +1,7 @@
 // Agent mode — content script enregistré dynamiquement (registerContentScripts, <all_urls>, frame principale,
 // document_idle), et injecté une fois dans les onglets déjà ouverts à l'activation.
-// Écrit seulement : un chip bas-droite en Shadow DOM + data-whichprofile sur <html>. Ne lit rien du DOM de la page.
+// Écrit seulement un badge bas-droite dont l'hôte ne porte rien de lisible par la page (voir lib/chip.js).
+// Ne lit rien du DOM de la page et n'y écrit aucun attribut.
 (() => {
   'use strict';
 
@@ -8,45 +9,26 @@
   if (globalThis.__whichprofileAgentChip) return;
   globalThis.__whichprofileAgentChip = true;
 
-  const { chipModel } = globalThis.WHICHPROFILE_CHIP;
+  const { chipModel, mountChip } = globalThis.WHICHPROFILE_CHIP;
   const RECONNECT_MS = 5000;
 
   let label = '';
   let hidden = false;
-  let host = null;
-  let chip = null;
-
-  function build(model) {
-    host = document.createElement(model.tag);
-    const shadow = host.attachShadow({ mode: 'closed' });
-    const style = document.createElement('style');
-    style.textContent = model.css;
-    chip = document.createElement('div');
-    chip.className = 'chip';
-    chip.addEventListener('click', hide);
-    shadow.append(style, chip);
-  }
+  let badge = null;
 
   function render() {
     const model = chipModel(label);
     const root = document.documentElement;
-    if (!model || !root) {
-      if (root) delete root.dataset.whichprofile;
-      if (host) host.remove();
+    if (!model || hidden || !root) {
+      if (badge) badge.remove();
       return;
     }
-    root.dataset.whichprofile = model.dataset;
-    if (hidden) {
-      if (host) host.remove();
-      return;
-    }
-    if (!host) build(model);
-    for (const [name, value] of Object.entries(model.hostAttributes)) host.setAttribute(name, value);
-    chip.replaceChildren(Object.assign(document.createElement('span'), { className: 'dot' }), model.text);
-    if (!host.isConnected) root.append(host);
+    if (!badge) badge = mountChip(document, root, model, hide);
+    else badge.update(model);
+    if (!badge.host.isConnected) root.append(badge.host);
   }
 
-  // Masqué pour cet onglet (y compris après navigation) ; data-whichprofile reste posé pour les agents.
+  // Masqué pour cet onglet, y compris après navigation.
   function hide() {
     hidden = true;
     render();
@@ -76,8 +58,8 @@
     apply({ enabled: !!(config && config.agentMode), label: config && config.identity ? config.identity.label : '' });
   });
 
-  // Certaines apps remplacent le contenu de <html> : on remet le chip s'il a été détaché.
+  // Certaines apps remplacent le contenu de <html> : on remet le badge s'il a été détaché.
   setInterval(() => {
-    if (label && !hidden && host && !host.isConnected) render();
+    if (label && !hidden && badge && !badge.host.isConnected) render();
   }, RECONNECT_MS);
 })();

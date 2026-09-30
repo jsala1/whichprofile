@@ -50,13 +50,14 @@ Les agents IA qui naviguent pour vous (navigateurs agentiques, extensions d'assi
 
 L'Agent mode, **désactivé par défaut**, rend le profil lisible sur chaque page :
 - un petit chip bas-droite avec le libellé du profil (Shadow DOM fermé, sans effet sur la mise en page ; clic = masqué pour cet onglet) ;
-- sur l'hôte du chip, `role="status"` et `aria-label="Chrome profile: <libellé>"`, lus par les agents qui passent par l'arbre d'accessibilité ou le HTML ;
-- `data-whichprofile="<libellé>"` sur `<html>`, pour les agents qui lisent le DOM ;
+- dans le shadow root, `role="status"` et `aria-label="Chrome profile: <libellé>"`, lus par les lecteurs d'écran et les agents qui passent par l'arbre d'accessibilité ;
 - le texte du chip, pour les agents qui travaillent sur des captures d'écran.
 
-L'activation demande l'accès à **tous les sites** et la permission `scripting` (permissions optionnelles). En cas de refus, le mode reste désactivé. La désactivation retire le script et rend ces permissions. Le chip n'écrit que ces deux éléments et ne lit rien de la page.
+Le libellé n'apparaît qu'à l'écran et dans l'arbre d'accessibilité : les scripts des pages ne peuvent pas le lire. L'élément hôte, dans le DOM de la page, n'a ni attribut ni texte, et son nom est fixe (`whichprofile-chip`). Le libellé visible est du contenu généré CSS : la recherche dans la page (`window.find`) ne le trouve pas.
 
-**À savoir :** le libellé devient lisible par **tous les sites visités**. Choisir un libellé non personnel (« Agence », « Client A ») plutôt qu'un prénom ou une partie d'e-mail.
+L'activation demande l'accès à **tous les sites** et la permission `scripting` (permissions optionnelles). En cas de refus, le mode reste désactivé. La désactivation retire le script et rend ces permissions. Le chip n'ajoute que cet élément et ne lit rien de la page.
+
+**À savoir :** le libellé s'affiche sur chaque page (à l'écran, et pour les lecteurs d'écran). Les réglages refusent donc l'activation tant que le libellé est dérivé de l'adresse e-mail, ce qui est le cas par défaut : choisir d'abord un libellé neutre (« Agence », « Client A »).
 
 ## Limites connues
 
@@ -129,7 +130,7 @@ Toute modification de la liste des sites se fait **dans `lib/sites.js` et `manif
 - [ ] **T7** — Muet → aucune annonce, le popup liste les pings avec « non annoncé (muet) ».
 - [ ] **T8** — Profil non connecté à Chrome → libellé « profil sans compte », modifiable.
 - [ ] **T9** — Gmail en DEBUG → les mutations candidates sont visibles en console, `SELECTORS` modifiable sans casser le reste.
-- [ ] **T10** — Agent mode activé (permission acceptée), libellé « Serendyme » : un agent IA à qui l'on demande « dans quel profil Chrome es-tu ? » lit la page et trouve « Chrome profile: Serendyme ». Refus de la permission → reste désactivé ; désactivation → chips retirés des onglets ouverts, permissions rendues (visible dans `chrome://extensions` → Détails).
+- [ ] **T10** — Agent mode activé (permission acceptée), libellé « Serendyme » : un agent IA à qui l'on demande « dans quel profil Chrome es-tu ? » lit la page (écran ou arbre d'accessibilité) et trouve « Chrome profile: Serendyme ». Avec le libellé par défaut tiré de l'e-mail, l'activation est refusée avec un message. Refus de la permission → reste désactivé ; désactivation → chips retirés des onglets ouverts, permissions rendues (visible dans `chrome://extensions` → Détails).
 
 ## Confidentialité
 

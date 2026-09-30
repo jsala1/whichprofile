@@ -4,7 +4,17 @@ importScripts('lib/sites.js', 'lib/parse.js', 'lib/config.js', 'lib/i18n.js');
 
 const { isKnownHost, siteLabel } = globalThis.WHICHPROFILE_SITES;
 const { createDebouncer } = globalThis.WHICHPROFILE_PARSE;
-const { DEBOUNCE_MS, reconcile, isSourceEnabled, shouldAnnounce, pickVoice, localVoices, announcementText, pushRecentPing } =
+const {
+  DEBOUNCE_MS,
+  reconcile,
+  isSourceEnabled,
+  labelDerivedFromEmail,
+  shouldAnnounce,
+  pickVoice,
+  localVoices,
+  announcementText,
+  pushRecentPing,
+} =
   globalThis.WHICHPROFILE_CONFIG;
 const { t, localeDefaults } = globalThis.WHICHPROFILE_I18N;
 
@@ -154,7 +164,8 @@ async function handlePing(message, sender) {
 }
 
 // --- Agent mode -------------------------------------------------------------------
-// Opt-in : chip avec le libellé sur chaque page + data-whichprofile sur <html>, pour les agents IA de navigation.
+// Opt-in : badge avec le libellé sur chaque page, pour les agents IA de navigation et les lecteurs d'écran.
+// Le libellé n'est lisible qu'à l'écran et dans l'arbre d'accessibilité, jamais par les scripts de page.
 // Permissions optionnelles demandées par la page d'options ; l'état actif = config.agentMode ET permissions accordées.
 
 const AGENT_SCRIPT_ID = 'whichprofile-agent-chip';
@@ -199,6 +210,8 @@ async function syncAgentMode() {
 }
 
 async function enableAgentMode() {
+  // Même garde que la page d'options : pas de badge portant un libellé dérivé de l'e-mail.
+  if (labelDerivedFromEmail((await loadConfig()).identity)) return { ok: false, reason: 'label-from-email' };
   if (!(await agentPermitted())) return { ok: false, reason: 'permission-denied' };
   await setAgentMode(true);
   await syncAgentMode();

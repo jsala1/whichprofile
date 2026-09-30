@@ -204,9 +204,12 @@
     "message": "Agent mode"
   },
   "agentModeHint": {
-    "message": "Shows a small chip with this profile's label on every page and adds it to the page as data-whichprofile, so AI browsing agents know which profile they're in. Websites can read this label: pick one that isn't personal. Needs access to all sites; turning it off removes that access."
+    "message": "Shows a small chip with this profile's label on every page, so AI browsing agents and screen readers know which profile they're in. The label is rendered on screen and in the accessibility tree only; page scripts cannot read it. Needs access to all sites; turning it off removes that access."
   },
   "agentModeDenied": {
     "message": "Permission refused: Agent mode stays off."
+  },
+  "agentModeNeedsNeutralLabel": {
+    "message": "Choose a neutral label first (not your name or email address), then turn Agent mode on: it is shown on every page."
   }
 }

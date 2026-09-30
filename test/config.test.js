@@ -124,3 +124,15 @@ test('voix réseau exclues du choix par défaut, du choix enregistré et de la l
   assert.deepEqual(localVoices(voices).map((v) => v.voiceName), ['Thomas', 'Amélie']);
   assert.equal(pickVoice([{ voiceName: 'Google US English', lang: 'en-US', remote: true }], 'en-US', ''), '');
 });
+
+const { labelDerivedFromEmail } = require('../lib/config.js');
+
+test('garde Agent mode : libellé dérivé de l’e-mail → activation refusée', () => {
+  const email = 'julian@example.com';
+  assert.equal(labelDerivedFromEmail(reconcile(undefined, email, FR).identity), true); // libellé par défaut « julian »
+  assert.equal(labelDerivedFromEmail({ email, label: 'julian', labelIsDefault: false }), true); // retapé à l'identique
+  assert.equal(labelDerivedFromEmail({ email, label: ' Julian ', labelIsDefault: false }), true); // casse / espaces
+  assert.equal(labelDerivedFromEmail({ email, label: 'julian@example.com', labelIsDefault: false }), true);
+  assert.equal(labelDerivedFromEmail({ email, label: 'Agence', labelIsDefault: false }), false);
+  assert.equal(labelDerivedFromEmail(reconcile(undefined, '', FR).identity), false); // profil sans compte
+});
