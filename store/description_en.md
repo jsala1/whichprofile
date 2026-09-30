@@ -28,7 +28,7 @@ Honest limits:
 • Gmail chat detection depends on Gmail's interface and may need an update if Google changes it.
 • Several messages on the same site within 12 seconds produce a single announcement: WhichProfile announces the profile, not every message.
 
-Optional — Agent mode (off by default): shows a small profile badge on every page so screen readers and AI browser agents can tell which profile they are in. Turning it on asks for access to all sites; turning it off removes that access. The badge reads nothing from the pages.
+Optional — Agent mode (off by default): shows a small profile badge on every page so screen readers and AI browser agents can tell which profile they are in. Turning it on asks for access to all sites; turning it off removes that access. The badge reads nothing from the pages; the label is rendered on screen and in the accessibility tree only; page scripts cannot read it.
 
 Interface available in English, French, Spanish, Portuguese (Brazil and Portugal), Italian, German and Dutch.
 

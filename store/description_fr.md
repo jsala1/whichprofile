@@ -28,7 +28,7 @@ Limites, en toute honnêteté :
 • La détection du chat Gmail dépend de l'interface de Gmail et peut nécessiter une mise à jour si Google la modifie.
 • Plusieurs messages sur le même site en moins de 12 secondes donnent une seule annonce : WhichProfile annonce le profil, pas chaque message.
 
-Facultatif — Mode agent (désactivé par défaut) : affiche un petit badge du profil sur chaque page, pour que les lecteurs d'écran et les agents IA de navigation sachent dans quel profil ils se trouvent. L'activation demande l'accès à tous les sites ; la désactivation retire cet accès. Le badge ne lit rien des pages.
+Facultatif — Mode agent (désactivé par défaut) : affiche un petit badge du profil sur chaque page, pour que les lecteurs d'écran et les agents IA de navigation sachent dans quel profil ils se trouvent. L'activation demande l'accès à tous les sites ; la désactivation retire cet accès. Le badge ne lit rien des pages ; le libellé n'apparaît qu'à l'écran et dans l'arbre d'accessibilité : les scripts des pages ne peuvent pas le lire.
 
 Interface disponible en français, anglais, espagnol, portugais (Brésil et Portugal), italien, allemand et néerlandais.
 

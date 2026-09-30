@@ -1,6 +1,6 @@
 'use strict';
 
-const { reconcile, defaultLabel, pickVoice, localVoices } = globalThis.WHICHPROFILE_CONFIG;
+const { reconcile, defaultLabel, pickVoice, localVoices, labelDerivedFromEmail } = globalThis.WHICHPROFILE_CONFIG;
 const { t, localeDefaults, translatePage } = globalThis.WHICHPROFILE_I18N;
 const $ = (id) => document.getElementById(id);
 const locale = localeDefaults();
@@ -117,6 +117,14 @@ function bind() {
     $('agent-result').textContent = '';
     try {
       if (enable) {
+        // Garde : le badge affiche le libellé sur chaque page ; il doit être neutre, pas dérivé de l'e-mail.
+        // Vérification synchrone, avant la demande de permission (qui doit rester dans le geste utilisateur).
+        if (labelDerivedFromEmail(config.identity)) {
+          event.target.checked = false;
+          $('agent-result').textContent = t('agentModeNeedsNeutralLabel');
+          $('label').focus();
+          return;
+        }
         const granted = await chrome.permissions.request(AGENT_PERMISSIONS);
         if (!granted) {
           event.target.checked = false;

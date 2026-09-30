@@ -91,6 +91,17 @@ store/                     textes Chrome Web Store + SUBMISSION.md (checklist da
 
 - **2026-09-29 — Soumission Chrome Web Store** : version 1.0.0 envoyée à 23h30, ID `nkfkdanbfikhpkdhebfemmplgagjfllg`, publication différée (manuelle après validation). Page Store attendue : https://chromewebstore.google.com/detail/nkfkdanbfikhpkdhebfemmplgagjfllg (active seulement après publication).
 
+- **2026-09-30 — v1.0.1 : le libellé n'est plus lisible par les scripts de page (Agent mode).** Avant : `data-whichprofile` sur `<html>`, puis `role`, `aria-label` et `title` sur l'hôte, donc le libellé était lisible par n'importe quel script de page. Or une extension de vie privée ne doit rien écrire de lisible par le site. Maintenant :
+  - l'hôte `whichprofile-chip` n'a aucun attribut ni texte, et son nom est fixe ;
+  - `role="status"`, `aria-label="Chrome profile: {label}"` et le libellé vivent uniquement sur le `.chip`, dans le shadow root fermé ;
+  - le libellé visible est du contenu généré CSS (`::after { content: attr(data-label) }`), pas un nœud texte, donc `window.find()` ne peut pas le deviner par essais ;
+  - construction factorisée dans `lib/chip.js` (`mountChip`), testée sous Node avec un DOM minimal et vérifiée dans Chrome ;
+  - garde : les options, et le SW (raison `label-from-email`), refusent l'activation tant que le libellé est dérivé de l'e-mail (`labelDerivedFromEmail` : libellé par défaut, partie avant « @ » ou adresse complète) ; message i18n `agentModeNeedsNeutralLabel` ;
+  - `agentModeHint` corrigé dans les 8 locales : il mentionnait `data-whichprofile` et « lisible par les sites ».
+
+  Les décisions datées plus haut qui parlent de `data-whichprofile` décrivent la v1.0.0, telle que soumise.
+- **Fuites résiduelles connues (Agent mode actif)** : la présence de l'élément `whichprofile-chip` révèle aux pages que l'extension est installée et le mode actif ; la taille du badge, mesurable par `elementsFromPoint`, trahit à peu près la longueur du libellé. Le libellé lui-même n'est pas lisible.
+
 ## Limites connues
 
 - Notifications push reçues onglet fermé (service worker du site) : invisibles. Celles déclenchées depuis la page via `registration.showNotification` sont vues.
@@ -122,3 +133,4 @@ Plages horaires par identité ; bouton « je partage mon écran » ; adaptateurs
 - ID Store : `nkfkdanbfikhpkdhebfemmplgagjfllg` (≠ ID unpacked `kdbhhfpelpfkpmkbjmjpoceogehhdipm`).
 - Publisher ID : `b6dd2025-ae76-49dc-bd43-f8e2bd27c752`.
 - Package soumis : `dist/whichprofile-1.0.0.zip`, produit par `sh scripts/pack.sh` au commit `2fda89d`.
+- **v1.0.1 préparée le 30/09/2026** pour remplacer la 1.0.0 avant publication (libellé de l'Agent mode non lisible par les pages) : `dist/whichprofile-1.0.1.zip`. À re-soumettre par Julian.

@@ -18,7 +18,7 @@ Make the identity of the current Chrome profile perceivable — by voice or a di
 
 Matches: `mail.google.com`, `chat.google.com`, `web.whatsapp.com`, `www.messenger.com`, `www.facebook.com`, `www.instagram.com`, `www.linkedin.com`, `app.slack.com`, `discord.com`, `x.com`, `outlook.office.com`, `outlook.live.com`.
 
-Site access at install time: closed list of 12 sites (content_scripts matches), no host_permissions, no tabs. The messaging-site content scripts do not modify the page DOM; the only change is a wrapper around window.Notification (main world) that reports a creation without reading title or body. In Agent mode (optional) the extension adds one badge element and one attribute to the page, and still reads nothing. No network request, no message content collected.
+Site access at install time: closed list of 12 sites (content_scripts matches), no host_permissions, no tabs. The messaging-site content scripts do not modify the page DOM; the only change is a wrapper around window.Notification (main world) that reports a creation without reading title or body. In Agent mode (optional) the extension adds one badge element to the page, and still reads nothing; the label is rendered on screen and in the accessibility tree only; page scripts cannot read it. No network request, no message content collected.
 
 To report a new message, the content scripts send the service worker a message containing only the signal type (e.g. `{type: "ping", source: "title"}`); the site is derived from the sender origin.
 
@@ -27,7 +27,7 @@ To report a new message, the content scripts send the service worker a message c
 | Permission | Justification |
 |---|---|
 | `scripting` (optional) | Agent mode only. Requested when the user turns Agent mode on in the options page, by an explicit click (`chrome.permissions.request`). Used to register one content script (`registerContentScripts`, main frame, `document_idle`) and to inject it once into already-open tabs. Turning Agent mode off unregisters the script and removes the permission (`chrome.permissions.remove`). |
-| `<all_urls>` (optional host permission) | Agent mode: adds a badge and a `data-whichprofile` attribute on every page so screen readers and browser-automation agents can identify the profile. The badge is a closed Shadow DOM element, bottom-right, `role="status"`, `aria-label="Chrome profile: <label>"`. It reads nothing and sends nothing. It must run on every site because agents browse arbitrary sites. Removed on disable (script unregistered, permission removed). Denied or revoked: the feature stays off and the rest of the extension works unchanged. |
+| `<all_urls>` (optional host permission) | Agent mode: adds a badge on every page so screen readers and browser-automation agents can identify the profile. The badge is a custom element with no attributes and no text of its own; its content lives in a closed Shadow DOM, bottom-right, with `role="status"` and `aria-label="Chrome profile: <label>"`. The label is rendered on screen and in the accessibility tree only; page scripts cannot read it. It reads nothing and sends nothing. It must run on every site because agents browse arbitrary sites. Removed on disable (script unregistered, permission removed). Denied or revoked: the feature stays off and the rest of the extension works unchanged. |
 
 ## Code distant
 

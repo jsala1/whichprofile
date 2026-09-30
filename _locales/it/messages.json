@@ -204,9 +204,12 @@
     "message": "Modalità agente"
   },
   "agentModeHint": {
-    "message": "Mostra una piccola etichetta con il nome di questo profilo su ogni pagina e lo aggiunge alla pagina (data-whichprofile), così gli agenti IA sanno in quale profilo si trovano. I siti possono leggere questo nome: scegline uno non personale. Richiede l'accesso a tutti i siti; disattivandola l'accesso viene rimosso."
+    "message": "Mostra una piccola etichetta con il nome di questo profilo su ogni pagina, così gli agenti IA e gli screen reader sanno in quale profilo si trovano. Il nome appare solo sullo schermo e nell'albero di accessibilità; gli script delle pagine non possono leggerlo. Richiede l'accesso a tutti i siti; disattivandola l'accesso viene rimosso."
   },
   "agentModeDenied": {
     "message": "Permesso negato: la modalità agente resta disattivata."
+  },
+  "agentModeNeedsNeutralLabel": {
+    "message": "Scegli prima un nome neutro (né il tuo nome né il tuo indirizzo email), poi attiva la modalità agente: compare su ogni pagina."
   }
 }

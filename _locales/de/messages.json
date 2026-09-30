@@ -204,9 +204,12 @@
     "message": "Agentenmodus"
   },
   "agentModeHint": {
-    "message": "Zeigt auf jeder Seite ein kleines Etikett mit dem Namen dieses Profils und fügt ihn der Seite hinzu (data-whichprofile), damit KI-Browser-Agenten wissen, in welchem Profil sie sind. Websites können diesen Namen lesen: wählen Sie keinen persönlichen. Benötigt Zugriff auf alle Websites; beim Ausschalten wird er entzogen."
+    "message": "Zeigt auf jeder Seite ein kleines Etikett mit dem Namen dieses Profils, damit KI-Browser-Agenten und Screenreader wissen, in welchem Profil sie sind. Der Name erscheint nur auf dem Bildschirm und im Barrierefreiheitsbaum; Skripte der Seite können ihn nicht lesen. Benötigt Zugriff auf alle Websites; beim Ausschalten wird er entzogen."
   },
   "agentModeDenied": {
     "message": "Berechtigung verweigert: Der Agentenmodus bleibt aus."
+  },
+  "agentModeNeedsNeutralLabel": {
+    "message": "Wählen Sie zuerst einen neutralen Namen (weder Ihren Namen noch Ihre E-Mail-Adresse) und schalten Sie dann den Agentenmodus ein: Er erscheint auf jeder Seite."
   }
 }
