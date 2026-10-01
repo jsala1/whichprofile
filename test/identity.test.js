@@ -190,11 +190,13 @@ test('LICENSE : MIT, Julian Salaun', () => {
   assert.match(license, /Copyright \(c\) 2026 Julian Salaun/);
 });
 
-test('README « Sites covered » : les 12 hôtes de lib/sites.js, un par ligne', () => {
+test('README « Sites covered » : les 15 hôtes de lib/sites.js, un par ligne ; Teams en détection de base comme Instagram', () => {
   const { HOSTS } = require('../lib/sites.js');
   const readme = read('README.md');
   const section = readme.slice(readme.indexOf('## Sites couverts (Sites covered)'), readme.indexOf('\n## ', readme.indexOf('## Sites couverts (Sites covered)') + 5));
-  assert.equal(HOSTS.length, 12);
+  assert.equal(HOSTS.length, 15);
   for (const host of HOSTS) assert.match(section, new RegExp('\\| `' + host.replace(/\./g, '\\.') + '` \\|'), host);
-  assert.equal((section.match(/^\| \d+ \|/gm) || []).length, 12);
+  assert.equal((section.match(/^\| \d+ \|/gm) || []).length, 15);
+  const basic = (host) => section.split('\n').find((line) => line.includes('`' + host + '`')).includes('détection de base');
+  for (const host of ['www.instagram.com', 'teams.microsoft.com', 'teams.live.com', 'teams.cloud.microsoft']) assert.ok(basic(host), host);
 });

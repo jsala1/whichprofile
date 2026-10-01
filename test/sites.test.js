@@ -50,7 +50,10 @@ test('libellés parlés', () => {
   assert.equal(siteLabel('x.com'), 'X');
   assert.equal(siteLabel('outlook.office.com'), 'Outlook');
   assert.equal(siteLabel('outlook.live.com'), 'Outlook');
-  assert.equal(HOSTS.length, 12);
+  assert.equal(HOSTS.length, 15);
+  assert.equal(siteLabel('teams.microsoft.com'), 'Teams');
+  assert.equal(siteLabel('teams.cloud.microsoft'), 'Teams');
+  assert.equal(siteLabel('teams.live.com'), 'Teams');
 });
 
 test('tous les fichiers référencés par le manifest existent', () => {

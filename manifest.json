@@ -59,7 +59,10 @@
         "https://discord.com/*",
         "https://x.com/*",
         "https://outlook.office.com/*",
-        "https://outlook.live.com/*"
+        "https://outlook.live.com/*",
+        "https://teams.microsoft.com/*",
+        "https://teams.live.com/*",
+        "https://teams.cloud.microsoft/*"
       ],
       "js": [
         "core/notification-hook.js"
@@ -82,7 +85,10 @@
         "https://discord.com/*",
         "https://x.com/*",
         "https://outlook.office.com/*",
-        "https://outlook.live.com/*"
+        "https://outlook.live.com/*",
+        "https://teams.microsoft.com/*",
+        "https://teams.live.com/*",
+        "https://teams.cloud.microsoft/*"
       ],
       "js": [
         "core/bridge.js"
@@ -103,7 +109,10 @@
         "https://discord.com/*",
         "https://x.com/*",
         "https://outlook.office.com/*",
-        "https://outlook.live.com/*"
+        "https://outlook.live.com/*",
+        "https://teams.microsoft.com/*",
+        "https://teams.live.com/*",
+        "https://teams.cloud.microsoft/*"
       ],
       "js": [
         "lib/parse.js",

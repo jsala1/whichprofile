@@ -16,9 +16,9 @@ Single purpose: make the identity of the current Chrome profile perceivable. It 
 
 ## Accès aux sites (content scripts)
 
-Matches: `mail.google.com`, `chat.google.com`, `web.whatsapp.com`, `www.messenger.com`, `www.facebook.com`, `www.instagram.com`, `www.linkedin.com`, `app.slack.com`, `discord.com`, `x.com`, `outlook.office.com`, `outlook.live.com`.
+Matches: `mail.google.com`, `chat.google.com`, `web.whatsapp.com`, `www.messenger.com`, `www.facebook.com`, `www.instagram.com`, `www.linkedin.com`, `app.slack.com`, `discord.com`, `x.com`, `outlook.office.com`, `outlook.live.com`, `teams.microsoft.com`, `teams.live.com`, `teams.cloud.microsoft`.
 
-Site access at install time: closed list of 12 sites (content_scripts matches), no host_permissions, no tabs. The messaging-site content scripts do not modify the page DOM; the only changes are two wrappers, around window.Notification and ServiceWorkerRegistration.prototype.showNotification (main world), that report a creation without reading title or body. In Agent mode (optional) the extension adds one badge element to the page, and still reads nothing; the label is rendered on screen and in the accessibility tree only; page scripts cannot read it. No network request, no message content collected.
+Site access at install time: closed list of 15 sites (content_scripts matches), no host_permissions, no tabs. The messaging-site content scripts do not modify the page DOM; the only changes are two wrappers, around window.Notification and ServiceWorkerRegistration.prototype.showNotification (main world), that report a creation without reading title or body. In Agent mode (optional) the extension adds one badge element to the page, and still reads nothing; the label is rendered on screen and in the accessibility tree only; page scripts cannot read it. No network request, no message content collected.
 
 To report a new message, the content scripts send the service worker a message containing only the signal type (e.g. `{type: "ping", source: "title"}`); the site is derived from the sender origin.
 
