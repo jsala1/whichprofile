@@ -204,7 +204,7 @@
     "message": "Agent mode"
   },
   "agentModeHint": {
-    "message": "Shows a small chip with this profile's label on every page, so AI browsing agents and screen readers know which profile they're in. The label is rendered on screen and in the accessibility tree only; page scripts cannot read it. Needs access to all sites; turning it off removes that access."
+    "message": "Shows a small chip with this profile's label on every page, so AI browsing agents and screen readers can see which profile they're in. The label is rendered on screen and in the accessibility tree only; page scripts cannot read it. Needs access to all sites; turning it off removes that access."
   },
   "agentModeDenied": {
     "message": "Permission refused: Agent mode stays off."

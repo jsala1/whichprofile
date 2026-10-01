@@ -204,7 +204,7 @@
     "message": "Modalità agente"
   },
   "agentModeHint": {
-    "message": "Mostra una piccola etichetta con il nome di questo profilo su ogni pagina, così gli agenti IA e gli screen reader sanno in quale profilo si trovano. Il nome appare solo sullo schermo e nell'albero di accessibilità; gli script delle pagine non possono leggerlo. Richiede l'accesso a tutti i siti; disattivandola l'accesso viene rimosso."
+    "message": "Mostra una piccola etichetta con il nome di questo profilo su ogni pagina, così gli agenti IA e gli screen reader possono vedere in quale profilo si trovano. Il nome appare solo sullo schermo e nell'albero di accessibilità; gli script delle pagine non possono leggerlo. Richiede l'accesso a tutti i siti; disattivandola l'accesso viene rimosso."
   },
   "agentModeDenied": {
     "message": "Permesso negato: la modalità agente resta disattivata."

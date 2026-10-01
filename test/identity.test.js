@@ -189,3 +189,12 @@ test('LICENSE : MIT, Julian Salaun', () => {
   assert.match(license, /^MIT License/);
   assert.match(license, /Copyright \(c\) 2026 Julian Salaun/);
 });
+
+test('README « Sites covered » : les 12 hôtes de lib/sites.js, un par ligne', () => {
+  const { HOSTS } = require('../lib/sites.js');
+  const readme = read('README.md');
+  const section = readme.slice(readme.indexOf('## Sites couverts (Sites covered)'), readme.indexOf('\n## ', readme.indexOf('## Sites couverts (Sites covered)') + 5));
+  assert.equal(HOSTS.length, 12);
+  for (const host of HOSTS) assert.match(section, new RegExp('\\| `' + host.replace(/\./g, '\\.') + '` \\|'), host);
+  assert.equal((section.match(/^\| \d+ \|/gm) || []).length, 12);
+});

@@ -22,17 +22,12 @@ Dans l'ordre du tableau de bord développeur (https://chrome.google.com/webstore
 - [ ] **Description — English** : coller le bloc sous « ## Description » de `store/description_en.md`. Texte brut, aucun markdown.
 - [ ] **Description — Français** : dans le sélecteur de langue en haut de la fiche, passer à « French », coller le bloc sous « ## Description » de `store/description_fr.md`.
 - [ ] Les 6 autres langues (es, pt-BR, pt-PT, it, de, nl) : **rien à saisir**, elles héritent de la fiche anglaise (nom et résumé déjà traduits par le manifest). On ajoutera des descriptions traduites si le Store montre des installations dans ces pays.
-- [ ] **Catégorie** : Productivity → Communication.
+- [ ] **Catégorie** : choisir dans la liste réelle du dashboard (taxonomie plate) : celle qui contient "Communication", sinon "Workflow & Planning".
 
 ### Ressources graphiques
 
 - [ ] **Icône du Store 128×128** : `icons/128.png`.
-- [ ] **Captures d'écran 1280×800** : composées par le CTO à partir des captures brutes de `store/screenshots/raw/` (`node scripts/screenshots.mjs` : Chrome for Testing, profil jetable sans compte, libellé « Agency », deviceScaleFactor 2, aucun e-mail ni site réel à l'image) :
-  - `options-light.png`, `options-dark.png` : réglages, page entière, 1000 px de large ;
-  - `popup-light.png`, `popup-dark.png` : popup à sa taille réelle (320 px) ;
-  - `badge-neutral.png` : badge de l'Agent mode sur une page locale neutre (`scripts/fixtures/article.html`) ;
-  - `agent-toggle-on.png` : section Agent mode, interrupteur activé, aperçu du badge.
-  - Fiche FR : les mêmes captures conviennent (interface anglaise). Captures FR facultatives.
+- [ ] **Captures d'écran** : 5 captures 1280×800 composées par le CTO : 1 hero « Ding. » · 2 options (clair) · 3 popup + badge · 4 Agent mode ON · 5 **Sites covered** (les 12 noms en texte, sans logo — exigé par la Spam FAQ quand la description n'en nomme que 5)
 - [ ] **Petite tuile promotionnelle 440×280** : fournie par le CTO (`01_Store/v1.0.2_assets/promo-tile-440x280.png`, iCloud).
 - [ ] Tuile marquee 1400×560 : fournie par le CTO (`01_Store/v1.0.2_assets/marquee-1400x560.png`), facultative ; vidéo : vide.
 
@@ -46,7 +41,7 @@ Dans l'ordre du tableau de bord développeur (https://chrome.google.com/webstore
 ## 3. Confidentialité (« Privacy »)
 
 - [ ] **Objectif unique (single purpose)** : coller la phrase sous « ## Objectif unique (single purpose) » de `store/permissions_justification.md` :
-  « Make the identity of the current Chrome profile perceivable — by voice or a distinct sound when a supported site receives a notification on an open tab, and, optionally (Agent mode, off by default), as a small on-page label readable by screen readers and browser-automation agents. »
+  « Single purpose: make the identity of the current Chrome profile perceivable. It does this (1) by voice or a distinct sound when a supported site receives a notification on an open tab, and (2) optionally — Agent mode, off by default — as a small on-page label readable by screen readers and browser-automation agents. »
 - [ ] **Justification des permissions** : un champ par permission. Coller la cellule correspondante du tableau de `store/permissions_justification.md` :
   - [ ] `identity`
   - [ ] `identity.email`, la plus scrutée : coller le texte complet, sans le raccourcir.
@@ -58,8 +53,7 @@ Dans l'ordre du tableau de bord développeur (https://chrome.google.com/webstore
   - `<all_urls>`, même optionnel, déclenche en général un examen approfondi : prévoir plusieurs jours de plus.
 - [ ] **Code distant** : « Non, je n'utilise pas de code distant ».
 - [ ] **Utilisation des données** (types de données collectées) :
-  - Recommandation prudente : cocher **Informations personnelles identifiables** (l'e-mail du profil est lu via `identity.email`), même s'il reste sur l'appareil. Ne rien cocher d'autre : aucun contenu de message n'est lu ni stocké, et les compteurs de non-lus ne sont pas conservés.
-  - À trancher par Julian : si la définition de Google ne vise que les données transmises hors de l'appareil, on peut ne rien cocher. Le cocher coûte une mention sur la fiche ; ne pas le cocher alors qu'il le fallait coûte un rejet.
+  - Cocher **Informations personnelles identifiables** (e-mail lu localement — la User Data FAQ exige la déclaration même pour un traitement local). Rien d'autre. Cocher les 3 certifications.
 - [ ] Cocher les **3 certifications** : pas de vente ni de transfert à des tiers ; pas d'usage sans rapport avec l'objectif unique ; pas d'usage pour évaluer la solvabilité ou accorder des prêts.
 - [ ] **URL de la politique de confidentialité** : https://whichprofile.app/privacy
 
@@ -73,6 +67,8 @@ Dans l'ordre du tableau de bord développeur (https://chrome.google.com/webstore
 
 - [ ] Coller :
   > Install, open the extension's options and press **Test**: the voice says "Test, <label>" (or plays a tone in Sound mode, or a tone if no local voice is installed, even in Voice mode). The label defaults to the part before "@" of the Google account signed in to the Chrome profile, or "profile without account". For a live check, open https://discord.com (no login needed), allow notifications for that site (run `await Notification.requestPermission()` in the DevTools console and accept; the extension only reacts to notifications the site is allowed to show), then run `new Notification("x")`: the extension announces "Discord, <label>". The popup lists the last 5 signals and whether they were announced. No account or credentials are required.
+  >
+  > Agent mode (optional <all_urls>): in the options page, set a neutral label (e.g. "Agency"), open the "AI agents" section and turn Agent mode on; accept Chrome's permission prompt. Open any https page: a small badge bottom-right reads "Agency" (role=status in the accessibility tree; not readable by page scripts). Turn Agent mode off: the badge disappears and the site access is removed (chrome://extensions → WhichProfile → Site access).
 
 ## 6. Envoyer
 

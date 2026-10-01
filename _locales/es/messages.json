@@ -204,7 +204,7 @@
     "message": "Modo agente"
   },
   "agentModeHint": {
-    "message": "Muestra una pequeña etiqueta con el nombre de este perfil en cada página, para que los agentes de IA y los lectores de pantalla sepan en qué perfil están. El nombre solo aparece en pantalla y en el árbol de accesibilidad; los scripts de las páginas no pueden leerlo. Requiere acceso a todos los sitios; al desactivarlo se retira ese acceso."
+    "message": "Muestra una pequeña etiqueta con el nombre de este perfil en cada página, para que los agentes de IA y los lectores de pantalla puedan ver en qué perfil están. El nombre solo aparece en pantalla y en el árbol de accesibilidad; los scripts de las páginas no pueden leerlo. Requiere acceso a todos los sitios; al desactivarlo se retira ese acceso."
   },
   "agentModeDenied": {
     "message": "Permiso denegado: el modo agente sigue desactivado."

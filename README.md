@@ -42,11 +42,22 @@ Après une mise à jour du code : `chrome://extensions` → bouton ↻ de WhichP
 
 ## Sites couverts (Sites covered)
 
-| Site | Détection |
-|---|---|
-| Gmail (`mail.google.com`) | Hook notifications + adaptateur chat (aria-label) + titre pour les e-mails (opt-in) |
-| Google Chat, WhatsApp, Messenger, Facebook, LinkedIn, Slack, Discord, X, Outlook (`outlook.office.com`, `outlook.live.com`) | Hook notifications + compteur « (N) » en tête du titre de l'onglet |
-| Instagram | Hook + titre **non garantis**, adaptateur prévu en v1.1 |
+Les **12 sites** surveillés (liste fermée, identique à `lib/sites.js` et aux `matches` du manifest) :
+
+| # | Site | Adresse | Détection |
+|---|---|---|---|
+| 1 | Gmail | `mail.google.com` | Hook notifications + adaptateur chat (aria-label) + titre pour les e-mails (opt-in) |
+| 2 | Google Chat | `chat.google.com` | Hook notifications + compteur « (N) » en tête du titre |
+| 3 | WhatsApp Web | `web.whatsapp.com` | Hook notifications + compteur du titre |
+| 4 | Messenger | `www.messenger.com` | Hook notifications + compteur du titre |
+| 5 | Facebook | `www.facebook.com` | Hook notifications + compteur du titre |
+| 6 | Instagram | `www.instagram.com` | Hook + titre **non garantis**, adaptateur prévu en v1.1 |
+| 7 | LinkedIn | `www.linkedin.com` | Hook notifications + compteur du titre |
+| 8 | Slack | `app.slack.com` | Hook notifications + compteur du titre |
+| 9 | Discord | `discord.com` | Hook notifications + compteur du titre |
+| 10 | X | `x.com` | Hook notifications + compteur du titre |
+| 11 | Outlook (professionnel) | `outlook.office.com` | Hook notifications + compteur du titre |
+| 12 | Outlook (personnel) | `outlook.live.com` | Hook notifications + compteur du titre |
 
 Plusieurs signaux pour un même événement (hook + titre + adaptateur) donnent **une seule** annonce : WhichProfile ignore les nouveaux signaux d'un site pendant **12 s** après une annonce. On annonce une identité, pas chaque message.
 

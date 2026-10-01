@@ -204,7 +204,7 @@
     "message": "Mode agent"
   },
   "agentModeHint": {
-    "message": "Affiche une petite pastille avec le libellé de ce profil sur chaque page, pour que les agents IA de navigation et les lecteurs d'écran sachent dans quel profil ils sont. Le libellé n'apparaît qu'à l'écran et dans l'arbre d'accessibilité ; les scripts des pages ne peuvent pas le lire. Nécessite l'accès à tous les sites ; la désactivation retire cet accès."
+    "message": "Affiche une petite pastille avec le libellé de ce profil sur chaque page, pour que les agents IA de navigation et les lecteurs d'écran puissent voir dans quel profil ils sont. Le libellé n'apparaît qu'à l'écran et dans l'arbre d'accessibilité ; les scripts des pages ne peuvent pas le lire. Nécessite l'accès à tous les sites ; la désactivation retire cet accès."
   },
   "agentModeDenied": {
     "message": "Permission refusée : le mode agent reste désactivé."
