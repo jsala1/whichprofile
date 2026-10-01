@@ -12,7 +12,7 @@ Extension Chrome (MV3) chargée dans **chaque** profil Chrome. Quand une notific
 
 - Manifest V3, vanilla JS, **zéro dépendance, zéro bundler, zéro build**, pas de TypeScript, pas de `npm install`. Chargeable « non empaquetée » telle quelle.
 - Tests : `node --test test/` (Node natif).
-- Permissions obligatoires : `identity`, `identity.email`, `offscreen`, `storage`, `tts`, `scripting` (réinjection, depuis le 2026-10-01). `host_permissions` = exactement les `matches` des content scripts (15 sites, jamais `<all_urls>`), pour la réinjection. Pas de `tabs`, `webNavigation`. **Agent mode** : seule `<all_urls>` est optionnelle, demandée au clic et rendue à la désactivation.
+- Permissions obligatoires : `identity`, `identity.email`, `offscreen`, `storage`, `tts`. Rien d'autre. Pas de `host_permissions` (les `matches` des content scripts suffisent), pas de `tabs`, `webNavigation`. **Seule exception : l'Agent mode**, avec `scripting` et `<all_urls>` en *optionnel*, demandés au clic et rendus à la désactivation.
 - Aucune requête réseau, aucun analytics, aucun code distant.
 - Lecture seule du DOM des sites surveillés. **Seule exception : l'Agent mode (opt-in)**, qui ajoute un badge en shadow root fermé sur chaque page, rien de lisible par la page, sans rien lire.
 - **Aucun contenu de message nulle part** : ni titre, ni body, ni dans `recentPings`. Les pings ne portent que `{type, source}` ; le site est dérivé de `sender.origin` côté service worker.
@@ -141,14 +141,6 @@ store/                     textes Chrome Web Store + SUBMISSION.md (checklist da
 - **2026-10-01 — Fiche Store v1.0.2 : corrections de l'audit du 30/09** (`01_Store/v1.0.2_textes_corriges/CORRECTIONS_audit_2026-09-30.md`, sections A à E appliquées mot pour mot). La v1.0.0 avait été rejetée pour *keyword spam*. Désormais : descriptions qui ne nomment que 5 sites et renvoient aux captures et au README pour la liste complète ; objectif unique reformulé ; garde « libellé neutre » mentionnée dans la justification `<all_urls>` ; déclaration « PII : e-mail » décidée ; Limited Use dans privacy.md (le site /privacy doit recevoir le même patch) ; `agentModeHint` « know » → « can see » dans les 8 locales. README « Sites covered » : les 12 sites, un par ligne, vérifiés par un test contre `lib/sites.js`.
 
 - **2026-10-01 — Microsoft Teams ajouté à la liste fermée**, en détection générique (hook notification + compteur du titre), sans adaptateur : `teams.microsoft.com`, `teams.live.com`, `teams.cloud.microsoft` (nouvelle adresse vers laquelle Microsoft migre Teams web), libellé parlé « Teams ». Ajouté aux 3 blocs génériques du manifest (hook MAIN, bridge, title-watcher), pas au bloc Gmail. Aucune autre permission. 15 hôtes au total. Non vérifié sur un vrai Teams : classé « détection de base » comme Instagram.
-
-- **2026-10-01 — Décision D du 29/09 révisée le 01/10 : host_permissions = matches, pour la réinjection.** Bug de recette : après une installation ou une mise à jour, les onglets déjà ouverts des sites couverts n'avaient plus de content scripts actifs, donc plus aucune annonce jusqu'à un rechargement manuel. Correctif : `chrome.runtime.onInstalled` (`install` / `update`) réinjecte les content scripts d'après `getManifest().content_scripts` (`lib/reinject.js`, `planReinjection`, fonction pure).
-  - Le hook MAIN n'est réinjecté qu'à `install` : à `update`, celui de l'ancienne version survit dans le monde de la page et continue d'émettre.
-  - Ordre : hook, puis bridge, puis le reste. Onglets en veille ignorés, erreurs attrapées onglet par onglet, log sans URL.
-  - Mesuré dans Chrome 154 : sans `host_permissions`, les `matches` ne suffisent pas, car `tabs.query({ url })` ne voit aucun onglet et `executeScript` est refusé. Après une mise à jour, les scripts réinjectés tournent dans un monde isolé NEUF (l'ancien reste, orphelin, avec `chrome.runtime.id` indéfini), donc les drapeaux anti-double exécution (`__whichprofileBridge`, `__whichprofileTitleWatcher`, `__whichprofileGmail`, monde isolé seulement) ne bloquent pas la réinjection. Le bridge orphelin se désinscrit désormais, comme title-watcher et gmail.
-  - `scripting` passe en permission requise. `AGENT_PERMISSIONS = { origins: ['<all_urls>'] }` : `permissions.remove` échouerait sur une permission requise.
-  - Le risque qui avait motivé la décision D (réseau avec cookies) reste couvert par la CSP `connect-src 'none'` et par le test qui interdit `fetch` / XHR / WebSocket / `sendBeacon`.
-  - Vérifié dans Chrome for Testing 154 : onglet ouvert avant l'installation → annonce sans rechargement ; après « Recharger » → annonce (ancien hook + nouveau bridge) et suivi du titre réinjecté.
 
 ## Limites connues
 

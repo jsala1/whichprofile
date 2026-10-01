@@ -40,8 +40,8 @@ const skip = new Set(['.git', 'dist', 'store', 'test', 'scripts', 'docs', 'node_
 fs.cpSync(ROOT, extension, { recursive: true, filter: (src) => !skip.has(path.relative(ROOT, src).split(path.sep)[0]) });
 const manifestPath = path.join(extension, 'manifest.json');
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-manifest.permissions = [...manifest.permissions, ...(manifest.optional_permissions || [])];
-manifest.host_permissions = [...(manifest.host_permissions || []), ...(manifest.optional_host_permissions || [])];
+manifest.permissions = [...manifest.permissions, ...manifest.optional_permissions];
+manifest.host_permissions = manifest.optional_host_permissions;
 delete manifest.optional_permissions;
 delete manifest.optional_host_permissions;
 fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));

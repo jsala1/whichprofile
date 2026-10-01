@@ -6,8 +6,7 @@ const $ = (id) => document.getElementById(id);
 const locale = localeDefaults();
 const { chipModel, mountChip, TAG: CHIP_TAG } = globalThis.WHICHPROFILE_CHIP;
 // Permissions optionnelles de l'Agent mode (optional_permissions / optional_host_permissions du manifest).
-// `scripting` est requise (manifest) : seule l'origine <all_urls> est demandée, puis retirée à la désactivation.
-const AGENT_PERMISSIONS = { origins: ['<all_urls>'] };
+const AGENT_PERMISSIONS = { permissions: ['scripting'], origins: ['<all_urls>'] };
 
 let config = null;
 let voices = [];

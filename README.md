@@ -26,7 +26,7 @@ Votre système vous dit quel service vient de notifier, jamais *quel compte*. Wh
 
 Chaque profil a sa propre configuration : donnez un libellé (et en mode son, un motif) différent à chacun.
 
-Après une mise à jour du code : `chrome://extensions` → bouton ↻ de WhichProfile, dans chaque profil. Les onglets déjà ouverts des sites couverts reçoivent automatiquement les scripts de la nouvelle version ; si un onglet était en veille, rechargez-le.
+Après une mise à jour du code : `chrome://extensions` → bouton ↻ de WhichProfile, dans chaque profil, puis recharger les onglets surveillés.
 
 ## Configuration
 
@@ -77,7 +77,7 @@ L'Agent mode, **désactivé par défaut**, rend le profil lisible sur chaque pag
 
 Le libellé n'apparaît qu'à l'écran et dans l'arbre d'accessibilité : les scripts des pages ne peuvent pas le lire. L'élément hôte, dans le DOM de la page, n'a ni attribut ni texte, et son nom est fixe (`whichprofile-chip`). Le libellé visible est du contenu généré CSS : la recherche dans la page (`window.find`) ne le trouve pas.
 
-L'activation demande l'accès à **tous les sites** (permission optionnelle). En cas de refus, le mode reste désactivé. La désactivation retire le script et rend ces permissions. Le chip n'ajoute que cet élément et ne lit rien de la page.
+L'activation demande l'accès à **tous les sites** et la permission `scripting` (permissions optionnelles). En cas de refus, le mode reste désactivé. La désactivation retire le script et rend ces permissions. Le chip n'ajoute que cet élément et ne lit rien de la page.
 
 **À savoir :** le libellé s'affiche sur chaque page (à l'écran, et pour les lecteurs d'écran). Les réglages refusent donc l'activation tant que le libellé est dérivé de l'adresse e-mail, ce qui est le cas par défaut : choisir d'abord un libellé neutre (« Agence », « Client A »).
 
@@ -96,7 +96,7 @@ Ouvrir le popup de l'extension **dans le profil concerné** : il liste les 5 der
 | Constat | Explication |
 |---|---|
 | **Le message est arrivé dans une conversation déjà ouverte et affichée** | Comportement attendu. Le site le marque lu aussitôt : pas de compteur qui augmente, souvent pas de notification. Rien à annoncer, puisque vous regardez déjà ce profil. |
-| Aucune ligne dans le popup | Aucun signal n'est arrivé. L'onglet du service était-il ouvert ? Une notification reçue onglet fermé est invisible pour une extension. Après une installation, une mise à jour ou un rechargement de l'extension, les scripts sont réinjectés automatiquement dans les onglets déjà ouverts ; si un onglet était en veille, rechargez-le. |
+| Aucune ligne dans le popup | Aucun signal n'est arrivé. L'onglet du service était-il ouvert ? Une notification reçue onglet fermé est invisible pour une extension. Après une mise à jour ou un rechargement de l'extension, rechargez aussi les onglets surveillés. |
 | « non annoncé (doublon) » | Un autre signal du même site a été annoncé moins de 12 s avant. On annonce une identité, pas chaque message. |
 | « non annoncé (muet) » | Le mode Muet est activé (popup ou réglages). |
 | « non annoncé (source désactivée) » | Gmail : les nouveaux e-mails sont désactivés par défaut (Réglages → Sources Gmail). Une notification Gmail qui ne vient pas du chat est comptée comme e-mail. |
@@ -155,11 +155,6 @@ Toute modification de la liste des sites se fait **dans `lib/sites.js` et `manif
 - [ ] **T8** — Profil non connecté à Chrome → libellé « profil sans compte », modifiable.
 - [ ] **T9** — Gmail en DEBUG → les mutations candidates sont visibles en console, `SELECTORS` modifiable sans casser le reste.
 - [ ] **T10** — Agent mode activé (permission acceptée), libellé « Serendyme » : un agent IA à qui l'on demande « dans quel profil Chrome es-tu ? » lit la page (écran ou arbre d'accessibilité) et trouve « Chrome profile: Serendyme ». Avec le libellé par défaut tiré de l'e-mail, l'activation est refusée avec un message. Refus de la permission → reste désactivé ; désactivation → chips retirés des onglets ouverts, permissions rendues (visible dans `chrome://extensions` → Détails).
-- [ ] **T11** — Gmail ouvert → `chrome://extensions` → ↻ WhichProfile → **sans recharger Gmail**, un message chat → annonce.
-- [ ] **T12** — Idem sur Discord (le hook de la version précédente reste actif, le nouveau bridge l'écoute) → annonce, une seule.
-- [ ] **T13** — Agent mode : activer (accepter la permission) → désactiver → dans la console du service worker, `chrome.permissions.getAll()` ne contient plus `<all_urls>` (les 15 sites restent).
-- [ ] **T14** — Installation neuve avec Gmail déjà ouvert → un message chat → annonce sans recharger l'onglet.
-- [ ] **T15** — Désinstaller puis réinstaller **sans recharger les onglets** : deux hooks empilés sur la page (l'ancien survit dans le monde de la page) → une notification ne donne **qu'une seule** annonce (throttle du bridge à 500 ms, anti-doublon de 12 s).
 
 ## Confidentialité
 
