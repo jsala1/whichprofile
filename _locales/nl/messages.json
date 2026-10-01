@@ -204,7 +204,7 @@
     "message": "Agentmodus"
   },
   "agentModeHint": {
-    "message": "Toont op elke pagina een klein label met de naam van dit profiel, zodat AI-browseragents en schermlezers weten in welk profiel ze zitten. De naam verschijnt alleen op het scherm en in de toegankelijkheidsboom; scripts van de pagina kunnen hem niet lezen. Vereist toegang tot alle sites; uitschakelen trekt die toegang in."
+    "message": "Toont op elke pagina een klein label met de naam van dit profiel, zodat AI-browseragents en schermlezers kunnen zien in welk profiel ze zitten. De naam verschijnt alleen op het scherm en in de toegankelijkheidsboom; scripts van de pagina kunnen hem niet lezen. Vereist toegang tot alle sites; uitschakelen trekt die toegang in."
   },
   "agentModeDenied": {
     "message": "Toestemming geweigerd: agentmodus blijft uit."

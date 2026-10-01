@@ -1,7 +1,7 @@
 # WhichProfile — Politique de confidentialité / Privacy policy
 
 - **En vigueur le / Effective date :** 30 septembre 2026 / September 30, 2026 (v1.0.1 : le libellé du mode agent n'est plus lisible par les pages / Agent mode label no longer readable by pages)
-- **Périmètre / Scope :** l'extension Chrome WhichProfile, version 1.0.0 et suivantes, telle que distribuée sur le Chrome Web Store et sur https://github.com/jsala1/whichprofile / the WhichProfile Chrome extension, version 1.0.0 and later, as distributed on the Chrome Web Store and at https://github.com/jsala1/whichprofile
+- **Périmètre / Scope :** l'extension Chrome WhichProfile, version 1.0.1 et suivantes, telle que distribuée sur https://github.com/jsala1/whichprofile et, une fois publiée, sur le Chrome Web Store / version 1.0.1 and later, as distributed at https://github.com/jsala1/whichprofile and, once published, on the Chrome Web Store
 - **Contact :** hello@whichprofile.app — ou / or https://github.com/jsala1/whichprofile/issues
 
 ## Français
@@ -34,9 +34,11 @@ Les annonces utilisent la synthèse vocale de Chrome (`chrome.tts`). Seules les 
 ### Mode agent (facultatif, désactivé par défaut)
 
 - À l'activation, l'extension demande l'**accès à tous les sites**. En cas de refus, le mode reste désactivé.
-- Une fois activé, elle ajoute sur chaque page visitée un **badge avec le libellé du profil**, pour que les lecteurs d'écran et les agents IA de navigation sachent dans quel profil ils se trouvent. Le libellé n'apparaît qu'à l'écran et dans l'arbre d'accessibilité : les scripts des pages ne peuvent pas le lire. Comme il est visible sur chaque page ouverte dans ce profil, l'extension refuse l'activation tant que le libellé est dérivé de votre adresse e-mail (c'est le cas par défaut) : choisissez d'abord un libellé neutre.
+- Une fois activé, elle ajoute sur chaque page visitée un **badge avec le libellé du profil**, pour que les lecteurs d'écran et les agents IA de navigation puissent voir dans quel profil ils se trouvent. Le libellé n'apparaît qu'à l'écran et dans l'arbre d'accessibilité : les scripts des pages ne peuvent pas le lire. Comme il est visible sur chaque page ouverte dans ce profil, l'extension refuse l'activation tant que le libellé est dérivé de votre adresse e-mail (c'est le cas par défaut) : choisissez d'abord un libellé neutre.
 - Le badge ne lit rien des pages et WhichProfile n'envoie rien hors de l'extension (deux messages internes au service worker : obtenir le libellé, retenir que le badge a été masqué sur cet onglet).
 - La désactivation retire le badge et l'accès à tous les sites.
+
+L'utilisation des informations reçues des API Google respecte la Chrome Web Store User Data Policy, y compris les exigences de Limited Use.
 
 ## English
 
@@ -68,6 +70,10 @@ Announcements use Chrome's text-to-speech (`chrome.tts`). Only voices that Chrom
 ### Agent mode (optional, off by default)
 
 - Turning it on asks for **access to all sites**. If you refuse, it stays off.
-- Once on, it adds to every page you visit a **badge showing the profile label**, so screen readers and AI browser agents can tell which profile they are in. The label is rendered on screen and in the accessibility tree only; page scripts cannot read it. Because it is visible on every page opened in this profile, the extension will not turn this mode on while the label is derived from your email address (the default): pick a neutral label first.
+- Once on, it adds to every page you visit a **badge showing the profile label**, so screen readers and AI browser agents can see which profile they are in. The label is rendered on screen and in the accessibility tree only; page scripts cannot read it. Because it is visible on every page opened in this profile, the extension will not turn this mode on while the label is derived from your email address (the default): pick a neutral label first.
 - The badge reads nothing from the pages, and WhichProfile sends nothing outside the extension (two internal messages to the service worker: fetch the label, remember the badge was hidden on this tab).
 - Turning it off removes the badge and the access to all sites.
+
+The use of information received from Google APIs will adhere to the Chrome Web Store User Data Policy, including the Limited Use requirements.
+
+WhichProfile est un projet indépendant, sans lien avec Google ; Chrome, Gmail et les autres noms cités sont des marques de leurs propriétaires. / WhichProfile is an independent project, not affiliated with Google; Chrome, Gmail and the other names mentioned are trademarks of their owners.

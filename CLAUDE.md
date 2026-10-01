@@ -138,6 +138,8 @@ store/                     textes Chrome Web Store + SUBMISSION.md (checklist da
   - `privacy.md` : seule modification, la ligne Contact (hello@ ou Issues GitHub). Date d'effet inchangée.
   - **Supprimés** : `scripts/make-promo.py`, `store/promo/`, `store/screenshots/*.png` (ancienne identité). Les visuels Store finaux sont composés par le CTO à partir de `store/screenshots/raw/`.
 
+- **2026-10-01 — Fiche Store v1.0.2 : corrections de l'audit du 30/09** (`01_Store/v1.0.2_textes_corriges/CORRECTIONS_audit_2026-09-30.md`, sections A à E appliquées mot pour mot). La v1.0.0 avait été rejetée pour *keyword spam*. Désormais : descriptions qui ne nomment que 5 sites et renvoient aux captures et au README pour la liste complète ; objectif unique reformulé ; garde « libellé neutre » mentionnée dans la justification `<all_urls>` ; déclaration « PII : e-mail » décidée ; Limited Use dans privacy.md (le site /privacy doit recevoir le même patch) ; `agentModeHint` « know » → « can see » dans les 8 locales. README « Sites covered » : les 12 sites, un par ligne, vérifiés par un test contre `lib/sites.js`.
+
 ## Limites connues
 
 - Notifications push reçues onglet fermé (service worker du site) : invisibles. Celles déclenchées depuis la page via `registration.showNotification` sont vues.
@@ -172,4 +174,4 @@ Plages horaires par identité ; bouton « je partage mon écran » ; adaptateurs
 - **v1.0.1 préparée le 30/09/2026** pour remplacer la 1.0.0 avant publication (libellé de l'Agent mode non lisible par les pages) : `dist/whichprofile-1.0.1.zip`. À re-soumettre par Julian.
 - v1.0.1 complétée le même jour par le durcissement issu de l'audit sécurité (voir décisions) ; zip refait.
 - **v1.0.2 préparée le 30/09/2026** (nouvelle identité, site https://whichprofile.app, contact hello@whichprofile.app, licence MIT) : `dist/whichprofile-1.0.2.zip`. Export pour audit CTO : iCloud `01_Store/v1.0.2_export/`.
-- v1.0.1 review annulée le … ; v1.0.2 soumise le … (dates à fournir par Julian).
+- v1.0.1 review annulée le 01/10/2026, v1.0.2 soumise le 01/10/2026 (à corriger si on glisse).

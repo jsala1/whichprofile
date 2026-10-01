@@ -204,7 +204,7 @@
     "message": "Agentenmodus"
   },
   "agentModeHint": {
-    "message": "Zeigt auf jeder Seite ein kleines Etikett mit dem Namen dieses Profils, damit KI-Browser-Agenten und Screenreader wissen, in welchem Profil sie sind. Der Name erscheint nur auf dem Bildschirm und im Barrierefreiheitsbaum; Skripte der Seite können ihn nicht lesen. Benötigt Zugriff auf alle Websites; beim Ausschalten wird er entzogen."
+    "message": "Zeigt auf jeder Seite ein kleines Etikett mit dem Namen dieses Profils, damit KI-Browser-Agenten und Screenreader sehen können, in welchem Profil sie sind. Der Name erscheint nur auf dem Bildschirm und im Barrierefreiheitsbaum; Skripte der Seite können ihn nicht lesen. Benötigt Zugriff auf alle Websites; beim Ausschalten wird er entzogen."
   },
   "agentModeDenied": {
     "message": "Berechtigung verweigert: Der Agentenmodus bleibt aus."
