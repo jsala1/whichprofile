@@ -3,10 +3,6 @@
 (() => {
   'use strict';
 
-  // Garde anti-double exécution (injection du manifest + réinjection) : drapeau dans le monde isolé seulement.
-  if (globalThis.__whichprofileTitleWatcher) return;
-  globalThis.__whichprofileTitleWatcher = true;
-
   const { parseUnreadCount, createCounterTracker } = globalThis.WHICHPROFILE_PARSE;
   const POLL_MS = 2000;
   // Plafond par hôte (un title-watcher par onglet) : au plus 1 annonce / 60 s sans nouveau maximum.

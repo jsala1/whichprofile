@@ -48,7 +48,7 @@ Dans l'ordre du tableau de bord développeur (https://chrome.google.com/webstore
   - [ ] `offscreen`
   - [ ] `storage`
   - [ ] `tts`
-  - [ ] `scripting` (requise) : coller la ligne `scripting` (required) du tableau « Permissions ».
+  - [ ] `scripting` (optionnelle, Agent mode) : coller la ligne du tableau « Permissions optionnelles ».
 - [ ] **Justification des accès aux sites** : les `matches` des content scripts comptent comme accès aux hôtes. Coller le paragraphe de « ## Accès aux sites (content scripts) », **puis** la ligne `<all_urls>` (optionnelle, Agent mode) du tableau « Permissions optionnelles » de `store/permissions_justification.md`.
   - `<all_urls>`, même optionnel, déclenche en général un examen approfondi : prévoir plusieurs jours de plus.
 - [ ] **Code distant** : « Non, je n'utilise pas de code distant ».

@@ -75,10 +75,6 @@
     return;
   }
 
-  // Garde anti-double exécution (injection du manifest + réinjection) : drapeau dans le monde isolé seulement.
-  if (globalThis.__whichprofileGmail) return;
-  globalThis.__whichprofileGmail = true;
-
   const { parseGmailTitle, createCounterTracker, countUnreadInLabels, hashString } = PARSE;
   const SCAN_DELAY_MS = 300;
   const POLL_MS = 2000;
