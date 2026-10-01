@@ -211,17 +211,26 @@ function bind() {
     }
   });
 
+  // Garde contre les clics répétés : un seul test à la fois, de l'envoi jusqu'à la fin de la lecture.
+  let playing = false;
   $('test').addEventListener('click', async () => {
+    if (playing) return;
+    playing = true;
     $('test-result').textContent = '…';
     try {
       const result = await chrome.runtime.sendMessage({ type: 'test' });
       if (!result || !result.ok) throw new Error(result ? result.reason : t('noResponse'));
-      markPlaying(result.mode);
+      markPlaying(result.mode)
+        .catch(() => {})
+        .finally(() => {
+          playing = false;
+        });
       $('test-result').textContent =
         result.mode === 'sound'
           ? t('testSound', [$('pattern').selectedOptions[0].textContent])
           : t('testSpoken', [result.text]);
     } catch (error) {
+      playing = false;
       $('test-result').textContent = t('testFailed', [error.message]);
     }
   });
