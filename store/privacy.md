@@ -16,9 +16,10 @@
 
 ### Ce que l'extension stocke
 
-Dans `chrome.storage.local`, sur cet appareil, pour ce profil, une seule entrée `config` :
+Dans `chrome.storage.local`, sur cet appareil, pour ce profil, une entrée `config` :
 - `identity` : `email` (adresse du compte détecté, vide si aucun), `id` (cette adresse, ou `local`), `label` (libellé annoncé), `labelIsDefault`, `mode` (voix ou son), `pattern` (motif sonore), `lang` (langue de la voix), `voiceName` (voix choisie) ;
 - `sources` (chat et e-mails Gmail activés ou non), `muted`, `debug`, `agentMode`, `schemaVersion`.
+- et, juste après l'installation, un indicateur `reloadHintPending` (affichage du bandeau « rechargez vos onglets »), effacé quand vous fermez ce bandeau.
 
 Dans `chrome.storage.session`, effacé à la fermeture du navigateur :
 - l'heure du dernier signal retenu par site (anti-doublon de 12 s) ;
@@ -52,9 +53,10 @@ L'utilisation des informations reçues des API Google respecte la Chrome Web Sto
 
 ### What the extension stores
 
-In `chrome.storage.local`, on this device, for this profile, a single `config` entry:
+In `chrome.storage.local`, on this device, for this profile, a `config` entry:
 - `identity`: `email` (detected account address, empty if none), `id` (that address, or `local`), `label` (spoken label), `labelIsDefault`, `mode` (voice or sound), `pattern` (sound pattern), `lang` (voice language), `voiceName` (chosen voice);
 - `sources` (Gmail chat and email on or off), `muted`, `debug`, `agentMode`, `schemaVersion`.
+- and, right after installation, a `reloadHintPending` flag (shows the “reload your tabs” banner), deleted when you close that banner.
 
 In `chrome.storage.session`, cleared when the browser closes:
 - the time of the last signal retained per site (12-second de-duplication);
