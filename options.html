@@ -18,6 +18,12 @@
         </div>
       </header>
 
+      <!-- Après installation seulement : les onglets déjà ouverts n'ont pas encore les scripts de l'extension. -->
+      <section id="reload-hint" class="card notice" role="status" hidden>
+        <p data-i18n="reloadOpenTabs"></p>
+        <button id="reload-hint-dismiss" type="button" class="btn" data-i18n="dismiss"></button>
+      </section>
+
       <section class="card">
         <h2 data-i18n="sectionIdentity"></h2>
         <!-- Le libellé du profil, héros de la page : même puce que le site. -->

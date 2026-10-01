@@ -329,7 +329,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   return true;
 });
 
-chrome.runtime.onInstalled.addListener(() => {
+chrome.runtime.onInstalled.addListener((details) => {
   loadConfig().then((config) => console.info('[WhichProfile] prêt', { hasAccount: !!config.identity.email }));
   syncAgentMode();
+  // Les onglets déjà ouverts au moment de l'installation n'ont pas les content scripts : la page d'options
+  // affiche un bandeau « rechargez ces onglets » jusqu'à ce que l'utilisateur le ferme.
+  if (details.reason === 'install') chrome.storage.local.set({ reloadHintPending: true });
 });

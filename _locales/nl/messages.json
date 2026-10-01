@@ -224,5 +224,11 @@
   "footerLegal": {
     "message": "Independent project, not affiliated with Google. Product names are trademarks of their owners.",
     "description": "Legal notice: kept in English in every locale, do not translate."
+  },
+  "reloadOpenTabs": {
+    "message": "Had je Gmail, WhatsApp of Slack al open? Laad die tabbladen één keer opnieuw zodat WhichProfile ze kan horen."
+  },
+  "dismiss": {
+    "message": "OK"
   }
 }

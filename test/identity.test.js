@@ -200,3 +200,37 @@ test('README « Sites covered » : les 15 hôtes de lib/sites.js, un par ligne ;
   const basic = (host) => section.split('\n').find((line) => line.includes('`' + host + '`')).includes('détection de base');
   for (const host of ['www.instagram.com', 'teams.microsoft.com', 'teams.live.com', 'teams.cloud.microsoft']) assert.ok(basic(host), host);
 });
+
+// --- Bandeau « rechargez les onglets déjà ouverts » (après installation) ----------------------------------
+test('bandeau après installation : reloadOpenTabs et dismiss dans les 8 langues', () => {
+  for (const locale of LOCALES) {
+    const m = messages(locale);
+    assert.ok(m.reloadOpenTabs && m.reloadOpenTabs.message.trim(), `${locale}.reloadOpenTabs`);
+    assert.equal(m.dismiss && m.dismiss.message, 'OK', `${locale}.dismiss`);
+  }
+  assert.equal(
+    messages('en').reloadOpenTabs.message,
+    'Already had Gmail, WhatsApp or Slack open? Reload those tabs once so WhichProfile can hear them.',
+  );
+  assert.equal(
+    messages('fr').reloadOpenTabs.message,
+    'Gmail, WhatsApp ou Slack déjà ouverts ? Rechargez ces onglets une fois pour que WhichProfile les entende.',
+  );
+});
+
+test('bandeau après installation : drapeau posé seulement à l’installation, retiré à la fermeture, masqué par défaut', () => {
+  assert.match(read('background.js'), /if \(details\.reason === 'install'\) chrome\.storage\.local\.set\(\{ reloadHintPending: true \}\);/);
+  const options = read('options.js');
+  assert.match(options, /chrome\.storage\.local\.remove\('reloadHintPending'\)/);
+  assert.match(options, /\$\('reload-hint'\)\.hidden = !reloadHintPending;/);
+  assert.match(read('options.html'), /<section id="reload-hint" class="card notice" role="status" hidden>/);
+});
+
+test('manifest : permissions identiques à 4be794f (réinjection sortie de la v1.0.2)', () => {
+  const manifest = JSON.parse(read('manifest.json'));
+  assert.deepEqual(manifest.permissions, ['identity', 'identity.email', 'offscreen', 'storage', 'tts']);
+  assert.equal(manifest.host_permissions, undefined);
+  assert.deepEqual(manifest.optional_permissions, ['scripting']);
+  assert.deepEqual(manifest.optional_host_permissions, ['<all_urls>']);
+  assert.equal(manifest.version, '1.0.2');
+});

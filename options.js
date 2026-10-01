@@ -228,6 +228,12 @@ function bind() {
 
   // Garde contre les clics répétés : un seul test à la fois, de l'envoi jusqu'à la fin de la lecture.
   let playing = false;
+  // Bandeau « rechargez les onglets déjà ouverts » : fermé une fois pour toutes (drapeau retiré).
+  $('reload-hint-dismiss').addEventListener('click', () => {
+    $('reload-hint').hidden = true;
+    chrome.storage.local.remove('reloadHintPending');
+  });
+
   $('test').addEventListener('click', async () => {
     if (playing) return;
     playing = true;
@@ -262,6 +268,8 @@ function bind() {
 async function init() {
   translatePage(document);
   $('version').textContent = `v${chrome.runtime.getManifest().version}`;
+  const { reloadHintPending } = await chrome.storage.local.get('reloadHintPending');
+  $('reload-hint').hidden = !reloadHintPending;
   // get-config passe par le SW : il lit l'email du profil et crée la config à la première exécution.
   const response = await chrome.runtime.sendMessage({ type: 'get-config' });
   config = response.config;
