@@ -49,6 +49,18 @@
   margin-bottom: 16px;
 }
 
+/* Bandeau après installation : même panneau que les sections, contenu sur une ligne */
+.notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.notice p {
+  flex: 1;
+}
+
 /* Le libellé du profil, héros de la page */
 .profile-pill--hero {
   font-size: 28px;
