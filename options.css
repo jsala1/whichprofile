@@ -180,6 +180,10 @@ select:hover {
   border-top: 1px solid var(--line);
 }
 
+#label-hint:empty {
+  display: none;
+}
+
 #agent-result:not(:empty) {
   display: block;
   padding-top: 8px;

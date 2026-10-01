@@ -128,7 +128,20 @@ function render() {
 }
 
 function bind() {
+  // Message du garde « libellé neutre » à côté du champ : effacé dès que le libellé saisi n'est plus dérivé de l'e-mail.
+  function clearLabelHintIfNeutral() {
+    const value = $('label').value.trim();
+    const candidate = {
+      ...config.identity,
+      label: value || defaultLabel(config.identity.email, locale),
+      labelIsDefault: !value,
+    };
+    if (!labelDerivedFromEmail(candidate)) $('label-hint').textContent = '';
+  }
+  $('label').addEventListener('input', clearLabelHintIfNeutral);
+
   $('label').addEventListener('change', () => {
+    clearLabelHintIfNeutral();
     const value = $('label').value.trim();
     // Garde « libellé neutre » après activation : Agent mode actif et libellé dérivé de l'e-mail → refusé,
     // valeur précédente restaurée (le SW coupe aussi le mode en filet si la config y arrive autrement).
@@ -191,6 +204,8 @@ function bind() {
         if (labelDerivedFromEmail(config.identity)) {
           event.target.checked = false;
           $('agent-result').textContent = t('agentModeNeedsNeutralLabel');
+          // Le focus fait défiler la page vers le champ libellé : le message doit être lisible à côté de lui.
+          $('label-hint').textContent = t('agentModeNeedsNeutralLabel');
           $('label').focus();
           return;
         }

@@ -264,3 +264,25 @@ test('options.js et background.js : garde du libellé après activation', () => 
   const background = code('background.js');
   assert.match(background, /config\.agentMode && labelDerivedFromEmail\(config\.identity\)[\s\S]{0,200}disableAgentMode\(\)/);
 });
+
+// --- Garde « libellé neutre » : message visible à côté du champ libellé --------------------------------------
+test('options : #label-hint juste sous le champ libellé, en région live', () => {
+  const html = fs.readFileSync(path.join(root, 'options.html'), 'utf8');
+  assert.match(html, /<input id="label"[^>]*\/>\s*<output id="label-hint" class="hint" aria-live="polite"><\/output>/);
+});
+
+test('options : le garde à l’activation écrit agentModeNeedsNeutralLabel dans #label-hint avant le focus du champ', () => {
+  const source = code('options.js');
+  const branch = source.slice(source.indexOf("if (labelDerivedFromEmail(config.identity)) {"), source.indexOf('granted = await chrome.permissions.request'));
+  assert.ok(branch.includes("$('agent-result').textContent = t('agentModeNeedsNeutralLabel');"), 'ligne #agent-result conservée');
+  const hint = branch.indexOf("$('label-hint').textContent = t('agentModeNeedsNeutralLabel');");
+  const focus = branch.indexOf("$('label').focus();");
+  assert.ok(hint > -1 && focus > hint, 'message dans #label-hint, puis focus');
+});
+
+test('options : #label-hint vidé dès que le libellé n’est plus dérivé de l’e-mail (input et change)', () => {
+  const source = code('options.js');
+  assert.match(source, /if \(!labelDerivedFromEmail\(candidate\)\) \$\('label-hint'\)\.textContent = '';/);
+  assert.match(source, /\$\('label'\)\.addEventListener\('input', clearLabelHintIfNeutral\);/);
+  assert.match(source, /addEventListener\('change', \(\) => \{\s*clearLabelHintIfNeutral\(\);/);
+});
