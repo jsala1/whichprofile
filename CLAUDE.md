@@ -140,6 +140,8 @@ store/                     textes Chrome Web Store + SUBMISSION.md (checklist da
 
 - **2026-10-01 — Fiche Store v1.0.2 : corrections de l'audit du 30/09** (`01_Store/v1.0.2_textes_corriges/CORRECTIONS_audit_2026-09-30.md`, sections A à E appliquées mot pour mot). La v1.0.0 avait été rejetée pour *keyword spam*. Désormais : descriptions qui ne nomment que 5 sites et renvoient aux captures et au README pour la liste complète ; objectif unique reformulé ; garde « libellé neutre » mentionnée dans la justification `<all_urls>` ; déclaration « PII : e-mail » décidée ; Limited Use dans privacy.md (le site /privacy doit recevoir le même patch) ; `agentModeHint` « know » → « can see » dans les 8 locales. README « Sites covered » : les 12 sites, un par ligne, vérifiés par un test contre `lib/sites.js`.
 
+- **2026-10-01 — Microsoft Teams ajouté à la liste fermée**, en détection générique (hook notification + compteur du titre), sans adaptateur : `teams.microsoft.com`, `teams.live.com`, `teams.cloud.microsoft` (nouvelle adresse vers laquelle Microsoft migre Teams web), libellé parlé « Teams ». Ajouté aux 3 blocs génériques du manifest (hook MAIN, bridge, title-watcher), pas au bloc Gmail. Aucune autre permission. 15 hôtes au total. Non vérifié sur un vrai Teams : classé « détection de base » comme Instagram.
+
 ## Limites connues
 
 - Notifications push reçues onglet fermé (service worker du site) : invisibles. Celles déclenchées depuis la page via `registration.showNotification` sont vues.

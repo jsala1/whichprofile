@@ -27,7 +27,7 @@ Dans l'ordre du tableau de bord développeur (https://chrome.google.com/webstore
 ### Ressources graphiques
 
 - [ ] **Icône du Store 128×128** : `icons/128.png`.
-- [ ] **Captures d'écran** : 5 captures 1280×800 composées par le CTO : 1 hero « Ding. » · 2 options (clair) · 3 popup + badge · 4 Agent mode ON · 5 **Sites covered** (les 12 noms en texte, sans logo — exigé par la Spam FAQ quand la description n'en nomme que 5)
+- [ ] **Captures d'écran** : 5 captures 1280×800 composées par le CTO : 1 hero « Ding. » · 2 options (clair) · 3 popup + badge · 4 Agent mode ON · 5 **Sites covered** (les 15 sites en texte — 12 noms : Outlook a deux adresses, Teams trois — sans logo — exigé par la Spam FAQ quand la description n'en nomme que 5)
 - [ ] **Petite tuile promotionnelle 440×280** : fournie par le CTO (`01_Store/v1.0.2_assets/promo-tile-440x280.png`, iCloud).
 - [ ] Tuile marquee 1400×560 : fournie par le CTO (`01_Store/v1.0.2_assets/marquee-1400x560.png`), facultative ; vidéo : vide.
 
