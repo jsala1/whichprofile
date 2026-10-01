@@ -230,5 +230,8 @@
   },
   "dismiss": {
     "message": "OK"
+  },
+  "notHearingHint": {
+    "message": "Hören Sie nichts? Laden Sie den Tab der Website neu – oder starten Sie Chrome neu."
   }
 }

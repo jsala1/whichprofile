@@ -230,5 +230,8 @@
   },
   "dismiss": {
     "message": "OK"
+  },
+  "notHearingHint": {
+    "message": "Não ouve nada? Recarregue o separador do site, ou reinicie o Chrome."
   }
 }

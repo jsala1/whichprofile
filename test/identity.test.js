@@ -234,3 +234,12 @@ test('manifest : permissions identiques à 4be794f (réinjection sortie de la v1
   assert.deepEqual(manifest.optional_host_permissions, ['<all_urls>']);
   assert.equal(manifest.version, '1.0.2');
 });
+
+test('popup : aide « rien ne sonne ? » (notHearingHint) dans les 8 langues et référencée dans popup.html', () => {
+  for (const locale of LOCALES) assert.ok(messages(locale).notHearingHint && messages(locale).notHearingHint.message.trim(), locale);
+  assert.equal(messages('en').notHearingHint.message, "Not hearing anything? Reload that site's tab — or restart Chrome.");
+  assert.equal(messages('fr').notHearingHint.message, "Rien ne sonne ? Rechargez l'onglet du site, ou redémarrez Chrome.");
+  const html = read('popup.html');
+  assert.match(html, /<p class="hint" data-i18n="notHearingHint"><\/p>/);
+  assert.ok(html.indexOf('notHearingHint') > html.indexOf('</details>'), 'sous « Derniers pings »');
+});

@@ -77,6 +77,13 @@ body.is-muted .state-mode {
   border-top: 1px solid var(--line);
 }
 
+/* Aide discrète, toujours visible, sous les derniers pings */
+.hint {
+  margin-top: 10px;
+  color: var(--ink-2);
+  font-size: 12.5px;
+}
+
 /* Diagnostic replié */
 .recent {
   border-top: 1px solid var(--line);

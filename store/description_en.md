@@ -26,6 +26,7 @@ Honest limits:
 • A message received in a conversation you already have open and visible is usually not announced: most sites mark it read instantly.
 • Detection relies on the notification the site creates and on the unread counter in the tab title, so it depends on each site's behaviour. Gmail chat has been tested with the interface displayed in French, and its detection may need an update when that interface changes; other sites and display languages are still being verified — reports welcome on GitHub.
 • Several messages on the same site within 12 seconds produce a single announcement: WhichProfile announces the profile, not every message.
+• After installing or updating, reload tabs that were already open (or restart Chrome).
 
 Optional — Agent mode (off by default): shows a small badge on every page so screen readers and AI browser agents can see which profile they are in. Turning it on asks for access to all sites; turning it off removes that access. The badge reads nothing from the pages; the label is rendered on screen and in the accessibility tree only; page scripts cannot read it.
 

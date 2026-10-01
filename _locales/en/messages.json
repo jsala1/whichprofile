@@ -230,5 +230,8 @@
   },
   "dismiss": {
     "message": "OK"
+  },
+  "notHearingHint": {
+    "message": "Not hearing anything? Reload that site's tab — or restart Chrome."
   }
 }

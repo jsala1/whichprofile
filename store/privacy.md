@@ -79,3 +79,7 @@ Announcements use Chrome's text-to-speech (`chrome.tts`). Only voices that Chrom
 The use of information received from Google APIs will adhere to the Chrome Web Store User Data Policy, including the Limited Use requirements.
 
 WhichProfile est un projet indépendant, sans lien avec Google ; Chrome, Gmail et les autres noms cités sont des marques de leurs propriétaires. / WhichProfile is an independent project, not affiliated with Google; Chrome, Gmail and the other names mentioned are trademarks of their owners.
+
+Mentions légales — Site édité à titre non professionnel par une personne physique, qui a communiqué ses éléments d'identification à l'hébergeur. Hébergeur : Lovable Labs Incorporated (lovable.dev), support@lovable.dev. Lovable publie par ailleurs l'adresse de Lovable Labs Sweden AB : Regeringsgatan 25, 111 53 Stockholm, Suède. Contact : hello@whichprofile.app.
+
+Legal notice — This site is published by a private individual in a non-professional capacity, who has provided their identification details to the host. Host: Lovable Labs Incorporated (lovable.dev), support@lovable.dev. Lovable also publishes the address of Lovable Labs Sweden AB: Regeringsgatan 25, 111 53 Stockholm, Sweden. Contact: hello@whichprofile.app.

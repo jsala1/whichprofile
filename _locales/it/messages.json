@@ -230,5 +230,8 @@
   },
   "dismiss": {
     "message": "OK"
+  },
+  "notHearingHint": {
+    "message": "Non senti nulla? Ricarica la scheda del sito, oppure riavvia Chrome."
   }
 }
