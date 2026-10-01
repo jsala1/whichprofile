@@ -26,6 +26,7 @@ Limites, en toute honnêteté :
 • Un message reçu dans une conversation déjà ouverte et affichée n'est en général pas annoncé : la plupart des sites le marquent lu instantanément.
 • La détection repose sur la notification créée par le site et sur le compteur de non-lus du titre de l'onglet : elle dépend donc du comportement de chaque site. Le chat Gmail a été testé avec l'interface affichée en français, et sa détection peut nécessiter une mise à jour quand cette interface change ; les autres sites et langues d'affichage sont en cours de vérification — vos retours sont les bienvenus sur GitHub.
 • Plusieurs messages sur le même site en moins de 12 secondes donnent une seule annonce : WhichProfile annonce le profil, pas chaque message.
+• Après une installation ou une mise à jour, rechargez les onglets déjà ouverts (ou redémarrez Chrome).
 
 Facultatif — Mode agent (désactivé par défaut) : affiche un petit badge sur chaque page, pour que les lecteurs d'écran et les agents IA de navigation puissent voir dans quel profil ils se trouvent. L'activation demande l'accès à tous les sites ; la désactivation retire cet accès. Le badge ne lit rien des pages ; le libellé n'apparaît qu'à l'écran et dans l'arbre d'accessibilité : les scripts des pages ne peuvent pas le lire.
 

@@ -230,5 +230,8 @@
   },
   "dismiss": {
     "message": "OK"
+  },
+  "notHearingHint": {
+    "message": "Nada tocando? Recarregue a aba do site — ou reinicie o Chrome."
   }
 }

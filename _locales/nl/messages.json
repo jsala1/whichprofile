@@ -230,5 +230,8 @@
   },
   "dismiss": {
     "message": "OK"
+  },
+  "notHearingHint": {
+    "message": "Hoor je niets? Laad het tabblad van de site opnieuw, of start Chrome opnieuw."
   }
 }

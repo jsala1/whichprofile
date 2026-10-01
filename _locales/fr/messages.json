@@ -230,5 +230,8 @@
   },
   "dismiss": {
     "message": "OK"
+  },
+  "notHearingHint": {
+    "message": "Rien ne sonne ? Rechargez l'onglet du site, ou redémarrez Chrome."
   }
 }
