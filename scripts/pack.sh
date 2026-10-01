@@ -37,7 +37,7 @@ MISSING=$(node -e '
     ...m.content_scripts.flatMap((c) => c.js),
     `_locales/${m.default_locale}/messages.json`,
     "lib/chip.js", "agent/chip.js", // Agent mode : enregistrés dynamiquement, hors manifest
-    "lib/sites.js", "lib/config.js", "lib/i18n.js", "lib/route.js", // chargés par importScripts / <script>
+    "lib/sites.js", "lib/config.js", "lib/i18n.js", "lib/route.js", "lib/reinject.js", // chargés par importScripts / <script>
     "ui/tokens.css", "ui/components.css", "ui/fonts/BricolageGrotesque.woff2", "ui/fonts/OFL.txt", // identité v1.0.2
     "options.css", "popup.css", "LICENSE",
   ];

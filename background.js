@@ -1,6 +1,6 @@
 // Service worker : reçoit les pings, résout l'identité du profil, filtre, débounce, annonce.
 // Aucun état en mémoire qui ne soit reconstruisible depuis chrome.storage (le SW peut s'endormir à tout moment).
-importScripts('lib/sites.js', 'lib/parse.js', 'lib/config.js', 'lib/i18n.js', 'lib/route.js');
+importScripts('lib/sites.js', 'lib/parse.js', 'lib/config.js', 'lib/i18n.js', 'lib/route.js', 'lib/reinject.js');
 
 const { isKnownHost, siteLabel } = globalThis.WHICHPROFILE_SITES;
 const { createDebouncer, createPingThrottle } = globalThis.WHICHPROFILE_PARSE;
@@ -20,6 +20,7 @@ const {
   globalThis.WHICHPROFILE_CONFIG;
 const { t, localeDefaults } = globalThis.WHICHPROFILE_I18N;
 const { route } = globalThis.WHICHPROFILE_ROUTE;
+const { planReinjection } = globalThis.WHICHPROFILE_REINJECT;
 
 const OFFSCREEN_URL = 'offscreen.html';
 
@@ -180,7 +181,8 @@ async function handlePing(message, sender) {
 // Permissions optionnelles demandées par la page d'options ; l'état actif = config.agentMode ET permissions accordées.
 
 const AGENT_SCRIPT_ID = 'whichprofile-agent-chip';
-const AGENT_PERMISSIONS = { permissions: ['scripting'], origins: ['<all_urls>'] };
+// `scripting` est une permission requise (réinjection) : seule l'origine <all_urls> est optionnelle et retirable.
+const AGENT_PERMISSIONS = { origins: ['<all_urls>'] };
 const AGENT_FILES = ['lib/chip.js', 'agent/chip.js'];
 
 function agentPermitted() {
@@ -329,7 +331,42 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   return true;
 });
 
-chrome.runtime.onInstalled.addListener(() => {
+// --- Réinjection dans les onglets déjà ouverts ----------------------------------------------------------------
+// À l'installation et à la mise à jour, Chrome n'injecte les content scripts que dans les onglets ouverts ENSUITE :
+// Gmail épinglé, WhatsApp… resteraient muets jusqu'à un rechargement manuel. On réinjecte donc les mêmes fichiers,
+// sur les mêmes sites, d'après manifest.content_scripts (lib/reinject.js). Les host_permissions (= les matches)
+// sont nécessaires : sans elles, tabs.query({ url }) ne voit rien et executeScript est refusé (Chrome 154).
+async function reinjectContentScripts(reason) {
+  const plan = planReinjection(chrome.runtime.getManifest(), reason);
+  if (plan.length === 0) return;
+  const reached = new Set();
+  // Bloc par bloc, dans l'ordre du plan : hook (install) → bridge → autres, pour chaque onglet.
+  for (const block of plan) {
+    let tabs = [];
+    try {
+      tabs = await chrome.tabs.query({ url: block.matches });
+    } catch (_) {
+      continue;
+    }
+    for (const tab of tabs) {
+      if (tab.discarded || typeof tab.id !== 'number') continue; // en veille : rechargera ses scripts au réveil
+      try {
+        await chrome.scripting.executeScript({
+          target: { tabId: tab.id, allFrames: block.allFrames },
+          files: block.files,
+          world: block.world,
+        });
+        reached.add(tab.id);
+      } catch (_) {
+        // Onglet en cours de chargement, frame interdite, page d'erreur… : on passe à l'onglet suivant.
+      }
+    }
+  }
+  console.info('[WhichProfile] réinjecté', { reason, onglets: reached.size });
+}
+
+chrome.runtime.onInstalled.addListener((details) => {
   loadConfig().then((config) => console.info('[WhichProfile] prêt', { hasAccount: !!config.identity.email }));
   syncAgentMode();
+  if (details.reason === 'install' || details.reason === 'update') reinjectContentScripts(details.reason);
 });
