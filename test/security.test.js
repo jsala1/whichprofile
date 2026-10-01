@@ -63,7 +63,7 @@ test('manifest : CSP explicite des pages de l’extension', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(root, 'manifest.json'), 'utf8'));
   assert.equal(
     manifest.content_security_policy.extension_pages,
-    "script-src 'self'; object-src 'none'; connect-src 'none'; img-src 'self'; style-src 'self'; base-uri 'none'",
+    "script-src 'self'; object-src 'none'; connect-src 'none'; img-src 'self'; style-src 'self'; font-src 'self'; base-uri 'none'",
   );
 });
 

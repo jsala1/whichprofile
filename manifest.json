@@ -43,7 +43,7 @@
     "open_in_tab": true
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'none'; connect-src 'none'; img-src 'self'; style-src 'self'; base-uri 'none'"
+    "extension_pages": "script-src 'self'; object-src 'none'; connect-src 'none'; img-src 'self'; style-src 'self'; font-src 'self'; base-uri 'none'"
   },
   "content_scripts": [
     {
