@@ -36,10 +36,16 @@ test('hook en MAIN world à document_start', () => {
   assert.equal(hook.run_at, 'document_start');
 });
 
-test('permissions : liste fermée, aucune host permission obligatoire ; Agent mode en optionnel seulement', () => {
-  assert.deepEqual(sorted(manifest.permissions), sorted(['identity', 'identity.email', 'offscreen', 'storage', 'tts']));
-  assert.equal(manifest.host_permissions, undefined);
-  assert.deepEqual(manifest.optional_permissions, ['scripting']);
+test('permissions : liste fermée ; host_permissions = exactement les matches (jamais <all_urls>) ; Agent mode : <all_urls> optionnel', () => {
+  assert.deepEqual(sorted(manifest.permissions), sorted(['identity', 'identity.email', 'offscreen', 'storage', 'tts', 'scripting']));
+  assert.ok(!manifest.permissions.includes('tabs'));
+  // Décision D révisée le 2026-10-01 : host_permissions = ensemble des matches des content_scripts, ni plus ni moins.
+  const matches = [...new Set(manifest.content_scripts.flatMap((entry) => entry.matches))];
+  assert.deepEqual(sorted(manifest.host_permissions), sorted(matches));
+  assert.equal(manifest.host_permissions.length, new Set(manifest.host_permissions).size);
+  assert.ok(!manifest.host_permissions.includes('<all_urls>'));
+  assert.ok(manifest.host_permissions.every((host) => /^https:\/\/[a-z0-9.-]+\/\*$/.test(host)));
+  assert.equal(manifest.optional_permissions, undefined);
   assert.deepEqual(manifest.optional_host_permissions, ['<all_urls>']);
   assert.equal(manifest.manifest_version, 3);
   assert.equal(manifest.minimum_chrome_version, '116');
