@@ -7,7 +7,7 @@
 Extension Chrome qui **annonce quel profil Chrome vient de recevoir une notification**.
 
 - Site : https://whichprofile.app — confidentialité : https://whichprofile.app/privacy
-- **In review on the Chrome Web Store** (en cours d'examen).
+- **Disponible sur le Chrome Web Store** : https://chromewebstore.google.com/detail/nkfkdanbfikhpkdhebfemmplgagjfllg
 - Contact : hello@whichprofile.app
 
 Votre système vous dit quel service vient de notifier, jamais *quel compte*. WhichProfile, installée dans chacun de vos profils, annonce à voix haute le service et le libellé du profil, ou joue un motif sonore propre à ce profil. La liste des sites couverts est plus bas, dans « Sites couverts ».
@@ -17,6 +17,10 @@ Votre système vous dit quel service vient de notifier, jamais *quel compte*. Wh
 - Interface et détection en 8 langues : anglais, français, espagnol, portugais (Brésil et Portugal), italien, allemand, néerlandais. La langue de l'interface suit celle de Chrome ; la voix par défaut suit la langue de l'interface (le select « Voix » prime toujours).
 
 ## Installation (à répéter dans chaque profil)
+
+**Depuis le Chrome Web Store (recommandé)** : ouvrir la fiche dans chaque profil Chrome → **Ajouter à Chrome** → puis l'étape 5 ci-dessous (Réglages).
+
+**Depuis le code (développement)** :
 
 1. Ouvrir `chrome://extensions` dans le profil.
 2. Activer le **Mode développeur** (en haut à droite).
@@ -79,7 +83,11 @@ Le libellé n'apparaît qu'à l'écran et dans l'arbre d'accessibilité : les sc
 
 L'activation demande l'accès à **tous les sites** et la permission `scripting` (permissions optionnelles). En cas de refus, le mode reste désactivé. La désactivation retire le script et rend ces permissions. Le chip n'ajoute que cet élément et ne lit rien de la page.
 
-**À savoir :** le libellé s'affiche sur chaque page (à l'écran, et pour les lecteurs d'écran). Les réglages refusent donc l'activation tant que le libellé est dérivé de l'adresse e-mail, ce qui est le cas par défaut : choisir d'abord un libellé neutre (« Agence », « Client A »).
+**Pour l'activer — 2 étapes, dans cet ordre :**
+1. Réglages → **Libellé annoncé** : remplacer le libellé par défaut (tiré de votre e-mail) par un nom neutre (« Pro », « Agence », « Client A »).
+2. Réglages → **Agent mode** : activer, puis accepter la permission demandée.
+
+Pourquoi l'ordre compte : le libellé s'affiche sur chaque page (à l'écran, et pour les lecteurs d'écran). Tant qu'il est dérivé de votre adresse e-mail — le cas par défaut — l'interrupteur Agent mode reste inactif et affiche un message : ce n'est pas un bug, c'est pour ne pas afficher votre adresse partout. Une prochaine version proposera le changement de libellé directement depuis l'interrupteur.
 
 ## Limites connues
 
