@@ -1,8 +1,8 @@
 # Réinjection des content scripts à l'installation / mise à jour — notes pour la v1.1
 
-Branche `wip/reinject`, créée à partir de `d244515` (« feat(reliability): re-attach content scripts to open tabs on
-install/update »). Ce travail a été **sorti de la v1.0.2** (revert `ed46642` sur `main`), remplacé par un bandeau
-« rechargez les onglets déjà ouverts » dans les options (`5727056`).
+Branche `wip/reinject`, créée à partir de `755f861` (« feat(reliability): re-attach content scripts to open tabs on
+install/update »). Ce travail a été **sorti de la v1.0.2** (revert `76553ad` sur `main`), remplacé par un bandeau
+« rechargez les onglets déjà ouverts » dans les options (`71dd16c`).
 
 ## Le problème d'origine
 
