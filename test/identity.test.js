@@ -226,7 +226,7 @@ test('bandeau après installation : drapeau posé seulement à l’installation,
   assert.match(read('options.html'), /<section id="reload-hint" class="card notice" role="status" hidden>/);
 });
 
-test('manifest : permissions identiques à 4be794f (réinjection sortie de la v1.0.2)', () => {
+test('manifest : permissions identiques à b25a90c (réinjection sortie de la v1.0.2)', () => {
   const manifest = JSON.parse(read('manifest.json'));
   assert.deepEqual(manifest.permissions, ['identity', 'identity.email', 'offscreen', 'storage', 'tts']);
   assert.equal(manifest.host_permissions, undefined);
